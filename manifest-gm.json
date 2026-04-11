@@ -1,0 +1,28 @@
+{
+  "name": "Kausay GM",
+  "short_name": "GM",
+  "description": "Panel GM — Kausay Gestión Municipal Inteligente",
+  "start_url": "./gm.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#185FA5",
+  "background_color": "#0F0F12",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icons/icon-gm-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-gm-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "productivity"
+  ]
+}

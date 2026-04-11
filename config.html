@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0F0F12">
+<title>Kausay — Configuración inicial</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ac:#B02020;--ac-bg:#FDEAEA;--verde:#1A7A45;--verde-bg:#E8F5EE;--oro:#C8880A;--oro-bg:#FFF4DC;--azul:#185FA5;--gris:#F0F2F5;--card:#fff;--txt:#1A1D23;--txt2:#4A5060;--txt3:#8A90A0;--borde:#E2E6ED;--sb:#0F0F12}
+html,body{min-height:100%;font-family:'Barlow',sans-serif;color:var(--txt);background:#0F0F12}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PAGE ── */
+.page{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 20px 48px;position:relative}
+.bg{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(176,32,32,.13) 0%,transparent 55%),radial-gradient(ellipse at 85% 100%,rgba(24,95,165,.09) 0%,transparent 55%);pointer-events:none}
+
+/* ── HEADER ── */
+.logo{text-align:center;margin-bottom:28px;animation:fadeUp .5s ease both}
+.logo-brand{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:#fff}
+.logo-brand em{color:#F07070;font-style:normal}
+.logo-tag{font-size:10px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:1.8px;margin-top:4px}
+
+/* ── PROGRESS ── */
+.steps{display:flex;gap:0;margin-bottom:28px;background:rgba(255,255,255,.06);border-radius:10px;padding:4px;animation:fadeUp .5s .1s ease both;opacity:0;animation-fill-mode:forwards}
+.step{flex:1;padding:8px 10px;border-radius:7px;text-align:center;cursor:pointer;transition:all .18s}
+.step.on{background:var(--ac);color:#fff}
+.step:not(.on){color:rgba(255,255,255,.4)}
+.step-n{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:block}
+.step-lbl{font-size:11px;font-weight:600;display:block;margin-top:2px}
+
+/* ── PANEL ── */
+.panel{width:100%;max-width:560px;animation:fadeUp .5s .15s ease both;opacity:0;animation-fill-mode:forwards}
+.section-card{background:var(--card);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--borde)}
+.section-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.section-ttl{font-size:14px;font-weight:600;color:var(--txt)}
+.section-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+
+/* ── FIELDS ── */
+.field{margin-bottom:13px}
+.field:last-child{margin-bottom:0}
+.field-lbl{font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.field-req{color:var(--ac);font-size:11px}
+.field-inp{width:100%;border:1.5px solid var(--borde);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--txt);background:#fff;outline:none;transition:border-color .15s}
+.field-inp:focus{border-color:var(--ac)}
+.field-inp.ok{border-color:var(--verde)}
+.field-inp::placeholder{color:var(--txt3)}
+.field-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-hint{font-size:11px;color:var(--txt3);margin-top:4px}
+
+/* ── GERENCIA ROWS ── */
+.ger-row{background:var(--gris);border-radius:10px;padding:12px 14px;margin-bottom:9px}
+.ger-row:last-child{margin-bottom:0}
+.ger-hd{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.ger-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ger-nombre-fijo{font-size:12px;font-weight:700;color:var(--txt)}
+.ger-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* ── MUNI TYPE ── */
+.tipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0}
+.tipo-btn{padding:10px 8px;border:1.5px solid var(--borde);border-radius:9px;background:#fff;cursor:pointer;text-align:center;font-family:'Barlow',sans-serif;transition:all .15s}
+.tipo-btn:hover{border-color:var(--txt3)}
+.tipo-btn.sel{border-color:var(--ac);background:var(--ac-bg)}
+.tipo-ico{font-size:20px;display:block;margin-bottom:5px}
+.tipo-lbl{font-size:12px;font-weight:600;color:var(--txt);display:block}
+.tipo-desc{font-size:10px;color:var(--txt3);margin-top:2px;display:block}
+
+/* ── NAVIGATION ── */
+.nav-row{display:flex;gap:10px;margin-top:4px}
+.btn-next{flex:1;padding:13px;border-radius:10px;border:none;background:var(--ac);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .15s}
+.btn-next:hover{background:#8C1818}
+.btn-next:disabled{opacity:.5;cursor:not-allowed}
+.btn-back{padding:13px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif}
+.btn-back:hover{background:rgba(255,255,255,.07);color:#fff}
+
+/* ── PREVIEW ── */
+.preview-card{border-radius:12px;padding:15px 16px;margin-bottom:12px;border:1px solid var(--borde);background:var(--card)}
+.preview-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt3);margin-bottom:10px}
+.preview-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--borde);font-size:13px}
+.preview-row:last-child{border-bottom:none}
+.preview-key{color:var(--txt3)}
+.preview-val{font-weight:600;color:var(--txt);text-align:right;max-width:200px;word-break:break-word}
+
+/* ── SUCCESS ── */
+.success{display:none;text-align:center;animation:fadeUp .4s ease both}
+.success-ico{font-size:52px;margin-bottom:16px;display:block}
+.success-ttl{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:8px}
+.success-sub{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:28px}
+.dashboards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:400px;margin:0 auto}
+.dash-btn{border-radius:12px;padding:16px 14px;text-align:center;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .18s}
+.dash-btn:hover{transform:translateY(-2px);opacity:.9}
+.dash-ico{font-size:24px;display:block;margin-bottom:6px}
+.dash-lbl{font-size:12px;font-weight:700;color:#fff;display:block}
+.dash-cargo{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px;display:block}
+
+@media(max-width:480px){.field-2,.ger-fields{grid-template-columns:1fr}.tipo-grid{grid-template-columns:1fr}.dashboards-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="bg"></div>
+
+  <div class="logo">
+    <div class="logo-brand">Kausay<em>Alcalde</em></div>
+    <div class="logo-tag">Configuración inicial · Municipalidad</div>
+  </div>
+
+  <div class="steps" id="steps">
+    <div class="step on" onclick="irPaso(1)"><span class="step-n">Paso 1</span><span class="step-lbl">Municipalidad</span></div>
+    <div class="step"    onclick="irPaso(2)"><span class="step-n">Paso 2</span><span class="step-lbl">Autoridades</span></div>
+    <div class="step"    onclick="irPaso(3)"><span class="step-n">Paso 3</span><span class="step-lbl">Gerencias</span></div>
+    <div class="step"    onclick="irPaso(4)"><span class="step-n">Paso 4</span><span class="step-lbl">Confirmar</span></div>
+  </div>
+
+  <div class="panel" id="panel"></div>
+  <div class="success" id="success">
+    <span class="success-ico">✅</span>
+    <div class="success-ttl">¡Configuración completada!</div>
+    <div class="success-sub">Los nombres están guardados.<br>Cada dashboard mostrará los datos de tu municipalidad.</div>
+    <div class="dashboards-grid" id="dash-grid"></div>
+  </div>
+</div>
+
+<script>
+/* ══ ESTADO ══════════════════════════════════════════ */
+const CFG = {
+  // Paso 1
+  muni_nombre: '',
+  muni_ubigeo: '',
+  muni_tipo: 'provincial',
+  muni_departamento: '',
+  muni_provincia: '',
+  muni_distrito: '',
+  // Paso 2
+  alcalde_nombre: '',
+  alcalde_cargo: 'Alcalde Provincial',
+  secretaria_nombre: '',
+  gm_nombre: '',
+  gm_cargo: 'Gerente Municipal',
+  // Paso 3
+  gerencias: [
+    {cod:'INFRA',    nombre:'Infraestructura y Obras',   color:'#0F6E56', jefe:''},
+    {cod:'RENTAS',   nombre:'Rentas y Tributación',       color:'#185FA5', jefe:''},
+    {cod:'SERVICIOS',nombre:'Servicios Municipales',      color:'#5C3E8F', jefe:''},
+    {cod:'SOCIAL',   nombre:'Desarrollo Social',          color:'#B5540A', jefe:''},
+    {cod:'SECRETARIA',nombre:'Secretaría General',        color:'#4A4A70', jefe:''},
+    {cod:'PLANIF',   nombre:'Planeamiento y Presupuesto', color:'#2E6B5E', jefe:''},
+  ],
+};
+
+let paso = 1;
+
+/* ══ NAVEGACIÓN ══════════════════════════════════════ */
+function irPaso(n) {
+  if(n > paso) return; // solo navegar hacia atrás o al paso actual
+  paso = n;
+  renderPaso();
+}
+
+function siguiente() {
+  if(!validarPaso()) return;
+  guardarPaso();
+  if(paso < 4) { paso++; renderPaso(); window.scrollTo(0,0); }
+  else { guardarTodo(); mostrarExito(); }
+}
+
+function anterior() {
+  if(paso > 1) { paso--; renderPaso(); window.scrollTo(0,0); }
+}
+
+/* ══ RENDER ══════════════════════════════════════════ */
+function renderPaso() {
+  // Actualizar steps
+  document.querySelectorAll('.step').forEach((s,i) => {
+    s.classList.toggle('on', i+1 === paso);
+  });
+  const panel = document.getElementById('panel');
+  if(paso === 1) renderPaso1(panel);
+  else if(paso === 2) renderPaso2(panel);
+  else if(paso === 3) renderPaso3(panel);
+  else if(paso === 4) renderPaso4(panel);
+}
+
+/* ── PASO 1: Datos de la municipalidad ── */
+function renderPaso1(panel) {
+  panel.innerHTML = `
+  <div class="section-card">
+    <div class="section-hd">
+      <div class="section-ico" style="background:#1A1D23">🏛</div>
+      <div><div class="section-ttl">Datos de la municipalidad</div><div class="section-sub">Esta información aparecerá en todos los dashboards y documentos exportados</div></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Nombre oficial <span class="field-req">*</span></div>
+      <input class="field-inp" id="muni_nombre" placeholder="Ej: Municipalidad Provincial de Cajamarca" value="${CFG.muni_nombre}">
+    </div>
+    <div class="field-2">
+      <div class="field">
+        <div class="field-lbl">Ubigeo</div>
+        <input class="field-inp" id="muni_ubigeo" placeholder="Ej: 060101" value="${CFG.muni_ubigeo}" maxlength="6">
+      </div>
+      <div class="field">
+        <div class="field-lbl">Departamento <span class="field-req">*</span></div>
+        <input class="field-inp" id="muni_departamento" placeholder="Ej: Cajamarca" value="${CFG.muni_departamento}">
+      </div>
+    </div>
+    <div class="field-2">
+      <div class="field">
+        <div class="field-lbl">Provincia</div>
+        <input class="field-inp" id="muni_provincia" placeholder="Ej: Cajamarca" value="${CFG.muni_provincia}">
+      </div>
+      <div class="field">
+        <div class="field-lbl">Distrito</div>
+        <input class="field-inp" id="muni_distrito" placeholder="Ej: Cajamarca" value="${CFG.muni_distrito}">
+      </div>
+    </div>
+    <div class="field" style="margin-top:4px">
+      <div class="field-lbl">Tipo de municipalidad <span class="field-req">*</span></div>
+      <div class="tipo-grid">
+        <div class="tipo-btn${CFG.muni_tipo==='distrital'?' sel':''}" onclick="selTipo('distrital',this)">
+          <span class="tipo-ico">🏘</span><span class="tipo-lbl">Distrital</span><span class="tipo-desc">Hasta S/5M presup.</span>
+        </div>
+        <div class="tipo-btn${CFG.muni_tipo==='provincial'?' sel':''}" onclick="selTipo('provincial',this)">
+          <span class="tipo-ico">🏙</span><span class="tipo-lbl">Provincial</span><span class="tipo-desc">S/5M – S/50M presup.</span>
+        </div>
+        <div class="tipo-btn${CFG.muni_tipo==='metropolitana'?' sel':''}" onclick="selTipo('metropolitana',this)">
+          <span class="tipo-ico">🌆</span><span class="tipo-lbl">Metropolitana</span><span class="tipo-desc">+S/50M presup.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn-next" onclick="siguiente()">Siguiente → Autoridades</button>
+  </div>`;
+}
+
+window.selTipo = function(tipo, el) {
+  CFG.muni_tipo = tipo;
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+};
+
+/* ── PASO 2: Autoridades principales ── */
+function renderPaso2(panel) {
+  const tipoCargo = {distrital:'Alcalde Distrital', provincial:'Alcalde Provincial', metropolitana:'Alcalde Metropolitano'};
+  CFG.alcalde_cargo = tipoCargo[CFG.muni_tipo] || 'Alcalde';
+  panel.innerHTML = `
+  <div class="section-card">
+    <div class="section-hd">
+      <div class="section-ico" style="background:#B02020">👤</div>
+      <div><div class="section-ttl">Alcalde</div><div class="section-sub">${CFG.alcalde_cargo}</div></div>
+    </div>
+    <div class="field-2">
+      <div class="field">
+        <div class="field-lbl">Nombres y apellidos <span class="field-req">*</span></div>
+        <input class="field-inp" id="alcalde_nombre" placeholder="Ej: Roberto Sánchez Quiroz" value="${CFG.alcalde_nombre}">
+      </div>
+      <div class="field">
+        <div class="field-lbl">Cargo</div>
+        <input class="field-inp" id="alcalde_cargo" value="${CFG.alcalde_cargo}" placeholder="${CFG.alcalde_cargo}">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-hd">
+      <div class="section-ico" style="background:#C8880A">📋</div>
+      <div><div class="section-ttl">Secretaria del Despacho</div><div class="section-sub">Gestiona agenda, firma y compromisos del alcalde</div></div>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Nombres y apellidos <span class="field-req">*</span></div>
+      <input class="field-inp" id="secretaria_nombre" placeholder="Ej: Carmen Flores Ríos" value="${CFG.secretaria_nombre}">
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-hd">
+      <div class="section-ico" style="background:#185FA5">🏛</div>
+      <div><div class="section-ttl">Gerente Municipal</div><div class="section-sub">Coordinación general de todas las gerencias</div></div>
+    </div>
+    <div class="field-2">
+      <div class="field">
+        <div class="field-lbl">Nombres y apellidos <span class="field-req">*</span></div>
+        <input class="field-inp" id="gm_nombre" placeholder="Ej: Carlos Vásquez Díaz" value="${CFG.gm_nombre}">
+      </div>
+      <div class="field">
+        <div class="field-lbl">Título profesional</div>
+        <input class="field-inp" id="gm_cargo" placeholder="Ej: Mg., Ing., Lic., Abg." value="${CFG.gm_cargo}">
+        <div class="field-hint">Se mostrará antes del nombre: "Mg. Carlos Vásquez"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="anterior()">← Atrás</button>
+    <button class="btn-next" onclick="siguiente()">Siguiente → Gerencias</button>
+  </div>`;
+}
+
+/* ── PASO 3: Gerentes sectoriales ── */
+function renderPaso3(panel) {
+  let gerHtml = CFG.gerencias.map((g, i) => `
+    <div class="ger-row">
+      <div class="ger-hd">
+        <span class="ger-dot" style="background:${g.color}"></span>
+        <span class="ger-nombre-fijo">${g.nombre}</span>
+      </div>
+      <div class="ger-fields">
+        <div class="field" style="margin-bottom:0">
+          <div class="field-lbl">Nombre del gerente</div>
+          <input class="field-inp" id="ger_jefe_${i}" placeholder="Ej: Ing. Ana Quispe H." value="${g.jefe}"
+            style="border-color:${g.jefe?'var(--verde)':'var(--borde)'}">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <div class="field-lbl">Nombre del área (opcional)</div>
+          <input class="field-inp" id="ger_nombre_${i}" placeholder="${g.nombre}" value="${g.nombre}">
+        </div>
+      </div>
+    </div>`).join('');
+
+  panel.innerHTML = `
+  <div class="section-card">
+    <div class="section-hd">
+      <div class="section-ico" style="background:#0F0F12">⚙️</div>
+      <div><div class="section-ttl">Gerencias sectoriales</div><div class="section-sub">Puedes dejar en blanco las áreas que no existen en tu municipalidad</div></div>
+    </div>
+    ${gerHtml}
+  </div>
+  <div class="nav-row">
+    <button class="btn-back" onclick="anterior()">← Atrás</button>
+    <button class="btn-next" onclick="siguiente()">Siguiente → Confirmar</button>
+  </div>`;
+}
+
+/* ── PASO 4: Confirmar ── */
+function renderPaso4(panel) {
+  const gerActivas = CFG.gerencias.filter(g => g.jefe.trim());
+  panel.innerHTML = `
+  <div class="preview-card">
+    <div class="preview-hd">Municipalidad</div>
+    <div class="preview-row"><span class="preview-key">Nombre</span><span class="preview-val">${CFG.muni_nombre}</span></div>
+    <div class="preview-row"><span class="preview-key">Tipo</span><span class="preview-val">${CFG.muni_tipo}</span></div>
+    <div class="preview-row"><span class="preview-key">Departamento</span><span class="preview-val">${CFG.muni_departamento}</span></div>
+    ${CFG.muni_ubigeo?`<div class="preview-row"><span class="preview-key">Ubigeo</span><span class="preview-val">${CFG.muni_ubigeo}</span></div>`:''}
+  </div>
+
+  <div class="preview-card">
+    <div class="preview-hd">Autoridades</div>
+    <div class="preview-row"><span class="preview-key">${CFG.alcalde_cargo}</span><span class="preview-val">${CFG.alcalde_nombre}</span></div>
+    <div class="preview-row"><span class="preview-key">Secretaria del Despacho</span><span class="preview-val">${CFG.secretaria_nombre}</span></div>
+    <div class="preview-row"><span class="preview-key">Gerente Municipal</span><span class="preview-val">${CFG.gm_nombre}</span></div>
+  </div>
+
+  <div class="preview-card">
+    <div class="preview-hd">Gerencias configuradas (${gerActivas.length} de ${CFG.gerencias.length})</div>
+    ${CFG.gerencias.map(g=>`
+      <div class="preview-row">
+        <span class="preview-key" style="display:flex;align-items:center;gap:6px">
+          <span style="width:7px;height:7px;border-radius:50%;background:${g.color};flex-shrink:0;display:inline-block"></span>
+          ${g.nombre}
+        </span>
+        <span class="preview-val" style="color:${g.jefe?'var(--txt)':'var(--txt3)'}">${g.jefe||'—'}</span>
+      </div>`).join('')}
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="anterior()">← Atrás</button>
+    <button class="btn-next" onclick="siguiente()">✓ Guardar configuración</button>
+  </div>`;
+}
+
+/* ══ VALIDACIÓN Y GUARDADO ═══════════════════════════ */
+function validarPaso() {
+  if(paso === 1) {
+    if(!document.getElementById('muni_nombre')?.value.trim()) {
+      alert('El nombre de la municipalidad es obligatorio.'); return false;
+    }
+    if(!document.getElementById('muni_departamento')?.value.trim()) {
+      alert('El departamento es obligatorio.'); return false;
+    }
+  }
+  if(paso === 2) {
+    if(!document.getElementById('alcalde_nombre')?.value.trim()) {
+      alert('El nombre del alcalde es obligatorio.'); return false;
+    }
+    if(!document.getElementById('secretaria_nombre')?.value.trim()) {
+      alert('El nombre de la secretaria es obligatorio.'); return false;
+    }
+    if(!document.getElementById('gm_nombre')?.value.trim()) {
+      alert('El nombre del Gerente Municipal es obligatorio.'); return false;
+    }
+  }
+  return true;
+}
+
+function guardarPaso() {
+  if(paso === 1) {
+    CFG.muni_nombre       = document.getElementById('muni_nombre')?.value.trim() || CFG.muni_nombre;
+    CFG.muni_ubigeo       = document.getElementById('muni_ubigeo')?.value.trim() || '';
+    CFG.muni_departamento = document.getElementById('muni_departamento')?.value.trim() || '';
+    CFG.muni_provincia    = document.getElementById('muni_provincia')?.value.trim() || '';
+    CFG.muni_distrito     = document.getElementById('muni_distrito')?.value.trim() || '';
+  }
+  if(paso === 2) {
+    CFG.alcalde_nombre    = document.getElementById('alcalde_nombre')?.value.trim() || '';
+    CFG.alcalde_cargo     = document.getElementById('alcalde_cargo')?.value.trim() || CFG.alcalde_cargo;
+    CFG.secretaria_nombre = document.getElementById('secretaria_nombre')?.value.trim() || '';
+    CFG.gm_nombre         = document.getElementById('gm_nombre')?.value.trim() || '';
+    CFG.gm_cargo          = document.getElementById('gm_cargo')?.value.trim() || '';
+  }
+  if(paso === 3) {
+    CFG.gerencias.forEach((g, i) => {
+      g.jefe   = document.getElementById(`ger_jefe_${i}`)?.value.trim() || '';
+      g.nombre = document.getElementById(`ger_nombre_${i}`)?.value.trim() || g.nombre;
+    });
+  }
+}
+
+function guardarTodo() {
+  // Guardar en localStorage (sin Supabase conectado)
+  localStorage.setItem('kausay_config', JSON.stringify(CFG));
+  // También guardar en sessionStorage para que los dashboards lo lean inmediatamente
+  sessionStorage.setItem('kausay_config', JSON.stringify(CFG));
+}
+
+function mostrarExito() {
+  document.getElementById('panel').style.display = 'none';
+  document.getElementById('steps').style.display = 'none';
+  const s = document.getElementById('success');
+  s.style.display = 'block';
+
+  const grid = document.getElementById('dash-grid');
+  const ini = nombre => nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+  [
+    {lbl:'Alcalde',   cargo:CFG.alcalde_cargo,     url:'alcalde.html',    color:'#B02020', ini:ini(CFG.alcalde_nombre)},
+    {lbl:'Secretaria',cargo:'Despacho',             url:'secretaria.html', color:'#C8880A', ini:ini(CFG.secretaria_nombre)},
+    {lbl:'Gte. Municipal',cargo:'Panel completo',   url:'gm.html',         color:'#185FA5', ini:ini(CFG.gm_nombre)},
+    {lbl:'Gerencias', cargo:'Panel sectorial',      url:'gerente.html',    color:'#0F6E56', ini:'G'},
+  ].forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'dash-btn';
+    btn.style.background = d.color;
+    btn.innerHTML = `<span class="dash-ico">${d.ini}</span><span class="dash-lbl">${d.lbl}</span><span class="dash-cargo">${d.cargo}</span>`;
+    btn.onclick = () => window.location.href = d.url;
+    grid.appendChild(btn);
+  });
+}
+
+/* ══ CARGAR CONFIG GUARDADA ══════════════════════════ */
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('kausay_config');
+  if(saved) {
+    try {
+      const s = JSON.parse(saved);
+      Object.assign(CFG, s);
+    } catch(e) {}
+  }
+  renderPaso();
+});
+</script>
+</body>
+</html>

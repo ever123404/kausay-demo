@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<link rel="manifest" href="manifest-gm.json">
+<link rel="apple-touch-icon" href="icons/icon-gm-192.png">
+<meta name="theme-color" content="#185FA5">
+<title>Kausay — Gerente Municipal</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ac:#185FA5;--acBg:#E6F1FB;--acL:#70A8D8;--rojo:#B02020;--rojoBg:#FDEAEA;--oro:#C8880A;--oroBg:#FFF4DC;--verde:#1A7A45;--verdeBg:#E8F5EE;--gris:#F0F2F5;--card:#fff;--txt:#1A1D23;--txt2:#4A5060;--txt3:#8A90A0;--borde:#E2E6ED;--sb:#0F0F12}
+html,body{height:100%;font-family:'Barlow',sans-serif;color:var(--txt);background:var(--gris)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.layout{display:flex;height:100vh;overflow:hidden}
+/* ── SB ── */
+.sb{width:220px;background:var(--sb);display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{padding:15px 16px 11px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-brand{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#fff;line-height:1}
+.sb-brand em{color:var(--acL);font-style:normal}
+.sb-tag{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
+.sb-ger{margin:8px 10px 2px;border-radius:8px;padding:9px 11px;background:rgba(255,255,255,.07)}
+.sb-gn{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+.sb-gm{font-size:9px;color:rgba(255,255,255,.38);margin-top:2px}
+.sb-muni{padding:4px 12px 5px;font-size:10px;color:rgba(255,255,255,.26)}
+.sb-nav{flex:1;overflow-y:auto;padding:4px 0}
+.sb-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.22);padding:10px 16px 4px}
+.sb-it{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;color:rgba(255,255,255,.46);font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all .12s;user-select:none}
+.sb-it:hover{color:#fff;background:rgba(255,255,255,.05)}
+.sb-it.on{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--ac)}
+.sb-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:var(--rojo);color:#fff}
+.sb-badge.oro{background:var(--oro);color:#1A1D23}
+.sb-ft{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
+.sb-av{width:30px;height:30px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-un{font-size:11px;color:#fff;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-ur{font-size:9px;color:rgba(255,255,255,.33);margin-top:1px}
+.logout{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.38);font-size:9px;padding:4px 8px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif}
+.logout:hover{background:rgba(255,255,255,.15);color:#fff}
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.tb{height:52px;background:var(--card);border-bottom:1px solid var(--borde);display:flex;align-items:center;gap:10px;padding:0 18px;flex-shrink:0}
+.tb-ttl{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;flex:1;color:var(--txt)}
+.tb-date{font-size:11px;color:var(--txt3);white-space:nowrap}
+.rt{display:inline-flex;align-items:center;gap:4px;background:var(--verdeBg);color:var(--verde);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.rt-dot{width:5px;height:5px;border-radius:50%;background:var(--verde);animation:pulse 1.5s infinite}
+.tb-bell{width:34px;height:34px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;flex-shrink:0}
+.tb-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--rojo);border-radius:50%;border:1.5px solid #fff}
+.content{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+/* ── PILLS ── */
+.pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;display:inline-block}
+.p-r{background:var(--rojoBg);color:var(--rojo)}.p-a{background:var(--oroBg);color:var(--oro)}.p-g{background:var(--verdeBg);color:var(--verde)}.p-b{background:var(--acBg);color:var(--ac)}.p-x{background:var(--gris);color:var(--txt3);border:1px solid var(--borde)}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sec-ttl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt)}
+/* ── ÁREA ROW ── */
+.area{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:background .12s}
+.area:hover{background:var(--gris)}
+.area-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.area-n{font-size:13px;font-weight:600;color:var(--txt)}
+.area-g{font-size:11px;color:var(--txt3);margin-top:2px}
+.area-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.area-sv{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;text-align:center;line-height:1;color:var(--txt)}
+.area-sl{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.3px;text-align:center;margin-top:2px}
+.pbar{height:5px;background:var(--borde);border-radius:3px;overflow:hidden;margin-top:3px}
+.pbar-f{height:100%;border-radius:3px}
+/* ── INSTRUC (GM recibe del Alcalde, distribuye a gerentes) ── */
+.ins{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;border-left:4px solid var(--rojo);margin-bottom:8px}
+.ins-hd{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
+.ins-from{font-size:11px;font-weight:600;color:var(--txt3);flex:1}
+.ins-hora{font-size:10px;color:var(--txt3)}
+.ins-body{font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:8px}
+.ins-st{font-size:11px;font-weight:600;padding:4px 9px;border-radius:6px;display:inline-block;margin-bottom:8px}
+.ins-st.ok{background:var(--verdeBg);color:var(--verde)}.ins-st.pend{background:var(--rojoBg);color:var(--rojo)}
+.ins-acts{display:flex;gap:6px;flex-wrap:wrap}
+.ibtn{padding:6px 13px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
+.ibtn-ok{background:var(--verde);color:#fff}
+.ibtn-dist{background:var(--acBg);color:var(--ac);border:1px solid rgba(24,95,165,.2)}
+.ibtn-resp{background:var(--gris);color:var(--txt2);border:1px solid var(--borde)}
+.resp-box{background:var(--gris);border-radius:8px;padding:10px 12px;margin-top:9px;display:none}
+.resp-box.open{display:block}
+.resp-ta{width:100%;border:1px solid var(--borde);border-radius:7px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;resize:none;outline:none;background:#fff;color:var(--txt)}
+.resp-ta:focus{border-color:var(--ac)}
+.resp-row{display:flex;gap:7px;margin-top:7px}
+.resp-send{padding:7px 15px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
+.resp-cancel{padding:7px 10px;background:none;border:1px solid var(--borde);border-radius:7px;font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif;color:var(--txt3)}
+/* ── PLAZO NORMATIVO ── */
+.plazo{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;border-left:4px solid var(--al,var(--rojo));margin-bottom:8px;display:flex;gap:10px}
+.pl-ico{font-size:17px;flex-shrink:0;margin-top:1px}
+.pl-bd{flex:1;min-width:0}
+.pl-ttl{font-size:13px;font-weight:600;color:var(--txt);line-height:1.3}
+.pl-desc{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.5}
+.pl-meta{display:flex;gap:5px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.pl-meta span{font-size:10px;color:var(--txt3)}
+/* ── COORD ── */
+.coord-item{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.coord-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.coord-ttl{font-size:13px;font-weight:600;color:var(--txt);flex:1;line-height:1.3}
+.coord-areas{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.coord-desc{font-size:12px;color:var(--txt2);line-height:1.5;margin-bottom:7px}
+.coord-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.coord-fec{font-size:11px;color:var(--txt3)}
+/* ── INFORME ── */
+.informe-prev{background:#0F0F12;border-radius:12px;padding:15px;color:#fff;position:relative;overflow:hidden}
+.informe-prev::after{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(24,95,165,.25) 0%,transparent 70%);pointer-events:none}
+.inf-hd{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.inf-ico{width:28px;height:28px;border-radius:7px;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.inf-ttl{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700}
+.inf-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
+.inf-body{font-size:12px;color:rgba(255,255,255,.72);line-height:1.75}
+.inf-hl{background:rgba(24,95,165,.25);color:#70A8D8;padding:0 3px;border-radius:3px;font-weight:600}
+.inf-acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.inf-btn{padding:7px 13px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
+.inf-p{background:var(--ac);color:#fff}.inf-s{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
+/* ── FORM ── */
+.card{background:var(--card);border:1px solid var(--borde);border-radius:12px;padding:14px 16px}
+.form-row{margin-bottom:10px}
+.form-lbl{display:block;font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.form-inp{width:100%;border:1px solid var(--borde);border-radius:8px;padding:8px 11px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--txt);background:#fff;outline:none}
+.form-inp:focus{border-color:var(--ac)}
+.form-btn{width:100%;padding:10px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
+.form-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.info-box{border-radius:9px;padding:10px 13px;font-size:12px;line-height:1.65}
+
+/* ── BOTÓN VOLVER AL MENÚ (solo mobile) ── */
+.tb-back{display:none;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:var(--txt2);white-space:nowrap;flex-shrink:0}
+.tb-back:active{background:var(--gris)}
+@media(max-width:680px){.tb-back{display:flex}.tb-date{display:none}}
+
+@media(max-width:680px){.sb{display:none}.form-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="loading" style="height:100vh;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8A90A0">Cargando...</div>
+
+<div class="layout" id="app" style="display:none">
+  <div class="sb" id="sb"></div>
+  <div class="main">
+    <div class="tb">
+      <div class="tb-ttl" id="tb-ttl"></div>
+      <div class="tb-date" id="tb-date"></div>
+      <div class="rt"><span class="rt-dot"></span>En vivo</div>
+      <button class="tb-bell">🔔<span class="tb-dot" id="tb-dot" style="display:none"></span></button>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<script>
+/* ══ DATOS ═══════════════════════════════════════════════ */
+const AREAS = [
+  {cod:'INFRA',   nombre:'Infraestructura y Obras',    gerente:'Ing. Ana Quispe',   obras:18, ejec:71, comp:8,  ven:2, color:'#0F6E56'},
+  {cod:'RENTAS',  nombre:'Rentas y Tributación',        gerente:'Cont. C. Herrera',  obras:0,  ejec:41, comp:4,  ven:2, color:'#185FA5'},
+  {cod:'SERVICIOS',nombre:'Servicios Municipales',     gerente:'Lic. Rosa Castro',  obras:3,  ejec:56, comp:6,  ven:2, color:'#5C3E8F'},
+  {cod:'SOCIAL',  nombre:'Desarrollo Social',           gerente:'Lic. Marco Torres', obras:4,  ejec:78, comp:5,  ven:0, color:'#B5540A'},
+  {cod:'SECRETARIA',nombre:'Secretaría General',       gerente:'Abg. Patricia A.',  obras:0,  ejec:68, comp:3,  ven:0, color:'#4A4A70'},
+  {cod:'PLANIF',  nombre:'Planeamiento y Presupuesto',  gerente:'Econ. Eduardo L.',  obras:0,  ejec:39, comp:4,  ven:1, color:'#2E6B5E'},
+];
+
+let instrucciones = [
+  {tipo:'instruccion',txt:'Convocar urgente al contratista de Jr. Lima para mañana 9am. Si no confirma antes de las 5pm, iniciamos resolución de contrato.',hora:'09:15',leida:false,resp:'',dest:null},
+  {tipo:'consulta',txt:'¿Cuál es el avance real de ejecución en Planeamiento? Me preocupa el 39%. Necesito entender el problema antes del cierre fiscal.',hora:'Ayer 16:40',leida:true,resp:'Las partidas con mayor saldo son bienes y servicios (S/480K) e inversiones menores (S/320K). Preparando plan de acción.',dest:'PLANIF'},
+  {tipo:'instruccion',txt:'Necesito un informe consolidado de todas las gerencias con el avance al cierre del mes. Para la sesión de concejo del jueves.',hora:'Hace 2d',leida:true,resp:'Informe en elaboración. Estará listo el miércoles.',dest:null},
+];
+
+const PLAZOS = [
+  {ico:'💰',ttl:'Devengado 4to trimestre · SIAF/MEF',desc:'Planeamiento debe devengar S/1.2M antes del 15 dic. Riesgo de devolución al MEF.',dias:18,sis:'MEF/SIAF',resp:'PLANIF',niv:'critica'},
+  {ico:'📋',ttl:'Actualización Invierte.pe · 3 proyectos',desc:'Infraestructura debe actualizar avance físico de PMI-2024-001, 003 y 007.',dias:11,sis:'Invierte.pe',resp:'INFRA',niv:'critica'},
+  {ico:'🔍',ttl:'Subsanación hallazgos CGR · 4 pendientes',desc:'Coordinación general a cargo del Gerente Municipal. Responsabilidad compartida.',dias:24,sis:'Contraloría',resp:'GM',niv:'alerta'},
+  {ico:'🛒',ttl:'Renovación contratos servicios · SEACE',desc:'3 contratos vencen a fin de año. Servicios debe iniciar proceso de renovación.',dias:35,sis:'SEACE',resp:'SERVICIOS',niv:'info'},
+];
+
+const COORDIN = [
+  {ttl:'Habilitación acceso para obra Jr. Lima',areas:['INFRA','SERVICIOS'],desc:'Se requiere corte de agua temporal durante la pavimentación. Servicios debe coordinar el cronograma con Infraestructura.',fec:'Mañana',estado:'pendiente'},
+  {ttl:'Datos para informe cierre de año al concejo',areas:['PLANIF','RENTAS','INFRA'],desc:'Planeamiento consolida los datos de ejecución presupuestal. Rentas y Obras deben enviar sus reportes antes del miércoles.',fec:'Miércoles',estado:'en_proceso'},
+];
+
+const pctC = p => p>=70?'#1A7A45':p>=50?'#C8880A':'#B02020';
+const hoy = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
+const mk = (t,c) => { const e=document.createElement(t); if(c)e.className=c; return e; };
+let vista = 'areas';
+
+const NAV = [
+  {sec:'Coordinación', items:[
+    {id:'areas',     ico:'📡', lbl:'Panel de áreas'},
+    {id:'instruc',   ico:'📬', lbl:'Instrucciones del alcalde', get b(){return instrucciones.filter(i=>!i.leida).length||null}},
+    {id:'coord',     ico:'🔗', lbl:'Coordinaciones multi-área'},
+  ]},
+  {sec:'Control', items:[
+    {id:'plazos',    ico:'⚖️', lbl:'Plazos normativos', get b(){return PLAZOS.filter(p=>p.niv==='critica').length||null}, bCls:'oro'},
+    {id:'informe',   ico:'📄', lbl:'Preparar informe'},
+  ]},
+];
+const TITULOS = {areas:'Panel de todas las áreas',instruc:'Instrucciones del alcalde',coord:'Coordinaciones multi-área',plazos:'Plazos normativos del equipo',informe:'Preparar informe para el alcalde'};
+
+/* ══ INIT ═════════════════════════════════════════════ */
+/* ══ LEER CONFIGURACIÓN DE LA MUNICIPALIDAD ══════════ */
+function loadConfig() {
+  try {
+    const raw = sessionStorage.getItem('kausay_config') || localStorage.getItem('kausay_config');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+function applyConfig(cfg) {
+  if (!cfg) return;
+  // Actualizar nombre municipalidad en sidebar
+  document.querySelectorAll('.sb-muni').forEach(el => { el.textContent = cfg.muni_nombre || el.textContent; });
+}
+
+window.addEventListener('load', ()=>{
+  const _cfg = loadConfig();
+  const demoNombre = sessionStorage.getItem('kausay_demo_nombre');
+  const gmNombre = (_cfg?.gm_nombre) || demoNombre || 'Mg. Carlos Vásquez Díaz';
+  // Parchar el sidebar con el nombre real
+  document.getElementById('loading').remove();
+  document.getElementById('app').style.display='flex';
+  document.getElementById('tb-date').textContent = hoy;
+  if (_cfg) applyConfig(_cfg);
+  buildSb(gmNombre, _cfg?.muni_nombre);
+  render();
+});
+
+function nav(v){ vista=v; render(); }
+
+function buildSb(nombre, muni){
+  nombre = nombre || 'Gerente Municipal';
+  muni = muni || 'Municipalidad Provincial de Cajamarca';
+  document.getElementById('sb').innerHTML = `
+    <div class="sb-logo"><div class="sb-brand">Kausay<em>Gerente</em></div><div class="sb-tag">Gerente Municipal</div></div>
+    <div class="sb-ger"><div class="sb-gn">🏛 Gerencia Municipal</div><div class="sb-gm">Coordinación general</div></div>
+    <div class="sb-muni">${muni}</div>
+    <div class="sb-nav" id="sb-nav"></div>
+    <div class="sb-ft">
+      <div class="sb-av">${nombre.split(" ").slice(0,2).map(p=>p[0]).join("")}</div>
+      <div><div class="sb-un">${nombre}</div><div class="sb-ur">Gerente Municipal</div></div>
+      <button class="logout" onclick="window.location.href='login.html'">Salir</button>
+    </div>`;
+}
+
+function render(){
+  const navEl = document.getElementById('sb-nav');
+  if(navEl){
+    navEl.innerHTML='';
+    NAV.forEach(sec=>{
+      const sl=mk('div','sb-sec'); sl.textContent=sec.sec; navEl.appendChild(sl);
+      sec.items.forEach(it=>{
+        const b=it.b;
+        const item=mk('div','sb-it'+(vista===it.id?' on':''));
+        if(vista===it.id) item.style.borderLeftColor='var(--ac)';
+        item.innerHTML=`<span class="sb-ico">${it.ico}</span><span style="flex:1">${it.lbl}</span>`;
+        if(b){ const bd=mk('span','sb-badge '+(it.bCls||'')); bd.textContent=b; item.appendChild(bd); }
+        item.onclick=()=>nav(it.id);
+        navEl.appendChild(item);
+      });
+    });
+  }
+  const ttl=document.getElementById('tb-ttl'); if(ttl) ttl.textContent=TITULOS[vista]||vista;
+  const tbBack=document.getElementById('tb-back');
+  if(tbBack) tbBack.style.display=(vista!=='areas')? 'flex':'none';
+  const pend=instrucciones.filter(i=>!i.leida).length;
+  const tdot=document.getElementById('tb-dot'); if(tdot) tdot.style.display=pend?'block':'none';
+  const c=document.getElementById('content'); if(!c) return; c.innerHTML='';
+  if(vista==='areas')    vAreas(c);
+  else if(vista==='instruc') vInstruc(c);
+  else if(vista==='coord')   vCoord(c);
+  else if(vista==='plazos')  vPlazos(c);
+  else if(vista==='informe') vInforme(c);
+}
+
+/* ══ PANEL DE ÁREAS ═══════════════════════════════════ */
+function vAreas(c){
+  const hd=mk('div','sec-hd');
+  hd.innerHTML='<span class="sec-ttl">Estado de todas las áreas</span>';
+  const rt=mk('div','rt'); rt.innerHTML='<span class="rt-dot"></span>Actualizado ahora';
+  hd.appendChild(rt); c.appendChild(hd);
+
+  const totalVen=AREAS.reduce((s,a)=>s+a.ven,0);
+  if(totalVen>0){
+    const box=mk('div','info-box');
+    box.style.cssText='background:#FDEAEA;color:#B02020;margin-bottom:0';
+    box.innerHTML=`⚠️ <strong>${totalVen} compromisos vencidos</strong> en ${AREAS.filter(a=>a.ven>0).length} gerencias sin respuesta. El alcalde ya tiene esta alerta.`;
+    c.appendChild(box);
+  }
+
+  AREAS.forEach(a=>{
+    const item=mk('div','area');
+    const col=pctC(a.ejec);
+    const hd2=mk('div','area-hd');
+    hd2.innerHTML=`<div><div class="area-n">${a.nombre}</div><div class="area-g">${a.gerente}</div></div>`;
+    const badge=mk('span','pill '+(a.ven>0?'p-r':'p-g'));
+    badge.textContent=a.ven>0?a.ven+' vencidos':'Al día';
+    hd2.appendChild(badge);
+
+    const stats=mk('div','area-stats');
+    [{v:a.ejec+'%',l:'Ejec. presup.',col},{v:''+a.obras,l:'Obras activas',col:'var(--txt)'},{v:''+a.comp,l:'Compromisos',col:'var(--txt)'}].forEach(s=>{
+      const sd=mk('div','');
+      sd.innerHTML=`<div class="area-sv" style="color:${s.col}">${s.v}</div><div class="area-sl">${s.l}</div>`;
+      stats.appendChild(sd);
+    });
+
+    const pb=mk('div','pbar');
+    const pbf=mk('div','pbar-f'); pbf.style.width=a.ejec+'%'; pbf.style.background=col;
+    pb.appendChild(pbf);
+
+    item.appendChild(hd2); item.appendChild(stats); item.appendChild(pb);
+    c.appendChild(item);
+  });
+}
+
+/* ══ INSTRUCCIONES DEL ALCALDE ════════════════════════ */
+function vInstruc(c){
+  const pend=instrucciones.filter(i=>!i.leida).length;
+  const hd=mk('div','sec-hd');
+  hd.innerHTML='<span class="sec-ttl">Instrucciones del alcalde</span>';
+  const b=mk('span','pill '+(pend?'p-r':'p-g')); b.textContent=pend?pend+' sin confirmar':'Todas confirmadas';
+  hd.appendChild(b); c.appendChild(hd);
+
+  const tipoCols={instruccion:'#B02020',consulta:'#185FA5',alerta:'#C8880A',informe:'#1A7A45'};
+  const tipoPill={instruccion:'p-r',consulta:'p-b',alerta:'p-a',informe:'p-g'};
+  const tipoLbl={instruccion:'Instrucción',consulta:'Consulta',alerta:'Alerta',informe:'Informe'};
+
+  instrucciones.forEach((ins,i)=>{
+    const item=mk('div','ins');
+    item.style.borderLeftColor=tipoCols[ins.tipo]||'#B02020';
+
+    const hd2=mk('div','ins-hd');
+    hd2.innerHTML=`<span class="ins-from">Del Alcalde · ${ins.hora}</span>`;
+    const tp=mk('span','pill '+tipoPill[ins.tipo]); tp.textContent=tipoLbl[ins.tipo]||ins.tipo;
+    hd2.appendChild(tp);
+
+    const body=mk('div','ins-body'); body.textContent=ins.txt;
+    const st=mk('div','ins-st '+(ins.leida?'ok':'pend'));
+    st.textContent=ins.leida?'✓ Leído y confirmado al alcalde':'⚠ Pendiente de confirmación';
+
+    // Distribución a gerente
+    let distInfo=null;
+    if(ins.dest){
+      const ar=AREAS.find(a=>a.cod===ins.dest);
+      distInfo=mk('div','');
+      distInfo.style.cssText='font-size:11px;color:#185FA5;font-weight:600;margin-bottom:8px;padding:4px 9px;background:#E6F1FB;border-radius:6px;display:inline-block';
+      distInfo.textContent='↦ Distribuida a: '+(ar?ar.nombre:ins.dest);
+    }
+
+    const acts=mk('div','ins-acts');
+    if(!ins.leida){
+      const ok=mk('button','ibtn ibtn-ok'); ok.textContent='✓ Confirmar lectura';
+      ok.onclick=()=>{ instrucciones[i].leida=true; render(); };
+      acts.appendChild(ok);
+    }
+
+    // Distribuir a gerente sectorial
+    const distBtn=mk('button','ibtn ibtn-dist'); distBtn.textContent='↦ Distribuir a gerencia';
+    const distBox=mk('div','resp-box'+(ins.dest?' open':''));
+    const selGer=mk('select','resp-ta'); selGer.style.resize='none';
+    const optDef=mk('option'); optDef.textContent='Seleccionar gerencia...'; optDef.value='';
+    selGer.appendChild(optDef);
+    AREAS.forEach(a=>{ const o=mk('option'); o.value=a.cod; o.textContent=a.nombre; if(ins.dest===a.cod)o.selected=true; selGer.appendChild(o); });
+    const notas=mk('textarea','resp-ta'); notas.rows=2; notas.placeholder='Contexto adicional para la gerencia (opcional)...'; notas.style.marginTop='7px';
+    const distRow=mk('div','resp-row');
+    const distSend=mk('button','resp-send'); distSend.textContent='Distribuir y notificar';
+    const distCancel=mk('button','resp-cancel'); distCancel.textContent='Cancelar';
+    distSend.onclick=()=>{
+      if(!selGer.value) return;
+      instrucciones[i].dest=selGer.value; instrucciones[i].leida=true;
+      distSend.textContent='✓ Distribuida'; distSend.disabled=true;
+      setTimeout(()=>render(),900);
+    };
+    distCancel.onclick=()=>distBox.classList.remove('open');
+    distBtn.onclick=()=>distBox.classList.toggle('open');
+    distRow.appendChild(distSend); distRow.appendChild(distCancel);
+    distBox.appendChild(selGer); distBox.appendChild(notas); distBox.appendChild(distRow);
+    acts.appendChild(distBtn);
+
+    // Responder al alcalde
+    const rb=mk('button','ibtn ibtn-resp'); rb.textContent=ins.resp?'✏ Editar respuesta':'💬 Responder al alcalde';
+    const respBox=mk('div','resp-box'+(ins.resp?' open':''));
+    const respTa=mk('textarea','resp-ta'); respTa.rows=3;
+    respTa.placeholder='Escribe tu respuesta o reporte de avance al alcalde...'; respTa.value=ins.resp||'';
+    const respRow=mk('div','resp-row');
+    const respSend=mk('button','resp-send'); respSend.textContent='Enviar respuesta al alcalde';
+    const respCancel=mk('button','resp-cancel'); respCancel.textContent='Cancelar';
+    respSend.onclick=()=>{
+      if(!respTa.value.trim()) return;
+      instrucciones[i].resp=respTa.value; instrucciones[i].leida=true;
+      respSend.textContent='✓ Enviada'; respSend.disabled=true;
+      setTimeout(()=>render(),900);
+    };
+    respCancel.onclick=()=>respBox.classList.remove('open');
+    rb.onclick=()=>respBox.classList.toggle('open');
+    respRow.appendChild(respSend); respRow.appendChild(respCancel);
+    respBox.appendChild(respTa); respBox.appendChild(respRow);
+    acts.appendChild(rb);
+
+    item.appendChild(hd2); item.appendChild(body); item.appendChild(st);
+    if(distInfo) item.appendChild(distInfo);
+    item.appendChild(acts); item.appendChild(distBox); item.appendChild(respBox);
+    c.appendChild(item);
+  });
+}
+
+/* ══ COORDINACIONES MULTI-ÁREA ════════════════════════ */
+function vCoord(c){
+  const hd=mk('div','sec-hd'); hd.innerHTML='<span class="sec-ttl">Coordinaciones activas</span><span class="pill p-b">'+COORDIN.length+' en curso</span>';
+  c.appendChild(hd);
+
+  COORDIN.forEach(coord=>{
+    const item=mk('div','coord-item');
+    const hd2=mk('div','coord-hd');
+    const ttl=mk('div','coord-ttl'); ttl.textContent=coord.ttl;
+    const st=mk('span','pill '+(coord.estado==='en_proceso'?'p-a':'p-x'));
+    st.textContent=coord.estado==='en_proceso'?'En proceso':'Pendiente';
+    hd2.appendChild(ttl); hd2.appendChild(st);
+
+    const areas=mk('div','coord-areas');
+    coord.areas.forEach(cod=>{
+      const ar=AREAS.find(a=>a.cod===cod);
+      const tag=mk('span','pill p-b'); tag.style.background=ar?.color||'#185FA5'; tag.style.color='#fff';
+      tag.textContent=ar?ar.nombre:cod;
+      areas.appendChild(tag);
+    });
+
+    const desc=mk('div','coord-desc'); desc.textContent=coord.desc;
+    const foot=mk('div','coord-foot');
+    foot.innerHTML=`<span class="coord-fec">📅 Fecha límite: <strong>${coord.fec}</strong></span>`;
+
+    item.appendChild(hd2); item.appendChild(areas); item.appendChild(desc); item.appendChild(foot);
+    c.appendChild(item);
+  });
+
+  const nhd=mk('div','sec-hd'); nhd.style.marginTop='4px'; nhd.innerHTML='<span class="sec-ttl">Nueva coordinación</span>';
+  c.appendChild(nhd);
+  const card=mk('div','card');
+  card.innerHTML=`
+    <div class="form-row"><label class="form-lbl">Asunto de coordinación</label><input class="form-inp" placeholder="Describe el asunto que requiere coordinación entre áreas..."></div>
+    <div class="form-row"><label class="form-lbl">Áreas involucradas</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 0">${AREAS.map(a=>`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" style="accent-color:${a.color}"> ${a.nombre}</label>`).join('')}</div>
+    </div>
+    <div class="form-2">
+      <div class="form-row"><label class="form-lbl">Fecha límite</label><input type="date" class="form-inp"></div>
+      <div class="form-row"><label class="form-lbl">Prioridad</label><select class="form-inp"><option>Alta</option><option>Media</option><option>Baja</option></select></div>
+    </div>
+    <button class="form-btn">Crear coordinación y notificar gerencias</button>`;
+  c.appendChild(card);
+}
+
+/* ══ PLAZOS NORMATIVOS ════════════════════════════════ */
+function vPlazos(c){
+  const hd=mk('div','sec-hd'); hd.innerHTML='<span class="sec-ttl">Plazos normativos del equipo</span>';
+  c.appendChild(hd);
+
+  const crit=PLAZOS.filter(p=>p.niv==='critica').length;
+  if(crit){
+    const box=mk('div','info-box');
+    box.style.cssText='background:#FDEAEA;color:#B02020;margin-bottom:0';
+    box.innerHTML=`⚠️ <strong>${crit} plazos críticos</strong> requieren acción inmediata. El alcalde también los ve en su semáforo normativo.`;
+    c.appendChild(box);
+  }
+
+  PLAZOS.forEach(p=>{
+    const cols={critica:'#B02020',alerta:'#C8880A',info:'#185FA5'};
+    const pills={critica:'p-r',alerta:'p-a',info:'p-b'};
+    const ar=AREAS.find(a=>a.cod===p.resp);
+    const item=mk('div','plazo'); item.style.setProperty('--al',cols[p.niv]);
+    const ico=mk('span','pl-ico'); ico.textContent=p.ico;
+    const bd=mk('div','pl-bd');
+    const ttl=mk('div','pl-ttl'); ttl.textContent=p.ttl;
+    const desc=mk('div','pl-desc'); desc.textContent=p.desc;
+    const meta=mk('div','pl-meta');
+    const badge=mk('span','pill '+pills[p.niv]); badge.textContent=p.dias+' días restantes';
+    const sis=mk('span',''); sis.textContent=p.sis;
+    const resp=mk('span',''); resp.textContent='· Resp: '+(ar?ar.nombre:p.resp==='GM'?'Gerente Municipal (tú)':p.resp);
+    meta.appendChild(badge); meta.appendChild(sis); meta.appendChild(resp);
+    bd.appendChild(ttl); bd.appendChild(desc); bd.appendChild(meta);
+    item.appendChild(ico); item.appendChild(bd);
+    c.appendChild(item);
+  });
+}
+
+/* ══ PREPARAR INFORME ═════════════════════════════════ */
+function vInforme(c){
+  const hd=mk('div','sec-hd'); hd.innerHTML='<span class="sec-ttl">Preparar informe para el alcalde</span>';
+  c.appendChild(hd);
+
+  const preview=mk('div','informe-prev');
+  preview.innerHTML=`
+    <div class="inf-hd"><div class="inf-ico">🤖</div><div><div class="inf-ttl">Borrador generado por IA — semana 47</div><div class="inf-sub">Claude · Municipalidad Provincial de Cajamarca</div></div></div>
+    <div class="inf-body">
+      La ejecución presupuestal acumulada al cierre de noviembre es de <span class="inf-hl">67%</span>, dentro del rango esperado excepto en Planeamiento (<span class="inf-hl">39%</span>) y Rentas (<span class="inf-hl">41%</span>) donde existe riesgo de devolución al MEF. El asunto más urgente es la <span class="inf-hl">obra Jr. Lima</span> (paralizada 26 días) que requiere decisión del alcalde antes del viernes. Las áreas con mejor desempeño son Desarrollo Social (78%) e Infraestructura (71%). Se recomienda convocar reunión de emergencia con contratista y revisar plan de devengado de Planeamiento esta semana.
+    </div>
+    <div class="inf-acts">
+      <button class="inf-btn inf-p">✓ Aprobar y enviar al alcalde</button>
+      <button class="inf-btn inf-s">✏ Editar borrador</button>
+      <button class="inf-btn inf-s">📥 Descargar PDF</button>
+    </div>`;
+  c.appendChild(preview);
+
+  const nhd=mk('div','sec-hd'); nhd.style.marginTop='4px'; nhd.innerHTML='<span class="sec-ttl">Generar nuevo informe</span>';
+  c.appendChild(nhd);
+  const card=mk('div','card');
+  card.innerHTML=`
+    <div class="form-row"><label class="form-lbl">Tipo de informe</label>
+      <select class="form-inp"><option>Ejecutivo semanal</option><option>Cierre mensual</option><option>Pre-sesión de concejo</option><option>Informe de emergencia</option></select></div>
+    <div class="form-row"><label class="form-lbl">Áreas a incluir</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 0">${AREAS.map(a=>`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:${a.color}"> ${a.nombre}</label>`).join('')}</div>
+    </div>
+    <div class="form-row"><label class="form-lbl">Instrucciones adicionales para la IA</label><textarea class="form-inp" rows="2" placeholder="Ej: Enfatizar el riesgo de cierre presupuestal en Planeamiento y el tema de Jr. Lima..."></textarea></div>
+    <button class="form-btn">🤖 Generar borrador con IA</button>`;
+  c.appendChild(card);
+}
+
+render();
+</script>
+<script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+</script>
+</body>
+</html>

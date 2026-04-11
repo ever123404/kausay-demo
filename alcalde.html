@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<link rel="manifest" href="manifest-alcalde.json">
+<link rel="apple-touch-icon" href="icons/icon-alcalde-192.png">
+<meta name="theme-color" content="#B02020">
+<title>Kausay Alcalde</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ac:#B02020;--ac-d:#8C1818;--ac-bg:#FDEAEA;
+  --oro:#C8880A;--oro-bg:#FFF4DC;
+  --verde:#1A7A45;--verde-bg:#E8F5EE;
+  --azul:#185FA5;--azul-bg:#E6F1FB;
+  --teal:#0F6E56;--teal-bg:#E1F5EE;
+  --gris:#F0F2F5;--card:#fff;
+  --txt:#1A1D23;--txt2:#4A5060;--txt3:#8A90A0;
+  --borde:#E2E6ED;--sb:#0F0F12;
+}
+html,body{height:100%;font-family:'Barlow',sans-serif;color:var(--txt);background:var(--gris)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LAYOUT ── */
+.layout{display:flex;height:100vh;overflow:hidden}
+.sb{width:220px;background:var(--sb);display:flex;flex-direction:column;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* ── SIDEBAR ── */
+.sb-logo{padding:15px 16px 11px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-brand{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#fff;line-height:1}
+.sb-brand em{color:#F07070;font-style:normal}
+.sb-tag{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
+.sb-muni{padding:8px 12px;background:rgba(255,255,255,.05);margin:8px 10px 4px;border-radius:8px;font-size:11px;color:rgba(255,255,255,.65);font-weight:500;line-height:1.3}
+.sb-nav{flex:1;overflow-y:auto;padding:4px 0}
+.sb-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.22);padding:10px 16px 4px}
+.sb-it{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;color:rgba(255,255,255,.46);font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all .12s;user-select:none}
+.sb-it:hover{color:#fff;background:rgba(255,255,255,.05)}
+.sb-it.on{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--ac)}
+.sb-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:var(--ac);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px}
+.sb-ft{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
+.sb-av{width:30px;height:30px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-un{font-size:11px;color:#fff;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-ur{font-size:9px;color:rgba(255,255,255,.33);margin-top:1px}
+.sb-logout{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.38);font-size:9px;padding:4px 8px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif}
+.sb-logout:hover{background:rgba(255,255,255,.15);color:#fff}
+
+/* ── TOPBAR ── */
+.tb{height:52px;background:var(--card);border-bottom:1px solid var(--borde);display:flex;align-items:center;gap:10px;padding:0 18px;flex-shrink:0}
+.tb-ttl{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;flex:1;color:var(--txt)}
+.tb-date{font-size:11px;color:var(--txt3);white-space:nowrap}
+.rt{display:inline-flex;align-items:center;gap:4px;background:var(--verde-bg);color:var(--verde);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.rt-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite}
+.tb-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;position:relative}
+.tb-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--ac);border-radius:50%;border:1.5px solid #fff}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:16px}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sec-ttl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt)}
+.sec-sub{font-size:11px;color:var(--txt3)}
+.card{background:var(--card);border:1px solid var(--borde);border-radius:12px;overflow:hidden}
+.cp{padding:14px 16px}
+
+/* ── PILLS ── */
+.pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;display:inline-block}
+.p-r{background:var(--ac-bg);color:var(--ac)}
+.p-a{background:var(--oro-bg);color:var(--oro)}
+.p-g{background:var(--verde-bg);color:var(--verde)}
+.p-b{background:var(--azul-bg);color:var(--azul)}
+.p-t{background:var(--teal-bg);color:var(--teal)}
+.p-x{background:var(--gris);color:var(--txt3);border:1px solid var(--borde)}
+
+/* ── KPI ── */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 13px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--ac))}
+.kpi-l{font-size:10px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.kpi-v{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-v small{font-size:14px;font-weight:400}
+.kpi-d{font-size:10px;font-weight:600}
+.up{color:var(--verde)}.dn{color:var(--ac)}.wn{color:var(--oro)}
+.kpi-ico{position:absolute;bottom:8px;right:10px;font-size:24px;opacity:.1}
+
+/* ── BRIEFING IA ── */
+.briefing{background:#0F0F12;border-radius:12px;padding:15px;color:#fff;position:relative;overflow:hidden}
+.briefing::after{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(176,32,32,.2) 0%,transparent 70%);pointer-events:none}
+.br-hd{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.br-ico{width:28px;height:28px;border-radius:7px;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.br-ttl{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700}
+.br-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
+.br-body{font-size:12px;color:rgba(255,255,255,.72);line-height:1.75}
+.br-hl{background:rgba(200,136,10,.2);color:#F0A80C;padding:0 3px;border-radius:3px;font-weight:600}
+.br-acts{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.br-btn{padding:7px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
+.br-p{background:var(--ac);color:#fff}.br-s{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
+
+/* ── ALERTAS ── */
+.alerta{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;gap:10px;border-left:4px solid var(--al,var(--ac));margin-bottom:8px}
+.al-ico{font-size:17px;flex-shrink:0;margin-top:1px}
+.al-bd{flex:1;min-width:0}
+.al-ttl{font-size:13px;font-weight:600;line-height:1.3}
+.al-desc{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.5}
+.al-meta{display:flex;gap:5px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.al-meta span{font-size:10px;color:var(--txt3)}
+
+/* ── CMD ── */
+.cmd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cmd{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .15s;text-align:center;font-family:'Barlow',sans-serif}
+.cmd:hover{border-color:var(--ac);background:var(--ac-bg);transform:translateY(-1px)}
+.cmd:active{transform:scale(.97)}
+.cmd-ico{font-size:20px}
+.cmd-lbl{font-size:11px;font-weight:600;color:var(--txt);line-height:1.3}
+
+/* ── COMPROMISOS ── */
+.comp{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.comp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.comp-bd{flex:1;min-width:0}
+.comp-ttl{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.comp-meta{display:flex;gap:5px;align-items:center;margin-top:3px}
+.comp-resp{background:var(--gris);border:1px solid var(--borde);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:600;color:var(--txt2)}
+.comp-fec{font-size:11px;font-weight:700;flex-shrink:0}
+
+/* ── PRESUPUESTO ── */
+.pres-row{padding:11px 14px;border-bottom:1px solid var(--borde)}
+.pres-row:last-child{border-bottom:none}
+.pres-row:hover{background:var(--gris);cursor:pointer}
+.pres-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.pres-nombre{font-size:13px;font-weight:600}
+.pres-pct{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700}
+.pbar{height:5px;background:var(--borde);border-radius:3px;overflow:hidden}
+.pbar-f{height:100%;border-radius:3px}
+.pres-montos{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-top:4px}
+.pres-montos strong{color:var(--txt2)}
+
+/* ── NORMATIVO ── */
+.plazo{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;gap:10px;border-left:4px solid var(--pl,var(--ac));margin-bottom:8px}
+
+/* ════════════════════════════════════════════════════════════
+   MÓDULO DE COMUNICACIÓN DIRIGIDA — el corazón del cambio
+   ════════════════════════════════════════════════════════════ */
+
+/* Paso 1 — Destinatarios */
+.dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(min-width:640px){.dest-grid{grid-template-columns:repeat(6,1fr)}}
+.dest-card{background:var(--card);border:1.5px solid var(--borde);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .18s;font-family:'Barlow',sans-serif}
+.dest-card:hover{border-color:var(--txt3);transform:translateY(-1px)}
+.dest-card.sel{border-color:var(--ac);background:var(--ac-bg)}
+.dest-card.sel-azul{border-color:var(--azul);background:var(--azul-bg)}
+.dest-card.sel-teal{border-color:var(--teal);background:var(--teal-bg)}
+.dest-ico{font-size:22px;display:block;margin-bottom:5px}
+.dest-nombre{font-size:11px;font-weight:700;color:var(--txt);line-height:1.2}
+.dest-cargo{font-size:9px;color:var(--txt3);margin-top:2px;line-height:1.3}
+.dest-pend{font-size:9px;font-weight:700;color:var(--ac);margin-top:3px}
+
+/* Paso 2 — Tipos de mensaje */
+.tipo-panel{animation:fadeIn .2s ease both}
+.tipo-grid{display:flex;flex-direction:column;gap:7px}
+.tipo-btn{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--borde);background:var(--card);cursor:pointer;text-align:left;font-family:'Barlow',sans-serif;transition:all .15s}
+.tipo-btn:hover{border-color:var(--txt3);background:var(--gris)}
+.tipo-btn.sel{background:var(--ac-bg);border-color:var(--ac)}
+.tipo-btn.sel-azul{background:var(--azul-bg);border-color:var(--azul)}
+.tipo-btn.sel-oro{background:var(--oro-bg);border-color:var(--oro)}
+.tipo-btn.sel-verde{background:var(--verde-bg);border-color:var(--verde)}
+.tipo-btn.sel-teal{background:var(--teal-bg);border-color:var(--teal)}
+.tipo-ico{font-size:20px;flex-shrink:0;margin-top:1px}
+.tipo-info{}
+.tipo-nombre{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.tipo-desc{font-size:11px;color:var(--txt2);line-height:1.5}
+.tipo-tag{font-size:9px;font-weight:700;margin-top:4px;padding:2px 7px;border-radius:8px;display:inline-block;text-transform:uppercase;letter-spacing:.3px}
+
+/* Paso 3 — Composición */
+.comp-panel{animation:fadeIn .2s ease both}
+.msg-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--gris);border-radius:10px;margin-bottom:10px}
+.msg-header-ico{font-size:18px}
+.msg-header-ttl{font-size:13px;font-weight:600;color:var(--txt)}
+.msg-header-sub{font-size:11px;color:var(--txt3);margin-top:1px}
+.msg-to{font-size:12px;color:var(--txt2);margin-bottom:8px;padding:7px 10px;background:var(--gris);border-radius:8px;display:flex;align-items:center;gap:6px}
+.msg-to strong{color:var(--txt)}
+.msg-ta{width:100%;border:1.5px solid var(--borde);border-radius:9px;padding:10px 12px;font-size:13px;font-family:'Barlow',sans-serif;resize:none;outline:none;color:var(--txt);background:#fff;line-height:1.6;transition:border-color .15s}
+.msg-ta:focus{border-color:var(--ac)}
+.msg-send-row{display:flex;gap:8px;margin-top:8px}
+.msg-send{flex:1;padding:11px;background:var(--ac);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s}
+.msg-send:hover{background:var(--ac-d)}
+.msg-back{padding:11px 14px;background:var(--gris);border:1px solid var(--borde);border-radius:9px;font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif;color:var(--txt2)}
+.msg-back:hover{background:var(--borde)}
+.msg-sent{background:var(--verde-bg);border:1px solid rgba(26,122,69,.2);border-radius:9px;padding:12px 14px;font-size:13px;font-weight:600;color:var(--verde);display:none;align-items:center;gap:8px}
+.msg-sent.show{display:flex}
+.msg-sent-ico{font-size:18px}
+
+/* Coord: selección múltiple áreas */
+.areas-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.area-chk{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1.5px solid var(--borde);border-radius:8px;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif}
+.area-chk.checked{border-color:var(--azul);background:var(--azul-bg)}
+.area-chk-ico{font-size:14px}
+.area-chk-n{font-size:12px;font-weight:600;color:var(--txt)}
+.area-chk-box{margin-left:auto;width:16px;height:16px;border-radius:4px;border:2px solid var(--borde);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all .15s}
+.area-chk.checked .area-chk-box{background:var(--azul);border-color:var(--azul);color:#fff}
+
+/* Historial de enviadas */
+.sent-item{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start;margin-bottom:7px;border-left:4px solid var(--si,var(--ac))}
+.sent-to{font-size:10px;font-weight:600;color:var(--txt3);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.sent-txt{font-size:12px;color:var(--txt2);line-height:1.5}
+.sent-meta{display:flex;gap:5px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.sent-hora{font-size:10px;color:var(--txt3)}
+.sent-estado{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;text-transform:uppercase}
+.est-leida{background:var(--verde-bg);color:var(--verde)}
+.est-pend{background:var(--ac-bg);color:var(--ac)}
+
+/* Chat GM 1:1 */
+.chat-box{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:2px 0}
+.ch-msg{display:flex;gap:7px;align-items:flex-start}
+.ch-msg.out{flex-direction:row-reverse}
+.ch-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.ch-bub{max-width:78%;padding:8px 11px;border-radius:12px;font-size:12px;line-height:1.55}
+.ch-msg:not(.out) .ch-bub{background:var(--gris);border-bottom-left-radius:4px;color:var(--txt)}
+.ch-msg.out .ch-bub{background:var(--ac);color:#fff;border-bottom-right-radius:4px}
+.ch-time{font-size:10px;color:var(--txt3);margin-top:2px}
+.ch-msg.out .ch-time{text-align:right}
+.chat-inp-row{display:flex;gap:7px;padding-top:9px;border-top:1px solid var(--borde);margin-top:8px}
+.ch-inp{flex:1;border:1.5px solid var(--borde);border-radius:20px;padding:8px 13px;font-size:13px;font-family:'Barlow',sans-serif;outline:none;color:var(--txt);background:var(--gris)}
+.ch-inp:focus{border-color:var(--ac);background:#fff}
+.ch-send{width:34px;height:34px;border-radius:50%;background:var(--ac);border:none;cursor:pointer;color:#fff;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+
+/* ── FORM ── */
+.form-row{margin-bottom:10px}
+.form-lbl{display:block;font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.form-inp{width:100%;border:1px solid var(--borde);border-radius:8px;padding:8px 11px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--txt);background:#fff;outline:none}
+.form-inp:focus{border-color:var(--ac)}
+.form-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-btn{width:100%;padding:10px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
+
+
+/* ── BOTÓN VOLVER AL MENÚ (solo mobile) ── */
+.tb-back{display:none;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:var(--txt2);white-space:nowrap;flex-shrink:0}
+.tb-back:active{background:var(--gris)}
+.tb-back-ico{font-size:14px}
+@media(max-width:680px){
+  .tb-back{display:flex}
+  .tb-date{display:none}
+}
+
+@media(max-width:680px){.sb{display:none}.form-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="loading" style="height:100vh;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8A90A0">Verificando acceso...</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+/* ══ CONFIG ══════════════════════════════════════════ */
+const SUPABASE_URL = 'TU_SUPABASE_URL';
+const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
+const CONFIGURED = !SUPABASE_URL.startsWith('TU_');
+const ROL_PAGES = {alcalde:'alcalde.html',secretaria:'secretaria.html',gerente_municipal:'gm.html',gerente_sectorial:'gerente.html'};
+let sb = null, USER = null;
+
+/* ══ MOCK DATA ═══════════════════════════════════════ */
+const ALERTAS = [
+  {ico:'🚨',ttl:'Obra Jr. Lima paralizada · 26 días',desc:'Sin avance desde el 24 oct. Riesgo de penalidad. S/480K en riesgo.',area:'Infraestructura',hace:'hace 1h',niv:'critica'},
+  {ico:'⏰',ttl:'Plazo MEF vence en 18 días',desc:'Devengado 4to trimestre: S/1.2M sin ejecutar en Planeamiento.',area:'Planeamiento',hace:'hace 3h',niv:'alerta'},
+  {ico:'⚠️',ttl:'5 compromisos vencidos sin respuesta',desc:'Rentas (2), Servicios (2), Desarrollo Social (1). El más antiguo: 22 días.',area:'GM',hace:'ayer',niv:'alerta'},
+  {ico:'📋',ttl:'3 documentos esperan tu firma',desc:'Resolución N°421, Convenio UNC, Contrato limpieza.',area:'Secretaría',hace:'hoy 08:00',niv:'info'},
+];
+const COMPROMISOS = [
+  {ttl:'Gestionar agua potable sector Los Pinos',resp:'Servicios',fec:'22 Nov',ven:true},
+  {ttl:'Instalar alumbrado plaza Las Torrecitas',resp:'Infraestructura',fec:'25 Nov',ven:true},
+  {ttl:'Responder pedido regidor Mamani',resp:'GM',fec:'28 Nov',ven:false},
+  {ttl:'Informe de cierre al concejo',resp:'Planeamiento',fec:'05 Dic',ven:false},
+];
+const PRESUPUESTO = [
+  {nombre:'Infraestructura y Obras',asig:4850000,ejec:3421000,pct:71,col:'#1A7A45'},
+  {nombre:'Desarrollo Social',asig:1200000,ejec:940000,pct:78,col:'#1A7A45'},
+  {nombre:'Rentas y Tributación',asig:380000,ejec:155000,pct:41,col:'#B02020'},
+  {nombre:'Servicios Municipales',asig:920000,ejec:512000,pct:56,col:'#C8880A'},
+  {nombre:'Secretaría General',asig:290000,ejec:198000,pct:68,col:'#1A7A45'},
+  {nombre:'Planeamiento',asig:185000,ejec:72000,pct:39,col:'#B02020'},
+];
+
+const fmt = n => n>=1000000?'S/'+(n/1000000).toFixed(1)+'M':n>=1000?'S/'+(n/1000).toFixed(0)+'K':'S/'+n;
+const pctC = p => p>=70?'#1A7A45':p>=50?'#C8880A':'#B02020';
+const hoy = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
+const mk = (t,c) => { const e=document.createElement(t); if(c)e.className=c; return e; };
+let vista = 'mando';
+
+/* ══ DESTINATARIOS DISPONIBLES ═══════════════════════ */
+const DESTINATARIOS = [
+  {id:'gm',      ico:'🏛', nombre:'Gte. Municipal', cargo:'Carlos Vásquez D.',   pendientes:2, color:'var(--azul)'},
+  {id:'infra',   ico:'🏗', nombre:'Infraestructura',cargo:'Ing. Ana Quispe',      pendientes:1, color:'var(--teal)'},
+  {id:'rentas',  ico:'💰', nombre:'Rentas',          cargo:'Cont. C. Herrera',    pendientes:2, color:'#185FA5'},
+  {id:'servicios',ico:'♻️',nombre:'Servicios',       cargo:'Lic. Rosa Castro',    pendientes:0, color:'#5C3E8F'},
+  {id:'social',  ico:'🤝', nombre:'Des. Social',     cargo:'Lic. Marco Torres',   pendientes:1, color:'#B5540A'},
+  {id:'secretaria',ico:'📋',nombre:'Secretaria',     cargo:'Carmen Flores R.',    pendientes:0, color:'#C8880A'},
+  {id:'todos',   ico:'📣', nombre:'Difusión general',cargo:'Todos los gerentes',  pendientes:0, color:'var(--txt3)'},
+  {id:'coord',   ico:'🔗', nombre:'Coordinación',    cargo:'Varios a elegir',     pendientes:0, color:'var(--azul)'},
+];
+
+/* Tipos de mensaje por destinatario */
+const TIPOS_MSG = {
+  gm: [
+    {id:'instruccion',ico:'📢',nombre:'Instrucción directa',desc:'El GM deberá confirmar lectura obligatoriamente. Si no responde en 3h, alerta automática.',tag:'Acuse obligatorio',tagCls:'p-r',btnCls:'sel'},
+    {id:'consulta',   ico:'❓',nombre:'Consulta directa',   desc:'Pregunta que requiere respuesta del GM. El alcalde verá la respuesta en su panel.',tag:'Espera respuesta',tagCls:'p-b',btnCls:'sel-azul'},
+    {id:'chat',       ico:'💬',nombre:'Chat privado 1:1',   desc:'Conversación libre y directa solo entre el alcalde y el Gerente Municipal.',tag:'Solo entre ambos',tagCls:'p-t',btnCls:'sel-teal'},
+  ],
+  default: [
+    {id:'instruccion',ico:'📢',nombre:'Instrucción directa',desc:'El destinatario deberá confirmar lectura. Si no responde en 3h, alerta automática.',tag:'Acuse obligatorio',tagCls:'p-r',btnCls:'sel'},
+    {id:'consulta',   ico:'❓',nombre:'Consulta directa',   desc:'Pregunta que requiere respuesta. El alcalde verá la respuesta en su panel cuando llegue.',tag:'Espera respuesta',tagCls:'p-b',btnCls:'sel-azul'},
+  ],
+  todos: [
+    {id:'difusion',ico:'📣',nombre:'Difusión general',desc:'Aviso institucional a todas las gerencias. No requiere respuesta. Solo el GM puede acusar recepción en nombre del equipo.',tag:'Sin respuesta esperada',tagCls:'p-a',btnCls:'sel-oro'},
+  ],
+  coord: [
+    {id:'coordinacion',ico:'🔗',nombre:'Coordinación multi-área',desc:'Asunto que involucra a varias gerencias. Solo los seleccionados verán el hilo. El GM también queda notificado.',tag:'Privado — solo involucrados',tagCls:'p-b',btnCls:'sel-teal'},
+  ],
+};
+
+const PLACEHOLDER = {
+  instruccion:'Ej: Necesito el informe de recaudación de octubre antes de las 3pm de hoy.',
+  consulta:   'Ej: ¿Cuál es el estado actual de la obra Jr. Lima? ¿Por qué lleva 26 días sin avance?',
+  chat:       'Escribe libremente...',
+  difusion:   'Ej: Mañana a las 9am hay visita de la Contraloría. Todos deben tener sus documentos al día.',
+  coordinacion:'Describe el asunto que requiere coordinación entre las áreas seleccionadas...',
+};
+
+const CONFIRMACION = {
+  instruccion:  txt => `✓ Instrucción enviada. El destinatario debe confirmar lectura. Si no lo hace en 3 horas recibirás una alerta automática.`,
+  consulta:     txt => `✓ Consulta enviada. Recibirás la respuesta en tu panel de instrucciones.`,
+  chat:         txt => `✓ Mensaje enviado al Gerente Municipal.`,
+  difusion:     txt => `✓ Difusión enviada a todos los gerentes. El GM acusará recepción.`,
+  coordinacion: txt => `✓ Coordinación creada. Las gerencias seleccionadas recibieron notificación. El GM también fue informado.`,
+};
+
+/* Historial mock de mensajes enviados */
+let historial = [
+  {tipo:'instruccion',a:'Gerente Municipal',txt:'Convocar urgente al contratista de Jr. Lima para mañana 9am. Si no confirma antes de las 5pm, iniciamos resolución de contrato.',hora:'09:15',leida:false,color:'var(--ac)'},
+  {tipo:'consulta',   a:'Planeamiento',     txt:'¿Cuánto saldo sin ejecutar queda en Planeamiento y qué plan hay para devengarlo antes del 15 dic?',hora:'Ayer 16:40',leida:true,color:'var(--azul)'},
+  {tipo:'difusion',   a:'Todos',            txt:'Recordatorio: el jueves hay sesión ordinaria de concejo. Todos los gerentes deben enviar sus informes de avance al GM antes del miércoles al mediodía.',hora:'Hace 2d',leida:true,color:'var(--oro)'},
+];
+
+let chatGM = [
+  {av:'GM',bg:'#185FA5',txt:'Alcalde, el contratista de Jr. Lima está citado para las 9am de mañana.',h:'09:42',out:false},
+  {av:'RS',bg:'#B02020',txt:'Sí. Necesito el expediente técnico antes de la reunión.',h:'09:51',out:true},
+  {av:'GM',bg:'#185FA5',txt:'Voy a pedírselo a Infraestructura ahora mismo.',h:'09:54',out:false},
+];
+
+/* ══ NAVEGACIÓN ══════════════════════════════════════ */
+const NAV = [
+  {sec:'Principal',items:[
+    {id:'mando',    ico:'🎯',lbl:'Sala de mando',b:3},
+    {id:'accion',   ico:'⚡',lbl:'Acción rápida',b:null},
+    {id:'compromis',ico:'🤝',lbl:'Compromisos',b:2},
+  ]},
+  {sec:'Control',items:[
+    {id:'presupuesto',ico:'💰',lbl:'Presupuesto'},
+    {id:'normativo',  ico:'⚖️',lbl:'Semáforo normativo',b:2},
+  ]},
+  {sec:'Comunicación',items:[
+    {id:'comunicar',ico:'📢',lbl:'Comunicar / Instruir',b:null},
+    {id:'historial', ico:'📥',lbl:'Mensajes enviados',b:null},
+    {id:'chat-gm',   ico:'💬',lbl:'Chat con GM',b:1},
+    {id:'reporte',   ico:'🤖',lbl:'Reporte IA'},
+  ]},
+];
+const TITULOS = {
+  mando:'Sala de mando',accion:'Acciones de mando',compromis:'Compromisos',
+  presupuesto:'Ejecución presupuestal',normativo:'Semáforo normativo',
+  comunicar:'Comunicar / Instruir',historial:'Mensajes enviados',
+  'chat-gm':'Chat con el Gerente Municipal',reporte:'Reporte IA',
+};
+
+function nav(v){ vista=v; render(); }
+
+/* ══ INIT ════════════════════════════════════════════ */
+
+/* ══ LEER CONFIGURACIÓN DE LA MUNICIPALIDAD ══════════ */
+function loadConfig() {
+  try {
+    const raw = sessionStorage.getItem('kausay_config') || localStorage.getItem('kausay_config');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+function applyConfig(cfg) {
+  if (!cfg) return;
+  // Actualizar nombre municipalidad en sidebar
+  document.querySelectorAll('.sb-muni').forEach(el => { el.textContent = cfg.muni_nombre || el.textContent; });
+}
+
+async function init(){
+  const demoRol = sessionStorage.getItem('kausay_demo_rol');
+  if(demoRol && demoRol !== 'alcalde'){ window.location.href = ROL_PAGES[demoRol]; return; }
+  if(demoRol === 'alcalde'){
+    USER = {nombre: sessionStorage.getItem('kausay_demo_nombre')||'Roberto Sánchez Q.', iniciales:'RS', demo:true};
+  } else if(CONFIGURED){
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const {data:{session}} = await sb.auth.getSession();
+    if(!session){ window.location.href='login.html'; return; }
+    const {data:u} = await sb.from('usuarios').select('*').eq('id',session.user.id).single();
+    if(!u||u.rol!=='alcalde'){ window.location.href=ROL_PAGES[u?.rol]||'login.html'; return; }
+    USER = {...u, iniciales:u.nombre.split(' ').slice(0,2).map(p=>p[0]).join('')};
+  } else {
+    USER = {nombre:'Alcalde (demo)', iniciales:'AL', demo:true};
+  }
+  document.getElementById('loading').remove();
+  renderApp();
+}
+
+function logout(){
+  sessionStorage.removeItem('kausay_demo_rol'); sessionStorage.removeItem('kausay_demo_nombre');
+  if(sb) sb.auth.signOut();
+  window.location.href='login.html';
+}
+
+/* ══ RENDER APP ══════════════════════════════════════ */
+function renderApp(){
+  document.body.innerHTML='';
+  const layout = mk('div','layout');
+  const sbEl = mk('div','sb');
+  sbEl.innerHTML=`
+    <div class="sb-logo"><div class="sb-brand">Kausay<em>Alcalde</em></div><div class="sb-tag">Centro de mando</div></div>
+    <div class="sb-muni">Municipalidad Provincial de Cajamarca</div>
+    <div class="sb-nav" id="sb-nav"></div>
+    <div class="sb-ft">
+      <div class="sb-av">${USER.iniciales}</div>
+      <div><div class="sb-un">${USER.nombre}</div><div class="sb-ur">Alcalde Provincial · 2023–2026</div></div>
+      <button class="sb-logout" onclick="logout()">Salir</button>
+    </div>`;
+  layout.appendChild(sbEl);
+  const main = mk('div','main');
+  main.innerHTML=`
+    <div class="tb">
+      <button class="tb-back" id="tb-back" onclick="nav('mando')" style="display:none">← Menú</button><div class="tb-ttl" id="tb-ttl"></div>
+      <div class="tb-date">${hoy}</div>
+      <div class="rt" id="tb-rt"><span class="rt-dot"></span>En vivo</div>
+      <button class="tb-btn">🔔<span class="tb-dot"></span></button>
+    </div>`;
+  const c = mk('div','content'); c.id='content';
+  main.appendChild(c); layout.appendChild(main);
+  document.body.appendChild(layout);
+  render();
+}
+
+function render(){
+  const nav2 = document.getElementById('sb-nav');
+  if(nav2){
+    nav2.innerHTML='';
+    NAV.forEach(sec=>{
+      const sl=mk('div','sb-sec'); sl.textContent=sec.sec; nav2.appendChild(sl);
+      sec.items.forEach(it=>{
+        const item=mk('div','sb-it'+(vista===it.id?' on':''));
+        if(vista===it.id) item.style.borderLeftColor='var(--ac)';
+        item.innerHTML=`<span class="sb-ico">${it.ico}</span><span style="flex:1">${it.lbl}</span>${it.b?`<span class="sb-badge">${it.b}</span>`:''}`;
+        item.onclick=()=>nav(it.id); nav2.appendChild(item);
+      });
+    });
+  }
+  const ttl=document.getElementById('tb-ttl'); if(ttl) ttl.textContent=TITULOS[vista]||vista;
+  const tbBack=document.getElementById('tb-back');
+  if(tbBack) tbBack.style.display = (vista!=='mando') ? 'flex' : 'none';
+  const c=document.getElementById('content'); if(!c) return; c.innerHTML='';
+
+  const views = {
+    mando:vMando, accion:vAccion, compromis:vCompromisos,
+    presupuesto:vPresupuesto, normativo:vNormativo,
+    comunicar:vComunicar, historial:vHistorial, 'chat-gm':vChatGM, reporte:vReporte,
+  };
+  if(views[vista]) views[vista](c);
+}
+
+/* ══ SALA DE MANDO ═══════════════════════════════════ */
+function vMando(c){
+  // KPIs
+  const kpis=[
+    {l:'Ejecución presupuestal',v:'67',u:'%',d:'▲ +4.2% vs mes anterior',t:'up',kc:'#1A7A45',i:'💰'},
+    {l:'Obras en ejecución',v:'18',u:'',d:'3 con riesgo de retraso',t:'wn',kc:'var(--oro)',i:'🏗'},
+    {l:'Compromisos vencidos',v:'5',u:'',d:'2 sin respuesta +15d',t:'dn',kc:'var(--ac)',i:'⚠️'},
+    {l:'Días al plazo MEF',v:'18',u:'',d:'Devengado 4to trimestre',t:'dn',kc:'var(--ac)',i:'📅'},
+  ];
+  const kSec=mk('div','');
+  kSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Estado del municipio</span><span class="rt"><span class="rt-dot"></span>Tiempo real</span></div>';
+  const grid=mk('div','kpi-grid');
+  kpis.forEach(k=>{
+    const kpi=mk('div','kpi'); kpi.style.setProperty('--kc',k.kc);
+    kpi.innerHTML=`<div class="kpi-l">${k.l}</div><div class="kpi-v">${k.v}<small>${k.u}</small></div><div class="kpi-d ${k.t}">${k.d}</div><span class="kpi-ico">${k.i}</span>`;
+    grid.appendChild(kpi);
+  });
+  kSec.appendChild(grid); c.appendChild(kSec);
+
+  // Briefing IA
+  const brSec=mk('div','');
+  brSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Briefing de hoy · IA</span><span class="sec-sub">Generado 06:00 am</span></div>';
+  const br=mk('div','briefing');
+  br.innerHTML=`<div class="br-hd"><div class="br-ico">🤖</div><div><div class="br-ttl">Análisis ejecutivo · ${hoy}</div><div class="br-sub">Claude · Municipalidad Provincial de Cajamarca</div></div></div>
+  <div class="br-body">Tienes <span class="br-hl">3 asuntos críticos</span> hoy. Primero: reunión con el contratista de <span class="br-hl">Jr. Lima</span> donde debes decidir si continúa o inicias resolución. Segundo: el plazo del <span class="br-hl">MEF vence en 18 días</span> con S/1.2M sin devengar en Planeamiento. Tercero: la <span class="br-hl">sesión de concejo a las 3pm</span> — el regidor Mamani preguntará por vías.</div>
+  <div class="br-acts">
+    <button class="br-btn br-p" onclick="nav('normativo')">Ver semáforo normativo</button>
+    <button class="br-btn br-s" onclick="nav('comunicar')">Emitir instrucción</button>
+    <button class="br-btn br-s">Descargar PDF</button>
+  </div>`;
+  brSec.appendChild(br); c.appendChild(brSec);
+
+  // Acciones de mando rápidas
+  const acSec=mk('div','');
+  acSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Acciones de mando</span></div>';
+  const cmdGrid=mk('div','cmd-grid');
+  [
+    {ico:'📢',lbl:'Emitir instrucción',fn:'comunicar'},
+    {ico:'🤝',lbl:'Registrar compromiso',fn:'compromis'},
+    {ico:'✅',lbl:'Aprobar documentos',fn:null},
+    {ico:'⚡',lbl:'Responder alerta',fn:null},
+    {ico:'💬',lbl:'Chat con GM',fn:'chat-gm'},
+    {ico:'🤖',lbl:'Reporte IA',fn:'reporte'},
+  ].forEach(b=>{
+    const btn=mk('div','cmd');
+    btn.innerHTML=`<span class="cmd-ico">${b.ico}</span><span class="cmd-lbl">${b.lbl}</span>`;
+    btn.onclick=()=>{if(b.fn)nav(b.fn);}; cmdGrid.appendChild(btn);
+  });
+  acSec.appendChild(cmdGrid); c.appendChild(acSec);
+
+  // Alertas
+  const alSec=mk('div','');
+  alSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Alertas activas</span><span class="sec-sub">Ver todas →</span></div>';
+  ALERTAS.forEach(a=>{
+    const cols={critica:'var(--ac)',alerta:'var(--oro)',info:'var(--azul)'};
+    const el=mk('div','alerta'); el.style.setProperty('--al',cols[a.niv]);
+    el.innerHTML=`<span class="al-ico">${a.ico}</span><div class="al-bd"><div class="al-ttl">${a.ttl}</div><div class="al-desc">${a.desc}</div><div class="al-meta"><span class="pill ${a.niv==='critica'?'p-r':a.niv==='alerta'?'p-a':'p-b'}">${a.niv==='critica'?'Crítica':a.niv==='alerta'?'Alerta':'Info'}</span><span>${a.area}</span><span>· ${a.hace}</span></div></div>`;
+    alSec.appendChild(el);
+  });
+  c.appendChild(alSec);
+}
+
+/* ══ ACCIÓN RÁPIDA ═══════════════════════════════════ */
+function vAccion(c){
+  c.innerHTML='<div class="sec-hd"><span class="sec-ttl">Acciones de mando</span></div>';
+  const cmdGrid=mk('div','cmd-grid');
+  [
+    {ico:'📢',lbl:'Emitir instrucción',fn:'comunicar'},
+    {ico:'🤝',lbl:'Registrar compromiso',fn:'compromis'},
+    {ico:'✅',lbl:'Aprobar documentos',fn:null},
+    {ico:'🎙️',lbl:'Nota de voz',fn:null},
+    {ico:'⚡',lbl:'Responder alerta',fn:null},
+    {ico:'💬',lbl:'Chat con GM',fn:'chat-gm'},
+  ].forEach(b=>{
+    const btn=mk('div','cmd');
+    btn.innerHTML=`<span class="cmd-ico">${b.ico}</span><span class="cmd-lbl">${b.lbl}</span>`;
+    btn.onclick=()=>{if(b.fn)nav(b.fn);}; cmdGrid.appendChild(btn);
+  });
+  c.appendChild(cmdGrid);
+}
+
+/* ══ ★ MÓDULO COMUNICAR — NUEVO ★ ════════════════════ */
+function vComunicar(c){
+  // Estado interno del módulo
+  let destActivo = null;
+  let tipoActivo = null;
+  let areasCoord = new Set(['gm']); // GM siempre en coord
+
+  /* ── PASO 1: Destinatario ── */
+  const paso1 = mk('div','');
+  paso1.innerHTML='<div class="sec-hd"><span class="sec-ttl">1 · ¿A quién va dirigido?</span></div>';
+  const destGrid = mk('div','dest-grid');
+  DESTINATARIOS.forEach(dest=>{
+    const card = mk('div','dest-card');
+    card.innerHTML=`<span class="dest-ico">${dest.ico}</span><div class="dest-nombre">${dest.nombre}</div><div class="dest-cargo">${dest.cargo}</div>${dest.pendientes?`<div class="dest-pend">⚠ ${dest.pendientes} pendiente${dest.pendientes>1?'s':''}</div>`:''}`;
+    card.onclick=()=>{
+      destActivo = dest.id;
+      destGrid.querySelectorAll('.dest-card').forEach(x=>x.className='dest-card');
+      card.classList.add(dest.id==='todos'||dest.id==='coord'?'sel-azul':'sel');
+      tipoActivo = null;
+      renderPaso2();
+      paso3.style.display='none';
+      sent.classList.remove('show');
+    };
+    destGrid.appendChild(card);
+  });
+  paso1.appendChild(destGrid); c.appendChild(paso1);
+
+  /* ── PASO 2: Tipo de mensaje ── */
+  const paso2 = mk('div',''); paso2.style.display='none';
+  paso2.innerHTML='<div class="sec-hd" style="margin-top:4px"><span class="sec-ttl">2 · ¿Qué tipo de mensaje?</span></div>';
+  const tipoGrid = mk('div','tipo-grid'); paso2.appendChild(tipoGrid);
+  c.appendChild(paso2);
+
+  function renderPaso2(){
+    const tipos = TIPOS_MSG[destActivo] || TIPOS_MSG.default;
+    tipoGrid.innerHTML='';
+    tipos.forEach(tipo=>{
+      const btn = mk('button','tipo-btn');
+      btn.innerHTML=`<span class="tipo-ico">${tipo.ico}</span><div class="tipo-info"><div class="tipo-nombre">${tipo.nombre}</div><div class="tipo-desc">${tipo.desc}</div><span class="tipo-tag ${tipo.tagCls}">${tipo.tag}</span></div>`;
+      btn.onclick=()=>{
+        tipoActivo = tipo.id;
+        tipoGrid.querySelectorAll('.tipo-btn').forEach(x=>x.className='tipo-btn');
+        btn.classList.add(tipo.btnCls);
+        renderPaso3();
+      };
+      tipoGrid.appendChild(btn);
+    });
+    paso2.style.display='block';
+    paso2.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  /* ── PASO 3: Composición ── */
+  const paso3 = mk('div','comp-panel'); paso3.style.display='none';
+  paso3.innerHTML='<div class="sec-hd" style="margin-top:4px"><span class="sec-ttl">3 · Escribe el mensaje</span></div>';
+  const msgContent = mk('div',''); paso3.appendChild(msgContent);
+  c.appendChild(paso3);
+
+  /* Confirmación de envío */
+  const sent = mk('div','msg-sent');
+  sent.innerHTML='<span class="msg-sent-ico">✓</span><span id="sent-txt"></span>';
+  c.appendChild(sent);
+
+  function renderPaso3(){
+    msgContent.innerHTML='';
+    const dest = DESTINATARIOS.find(d=>d.id===destActivo);
+    const tipo = (TIPOS_MSG[destActivo]||TIPOS_MSG.default).find(t=>t.id===tipoActivo);
+
+    // Header contextual
+    const header = mk('div','msg-header');
+    header.innerHTML=`<span class="msg-header-ico">${tipo?.ico||'📢'}</span><div><div class="msg-header-ttl">${tipo?.nombre||''}</div><div class="msg-header-sub">${tipo?.desc||''}</div></div>`;
+    msgContent.appendChild(header);
+
+    // Para: (con selección múltiple si es coordinación)
+    if(tipoActivo === 'coordinacion'){
+      const cLbl = mk('div','form-lbl'); cLbl.textContent='Áreas involucradas (el GM siempre queda incluido):';
+      cLbl.style.marginBottom='6px'; msgContent.appendChild(cLbl);
+      const aGrid = mk('div','areas-grid');
+      DESTINATARIOS.filter(d=>!['todos','coord','secretaria'].includes(d.id)).forEach(d=>{
+        const isGM = d.id==='gm';
+        const chk = mk('div','area-chk'+(areasCoord.has(d.id)?' checked':''));
+        chk.innerHTML=`<span class="area-chk-ico">${d.ico}</span><span class="area-chk-n">${d.nombre}</span><span class="area-chk-box">${areasCoord.has(d.id)?'✓':''}</span>`;
+        if(!isGM){
+          chk.onclick=()=>{
+            if(areasCoord.has(d.id)) areasCoord.delete(d.id);
+            else areasCoord.add(d.id);
+            chk.classList.toggle('checked', areasCoord.has(d.id));
+            chk.querySelector('.area-chk-box').textContent = areasCoord.has(d.id)?'✓':'';
+          };
+        } else {
+          chk.style.opacity='.6'; chk.style.cursor='default';
+        }
+        aGrid.appendChild(chk);
+      });
+      msgContent.appendChild(aGrid);
+    } else {
+      const toDiv = mk('div','msg-to');
+      toDiv.innerHTML=`<span>${dest?.ico||'👤'}</span><span>Para: <strong>${dest?.nombre||''}</strong> — ${dest?.cargo||''}</span>`;
+      msgContent.appendChild(toDiv);
+    }
+
+    // Textarea
+    const ta = mk('textarea','msg-ta'); ta.rows=4;
+    ta.placeholder = PLACEHOLDER[tipoActivo] || 'Escribe tu mensaje...';
+    msgContent.appendChild(ta);
+
+    // Acuse chip
+    if(tipoActivo==='instruccion'){
+      const chip=mk('div','');
+      chip.style.cssText='font-size:11px;color:var(--ac);font-weight:600;margin-top:6px;display:flex;align-items:center;gap:5px';
+      chip.innerHTML='🔒 El destinatario deberá confirmar lectura. Alerta si no responde en 3h.';
+      msgContent.appendChild(chip);
+    }
+
+    // Botones
+    const sendRow = mk('div','msg-send-row');
+    const sendBtn = mk('button','msg-send');
+    sendBtn.innerHTML=`<span>${tipoActivo==='instruccion'?'📢':tipoActivo==='consulta'?'❓':tipoActivo==='difusion'?'📣':tipoActivo==='coordinacion'?'🔗':'💬'}</span><span>${tipoActivo==='instruccion'?'Enviar instrucción con acuse':tipoActivo==='consulta'?'Enviar consulta':tipoActivo==='difusion'?'Enviar difusión general':tipoActivo==='coordinacion'?'Crear coordinación':'Enviar mensaje'}</span>`;
+    const backBtn = mk('button','msg-back'); backBtn.textContent='← Cambiar';
+    backBtn.onclick=()=>{ tipoActivo=null; paso3.style.display='none'; sent.classList.remove('show'); };
+
+    sendBtn.onclick=()=>{
+      if(!ta.value.trim()) return;
+      const destInfo = DESTINATARIOS.find(d=>d.id===destActivo);
+      historial.unshift({
+        tipo:tipoActivo,
+        a: tipoActivo==='coordinacion'?'Coordinación multi-área':tipoActivo==='difusion'?'Todos':destInfo?.nombre||'',
+        txt:ta.value, hora:'Ahora', leida:false,
+        color:tipoActivo==='instruccion'?'var(--ac)':tipoActivo==='consulta'?'var(--azul)':tipoActivo==='difusion'?'var(--oro)':'var(--teal)',
+      });
+      document.getElementById('sent-txt').textContent = CONFIRMACION[tipoActivo]?.(ta.value) || '✓ Enviado.';
+      sent.classList.add('show'); ta.value='';
+      paso3.style.display='none'; paso2.style.display='none';
+      destGrid.querySelectorAll('.dest-card').forEach(x=>x.className='dest-card');
+      destActivo=null; tipoActivo=null; areasCoord=new Set(['gm']);
+      setTimeout(()=>sent.classList.remove('show'), 5000);
+    };
+
+    sendRow.appendChild(backBtn); sendRow.appendChild(sendBtn);
+    msgContent.appendChild(sendRow);
+    paso3.style.display='block';
+    ta.focus();
+    paso3.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+}
+
+/* ══ HISTORIAL DE MENSAJES ENVIADOS ══════════════════ */
+function vHistorial(c){
+  const hd=mk('div','sec-hd');
+  hd.innerHTML=`<span class="sec-ttl">Mensajes enviados</span><span class="sec-sub">${historial.length} total</span>`;
+  c.appendChild(hd);
+
+  if(!historial.length){
+    const e=mk('div',''); e.style.cssText='text-align:center;padding:32px;color:var(--txt3);font-size:13px';
+    e.textContent='No has enviado mensajes aún.'; c.appendChild(e); return;
+  }
+
+  const tipoCols={instruccion:'var(--ac)',consulta:'var(--azul)',difusion:'var(--oro)',coordinacion:'var(--teal)',chat:'var(--azul)'};
+  const tipoLbl={instruccion:'📢 Instrucción',consulta:'❓ Consulta',difusion:'📣 Difusión',coordinacion:'🔗 Coordinación',chat:'💬 Chat'};
+  const tipoPill={instruccion:'p-r',consulta:'p-b',difusion:'p-a',coordinacion:'p-t',chat:'p-b'};
+
+  historial.forEach(msg=>{
+    const item=mk('div','sent-item');
+    item.style.setProperty('--si', tipoCols[msg.tipo]||'var(--ac)');
+    const toLine=mk('div','sent-to');
+    toLine.innerHTML=`<span class="pill ${tipoPill[msg.tipo]}">${tipoLbl[msg.tipo]||msg.tipo}</span><span>Para: ${msg.a}</span>`;
+    const txt=mk('div','sent-txt'); txt.textContent=msg.txt;
+    const meta=mk('div','sent-meta');
+    const hora=mk('span','sent-hora'); hora.textContent=msg.hora;
+    const est=mk('span','sent-estado '+(msg.leida?'est-leida':'est-pend'));
+    est.textContent=msg.leida?'✓ Leído':'⏳ Sin leer';
+    meta.appendChild(hora); meta.appendChild(est);
+    item.appendChild(toLine); item.appendChild(txt); item.appendChild(meta);
+    c.appendChild(item);
+  });
+}
+
+/* ══ CHAT PRIVADO GM–ALCALDE ═════════════════════════ */
+function vChatGM(c){
+  const hd=mk('div','sec-hd');
+  hd.innerHTML='<span class="sec-ttl">Chat con el Gerente Municipal</span>';
+  const rt=mk('div','rt'); rt.innerHTML='<span class="rt-dot"></span>Carlos Vásquez · en línea';
+  hd.appendChild(rt); c.appendChild(hd);
+
+  const nota=mk('div','');
+  nota.style.cssText='font-size:11px;color:var(--txt3);background:var(--gris);border-radius:8px;padding:8px 11px;margin-bottom:10px;line-height:1.5';
+  nota.textContent='Este canal es privado y solo entre tú y el Gerente Municipal. Para comunicarte con las otras gerencias usa "Comunicar / Instruir".';
+  c.appendChild(nota);
+
+  const card=mk('div','card cp');
+  const chatBox=mk('div','chat-box');
+  const scrollBottom=()=>chatBox.scrollTop=chatBox.scrollHeight;
+
+  function buildChat(){
+    chatBox.innerHTML='';
+    chatGM.forEach(m=>{
+      const msg=mk('div','ch-msg'+(m.out?' out':''));
+      const av=mk('div','ch-av'); av.textContent=m.av; av.style.background=m.bg;
+      const inner=mk('div','');inner.style.maxWidth='78%';
+      const bub=mk('div','ch-bub'); bub.textContent=m.txt;
+      const time=mk('div','ch-time'); time.textContent=m.h;
+      inner.appendChild(bub); inner.appendChild(time);
+      msg.appendChild(av); msg.appendChild(inner);
+      chatBox.appendChild(msg);
+    });
+    scrollBottom();
+  }
+  buildChat();
+
+  const row=mk('div','chat-inp-row');
+  const inp=mk('input','ch-inp'); inp.placeholder='Escribe al Gerente Municipal...';
+  inp.onkeydown=e=>{if(e.key==='Enter'&&inp.value.trim()) send();};
+  function send(){
+    if(!inp.value.trim()) return;
+    chatGM.push({av:USER.iniciales||'AL',bg:'var(--ac)',txt:inp.value,h:new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'}),out:true});
+    inp.value=''; buildChat();
+  }
+  const snd=mk('div','ch-send'); snd.textContent='➤'; snd.onclick=send;
+  row.appendChild(inp); row.appendChild(snd);
+  card.appendChild(chatBox); card.appendChild(row);
+  c.appendChild(card);
+}
+
+/* ══ COMPROMISOS ════════════════════════════════════ */
+function vCompromisos(c){
+  const listHd=mk('div','sec-hd');
+  listHd.innerHTML=`<span class="sec-ttl">Compromisos del alcalde</span><span class="pill p-r">${COMPROMISOS.filter(x=>x.ven).length} vencidos</span>`;
+  c.appendChild(listHd);
+  COMPROMISOS.forEach(comp=>{
+    const col=comp.ven?'var(--ac)':'var(--verde)';
+    const item=mk('div','comp');
+    item.innerHTML=`<span class="comp-dot" style="background:${col}"></span><div class="comp-bd"><div class="comp-ttl">${comp.ttl}</div><div class="comp-meta"><span class="comp-resp">${comp.resp}</span>${comp.ven?'<span class="pill p-r">Vencido</span>':''}</div></div><span class="comp-fec" style="color:${col}">${comp.fec}</span>`;
+    c.appendChild(item);
+  });
+  const fHd=mk('div','sec-hd'); fHd.style.marginTop='4px';
+  fHd.innerHTML='<span class="sec-ttl">Registrar nuevo compromiso</span>';
+  c.appendChild(fHd);
+  const card=mk('div','card cp');
+  card.innerHTML=`
+    <div class="form-row"><label class="form-lbl">¿Qué prometiste?</label><input class="form-inp" id="c-desc" placeholder="Describe con precisión el compromiso asumido..."></div>
+    <div class="form-2">
+      <div class="form-row"><label class="form-lbl">Responsable</label><select class="form-inp" id="c-resp">${DESTINATARIOS.filter(d=>!['todos','coord'].includes(d.id)).map(d=>`<option value="${d.id}">${d.nombre}</option>`).join('')}</select></div>
+      <div class="form-row"><label class="form-lbl">Fecha límite</label><input type="date" class="form-inp" id="c-fec"></div>
+    </div>
+    <div class="form-row"><label class="form-lbl">Lugar / contexto</label><input class="form-inp" id="c-lugar" placeholder="Barrio, comunidad, reunión..."></div>
+    <button class="form-btn" id="c-send">Registrar y notificar gerencia</button>
+    <div id="c-ok" style="font-size:12px;color:var(--verde);font-weight:600;margin-top:8px;display:none">✓ Compromiso registrado. La gerencia responsable fue notificada.</div>`;
+  card.querySelector('#c-send').onclick=()=>{
+    const desc=card.querySelector('#c-desc').value.trim(); if(!desc) return;
+    COMPROMISOS.unshift({ttl:desc,resp:card.querySelector('#c-resp').value,fec:card.querySelector('#c-fec').value||'Por definir',ven:false});
+    card.querySelector('#c-ok').style.display='block';
+    card.querySelector('#c-desc').value=''; card.querySelector('#c-fec').value='';
+    setTimeout(()=>{ card.querySelector('#c-ok').style.display='none'; nav('compromis'); },1500);
+  };
+  c.appendChild(card);
+}
+
+/* ══ PRESUPUESTO ═════════════════════════════════════ */
+function vPresupuesto(c){
+  const hd=mk('div','sec-hd');
+  hd.innerHTML='<span class="sec-ttl">Ejecución presupuestal</span><span class="sec-sub">Año 2024</span>';
+  c.appendChild(hd);
+  const card=mk('div','card');
+  const th=mk('div',''); th.style.cssText='padding:10px 14px;background:var(--gris);border-bottom:1px solid var(--borde);display:flex;justify-content:space-between;align-items:center';
+  th.innerHTML='<span style="font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.4px">Por gerencia</span><span style="font-size:11px;color:var(--txt3)">Total asignado: <strong style="color:var(--txt2)">S/7.83M</strong></span>';
+  card.appendChild(th);
+  PRESUPUESTO.forEach(p=>{
+    const row=mk('div','pres-row');
+    row.innerHTML=`<div class="pres-top"><span class="pres-nombre">${p.nombre}</span><span class="pres-pct" style="color:${p.col}">${p.pct}%</span></div>
+    <div class="pbar"><div class="pbar-f" style="width:${p.pct}%;background:${p.col}"></div></div>
+    <div class="pres-montos"><span>Ejecutado: <strong>${fmt(p.ejec)}</strong></span><span>Asignado: <strong>${fmt(p.asig)}</strong></span></div>`;
+    card.appendChild(row);
+  });
+  c.appendChild(card);
+}
+
+/* ══ SEMÁFORO NORMATIVO ══════════════════════════════ */
+function vNormativo(c){
+  c.innerHTML='<div class="sec-hd"><span class="sec-ttl">Plazos normativos críticos</span></div>';
+  [{ico:'💰',ttl:'Devengado 4to trimestre · SIAF/MEF',desc:'Saldo sin devengar: S/1.2M en Planeamiento. Riesgo de devolución al MEF si no se devengue antes del 15 dic.',dias:18,sis:'MEF/SIAF',resp:'Planeamiento',niv:'critica'},
+   {ico:'📋',ttl:'Actualización Invierte.pe · 3 proyectos',desc:'PMI-2024-001, 003 y 007 requieren actualización de avance físico antes de fin de mes.',dias:11,sis:'Invierte.pe',resp:'Infraestructura',niv:'critica'},
+   {ico:'🔍',ttl:'Subsanación hallazgos CGR · 4 pendientes',desc:'4 hallazgos sin subsanar del último informe de auditoría. Responsabilidad personal del alcalde.',dias:24,sis:'Contraloría',resp:'GM',niv:'alerta'},
+   {ico:'🛒',ttl:'Renovación contratos SEACE · fin de año',desc:'3 contratos de servicios vencen a fin de año. Servicios debe iniciar proceso ya.',dias:35,sis:'SEACE',resp:'Servicios',niv:'info'},
+  ].forEach(p=>{
+    const cols={critica:'var(--ac)',alerta:'var(--oro)',info:'var(--azul)'};
+    const el=mk('div','plazo'); el.style.setProperty('--pl',cols[p.niv]);
+    el.innerHTML=`<span class="al-ico">${p.ico}</span><div class="al-bd"><div class="al-ttl">${p.ttl}</div><div class="al-desc">${p.desc}</div><div class="al-meta"><span class="pill ${p.niv==='critica'?'p-r':p.niv==='alerta'?'p-a':'p-b'}">${p.dias} días</span><span>${p.sis}</span><span>· Resp: ${p.resp}</span></div></div>`;
+    c.appendChild(el);
+  });
+}
+
+/* ══ REPORTE IA ══════════════════════════════════════ */
+function vReporte(c){
+  const br=mk('div','briefing');
+  br.innerHTML=`<div class="br-hd"><div class="br-ico">🤖</div><div><div class="br-ttl">Análisis ejecutivo · semana 47</div><div class="br-sub">Claude · Municipalidad Provincial de Cajamarca · 19 Nov 2024</div></div></div>
+  <div class="br-body">La ejecución presupuestal acumulada es de <span class="br-hl">67%</span>, aceptable pero con riesgo en Planeamiento y Rentas. La <span class="br-hl">obra más crítica</span> es la pavimentación de Jr. Lima: paralizada 26 días, con impacto político alto dado que es una vía comercial principal. Se recomienda convocar reunión de emergencia con el contratista esta semana. Las áreas con mejor desempeño son Desarrollo Social (78%) e Infraestructura (71%). El <span class="br-hl">saldo por ejecutar antes del cierre</span> es de S/2.5M concentrado en Planeamiento y Rentas — acción urgente requerida.</div>
+  <div class="br-acts"><button class="br-btn br-p">Descargar PDF</button><button class="br-btn br-s" onclick="nav('comunicar')">Emitir instrucción basada en este análisis</button></div>`;
+  c.appendChild(br);
+}
+
+init();
+</script>
+<script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+</script>
+</body>
+</html>
