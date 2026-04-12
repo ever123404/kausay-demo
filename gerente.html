@@ -751,8 +751,20 @@ function applyConfig(cfg) {
   document.querySelectorAll('.sb-muni').forEach(el => { el.textContent = cfg.muni_nombre || el.textContent; });
 }
 
+/* ══ LEER PARÁMETROS DE URL (modo demo sin sessionStorage) ══ */
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const rol = p.get('rol');
+  const nombre = p.get('nombre');
+  const gerencia = p.get('gerencia');
+  if (rol)     { sessionStorage.setItem('kausay_demo_rol', rol); }
+  if (nombre)  { sessionStorage.setItem('kausay_demo_nombre', decodeURIComponent(nombre)); }
+  if (gerencia){ sessionStorage.setItem('kausay_demo_gerencia', gerencia); }
+})();
+
 buildSelector();
 </script>
+<script src="shared.js"></script>
 <script>
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(()=>{});
