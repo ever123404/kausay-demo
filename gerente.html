@@ -3,772 +3,926 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#0F0F12">
+<meta name="theme-color" content="#0F6E56">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest-gerente.json">
 <link rel="apple-touch-icon" href="icons/icon-gerente-192.png">
-<title>Kausay — Gerencias Municipales</title>
+<title>Panel Sectorial · Gerente</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui-kit.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;font-family:'Barlow',sans-serif;color:#1A1D23;background:#0F0F12}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-/* ── SELECTOR ── */
-#selector{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 20px 48px}
-.sel-bg{position:fixed;inset:0;background:radial-gradient(ellipse at 25% 0%,rgba(176,32,32,.13) 0%,transparent 55%),radial-gradient(ellipse at 80% 100%,rgba(24,95,165,.1) 0%,transparent 55%);pointer-events:none}
-.sel-logo{text-align:center;margin-bottom:28px;animation:fadeUp .5s ease both}
-.sel-brand{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1}
-.sel-brand em{color:#F07070;font-style:normal}
-.sel-tag{font-size:10px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:1.8px;margin-top:5px}
-.sel-muni{font-size:12px;color:rgba(255,255,255,.45);margin-top:8px;padding:5px 14px;background:rgba(255,255,255,.07);border-radius:20px;display:inline-block}
-.sel-hint{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:16px;animation:fadeUp .5s .1s ease both;opacity:0;animation-fill-mode:forwards}
-.ger-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:480px;animation:fadeUp .5s .15s ease both;opacity:0;animation-fill-mode:forwards}
-@media(min-width:560px){.ger-grid{grid-template-columns:repeat(3,1fr)}}
-.ger-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px 12px 15px;cursor:pointer;text-align:center;transition:all .18s;font-family:'Barlow',sans-serif}
-.ger-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.1)}
-.ger-card:active{transform:scale(.97)}
-.ger-ico{font-size:26px;margin-bottom:8px;display:block}
-.ger-nombre{font-size:12px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:3px}
-.ger-jefe{font-size:10px;color:rgba(255,255,255,.38);line-height:1.3;margin-bottom:6px}
-.ger-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block}
-/* ── MODAL ── */
-#modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:999;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
-#modal-bg.show{display:flex}
-.modal{background:#1C1C28;border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:26px 22px;width:100%;max-width:320px;animation:fadeUp .2s ease}
-.modal-hd{display:flex;align-items:center;gap:11px;margin-bottom:18px}
-.modal-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.modal-n{font-size:14px;font-weight:700;color:#fff;line-height:1.2}
-.modal-j{font-size:11px;color:rgba(255,255,255,.38);margin-top:2px}
-.pw-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:block}
-.pw-inp{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:#fff;outline:none;letter-spacing:3px;transition:border-color .15s}
-.pw-inp:focus{border-color:rgba(255,255,255,.4)}
-.pw-inp::placeholder{letter-spacing:0;color:rgba(255,255,255,.22)}
-.pw-err{font-size:12px;color:#F07070;margin-top:7px;display:none;font-weight:600}
-.pw-err.show{display:block}
-.modal-btns{display:flex;gap:8px;margin-top:14px}
-.m-entrar{flex:1;padding:11px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;color:#fff;transition:opacity .15s}
-.m-entrar:hover{opacity:.88}
-.m-cancel{padding:11px 14px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif}
-.m-cancel:hover{background:rgba(255,255,255,.13);color:#fff}
-/* ── DASHBOARD ── */
-#dash{display:none;height:100vh;overflow:hidden}
-#dash.show{display:flex}
-.sb{width:220px;background:#0F0F12;display:flex;flex-direction:column;flex-shrink:0}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:#F0F2F5}
-.sb-logo{padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.07)}
-.sb-brand{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:800;color:#fff;line-height:1}
-.sb-brand em{font-style:normal}
-.sb-tag{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
-.sb-ger{margin:7px 10px 2px;border-radius:8px;padding:8px 11px;background:rgba(255,255,255,.07)}
-.sb-gn{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
-.sb-gm{font-size:9px;color:rgba(255,255,255,.38);margin-top:2px}
-.sb-muni{padding:4px 12px 5px;font-size:10px;color:rgba(255,255,255,.26)}
-.sb-nav{flex:1;overflow-y:auto;padding:4px 0}
-.sb-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.22);padding:10px 16px 4px}
-.sb-it{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;color:rgba(255,255,255,.46);font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all .12s;user-select:none}
-.sb-it:hover{color:#fff;background:rgba(255,255,255,.05)}
-.sb-it.on{color:#fff;background:rgba(255,255,255,.08)}
-.sb-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
-.sb-n{flex:1}
-.sb-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:#B02020;color:#fff}
-.sb-ft{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
-.sb-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.sb-un{font-size:11px;color:#fff;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-ur{font-size:9px;color:rgba(255,255,255,.33);margin-top:1px}
-.sb-logout{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.38);font-size:9px;padding:4px 8px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif}
-.sb-logout:hover{background:rgba(255,255,255,.15);color:#fff}
-.tb{height:52px;background:#fff;border-bottom:1px solid #E2E6ED;display:flex;align-items:center;gap:10px;padding:0 18px;flex-shrink:0}
-.tb-ttl{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;flex:1;color:#1A1D23}
-.tb-date{font-size:11px;color:#8A90A0;white-space:nowrap}
-.rt{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
-.rt-dot{width:5px;height:5px;border-radius:50%;animation:pulse 1.5s infinite}
-.tb-bell{width:34px;height:34px;border-radius:8px;border:1px solid #E2E6ED;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;flex-shrink:0}
-.tb-bdot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:#B02020;border-radius:50%;border:1.5px solid #fff}
-.content{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
-/* ── PILLS ── */
-.pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;display:inline-block}
-.p-r{background:#FDEAEA;color:#B02020}.p-a{background:#FFF4DC;color:#C8880A}.p-g{background:#E8F5EE;color:#1A7A45}.p-b{background:#E6F1FB;color:#185FA5}.p-x{background:#F0F2F5;color:#8A90A0;border:1px solid #E2E6ED}
-/* ── SEC HD ── */
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.sec-ttl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1A1D23}
-/* ── INSTRUC ── */
-.ins{background:#fff;border:1px solid #E2E6ED;border-radius:10px;padding:12px 14px;border-left:4px solid #B02020;margin-bottom:8px}
-.ins-hd{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
-.ins-from{font-size:11px;font-weight:600;color:#8A90A0;flex:1;min-width:0}
-.ins-hora{font-size:10px;color:#8A90A0;flex-shrink:0}
-.ins-body{font-size:13px;color:#1A1D23;line-height:1.65;margin-bottom:8px}
-.ins-st{font-size:11px;font-weight:600;padding:4px 9px;border-radius:6px;display:inline-block;margin-bottom:8px}
-.ins-st.ok{background:#E8F5EE;color:#1A7A45}.ins-st.pend{background:#FDEAEA;color:#B02020}
-.ins-acts{display:flex;gap:6px;flex-wrap:wrap}
-.ibtn{padding:6px 13px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
-.ibtn-ok{background:#1A7A45;color:#fff}
-.ibtn-resp{background:#F0F2F5;color:#4A5060;border:1px solid #E2E6ED}
-.ibtn-resp:hover{background:#E2E6ED}
-.resp-box{background:#F0F2F5;border-radius:8px;padding:10px 12px;margin-top:9px;display:none}
-.resp-box.open{display:block}
-.resp-ta{width:100%;border:1px solid #E2E6ED;border-radius:7px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;resize:none;outline:none;background:#fff;color:#1A1D23;line-height:1.5}
-.resp-ta:focus{border-color:#1A7A45}
-.resp-row{display:flex;gap:7px;margin-top:7px}
-.resp-send{padding:7px 15px;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
-.resp-cancel{padding:7px 10px;background:none;border:1px solid #E2E6ED;border-radius:7px;font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif;color:#8A90A0}
-/* ── KPI MINI ── */
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.kpi-m{background:#fff;border:1px solid #E2E6ED;border-radius:8px;padding:11px 12px;text-align:center}
-.kpi-mv{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;line-height:1;color:#1A1D23}
-.kpi-ml{font-size:9px;color:#8A90A0;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
-/* ── OBRAS ── */
-.obra{background:#fff;border:1px solid #E2E6ED;border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.obra-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
-.obra-n{font-size:13px;font-weight:600;flex:1;line-height:1.3;color:#1A1D23}
-.obra-pct{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;flex-shrink:0;line-height:1}
-.obra-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:7px}
-.obra-fin{font-size:11px;color:#8A90A0}
-.pbar{height:5px;background:#E2E6ED;border-radius:3px;overflow:hidden;margin-bottom:9px}
-.pbar-f{height:100%;border-radius:3px}
-.av-form{display:flex;gap:7px;align-items:center;background:#F0F2F5;border-radius:8px;padding:7px 10px}
-.av-lbl{font-size:11px;color:#8A90A0;white-space:nowrap}
-.av-inp{flex:1;border:1px solid #E2E6ED;border-radius:6px;padding:5px 8px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;color:#1A1D23;background:#fff;min-width:0}
-.av-inp:focus{border-color:#1A7A45}
-.av-btn{color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap}
-.av-ok{font-size:11px;color:#1A7A45;font-weight:600;display:none;padding-left:6px}
-/* ── INDICADORES ── */
-.ind{background:#fff;border:1px solid #E2E6ED;border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.ind-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.ind-n{font-size:13px;font-weight:600;color:#1A1D23}
-.ind-v{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;line-height:1}
-.ind-meta{font-size:11px;color:#8A90A0}
-.ind-prog{height:6px;background:#E2E6ED;border-radius:3px;overflow:hidden;margin:6px 0}
-.ind-prog-f{height:100%;border-radius:3px}
-.ind-foot{display:flex;justify-content:space-between;align-items:center}
-.ind-per{font-size:10px;color:#8A90A0}
-.ind-edit{background:none;border:1px solid #E2E6ED;border-radius:6px;padding:3px 9px;font-size:10px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;color:#8A90A0}
-.ind-form{display:none;margin-top:10px;padding-top:10px;border-top:1px solid #E2E6ED}
-.ind-form.open{display:block}
-/* ── PRESUPUESTO ── */
-.pres{background:#fff;border:1px solid #E2E6ED;border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.pres-lbl{font-size:11px;font-weight:600;color:#4A5060;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
-.pres-bw{display:flex;align-items:center;gap:10px;margin:5px 0}
-.pres-bar{flex:1;height:8px;background:#E2E6ED;border-radius:4px;overflow:hidden}
-.pres-bar-f{height:100%;border-radius:4px}
-.pres-pct{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;min-width:38px;text-align:right}
-.pres-montos{display:flex;justify-content:space-between;font-size:11px;color:#8A90A0}
-.pres-montos strong{color:#4A5060}
-/* ── COMPROMISOS ── */
-.comp{background:#fff;border:1px solid #E2E6ED;border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.comp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.comp-bd{flex:1;min-width:0}
-.comp-ttl{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1A1D23}
-.comp-meta{display:flex;gap:5px;align-items:center;margin-top:3px;font-size:10px;color:#8A90A0;flex-wrap:wrap}
-.comp-fec{font-size:11px;font-weight:700;flex-shrink:0}
-/* ── FORM ── */
-.card{background:#fff;border:1px solid #E2E6ED;border-radius:12px;padding:14px 16px}
-.form-row{margin-bottom:10px}
-.form-lbl{display:block;font-size:10px;font-weight:700;color:#4A5060;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.form-inp{width:100%;border:1px solid #E2E6ED;border-radius:8px;padding:8px 11px;font-size:13px;font-family:'Barlow',sans-serif;color:#1A1D23;background:#fff;outline:none}
-.form-inp:focus{border-color:#1A7A45}
-.form-btn{width:100%;padding:10px;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
-.info-box{border-radius:9px;padding:10px 13px;font-size:12px;line-height:1.65;margin-bottom:2px}
+/* ── ACENTO ROL: dinámico según gerencia ── */
+:root {
+  --ac:     #0F6E56;
+  --ac-bg:  #EEF8F3;
+  --ac-brd: rgba(15, 110, 86, .22);
+}
 
-/* ── BOTÓN VOLVER AL MENÚ (solo mobile) ── */
-.tb-back{display:none;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:var(--txt2);white-space:nowrap;flex-shrink:0}
-.tb-back:active{background:var(--gris)}
-@media(max-width:680px){.tb-back{display:flex}.tb-date{display:none}}
+/* ── RESUMEN SECTORIAL ── */
+.sec-summary {
+  border-radius: var(--r-lg); padding: 13px var(--sp-md);
+  display: flex; gap: var(--sp-md); align-items: center;
+}
+.sec-summary__left   { flex: 1; min-width: 0; }
+.sec-summary__area   { font-size: 9px; color: rgba(255,255,255,.45); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.sec-summary__nombre { font-family: var(--f-cond); font-size: 16px; font-weight: 700; color: #fff; line-height: 1.25; margin-top: 2px; }
+.sec-summary__estado { font-size: 11px; font-weight: 600; margin-top: 4px; }
+.sec-summary__kpis   { display: flex; gap: 10px; flex-shrink: 0; }
+.sec-kpi             { text-align: center; min-width: 44px; }
+.sec-kpi__v          { font-family: var(--f-cond); font-size: 22px; font-weight: 700; line-height: 1; }
+.sec-kpi__l          { font-size: 8px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .3px; line-height: 1.3; margin-top: 2px; }
 
-@media(max-width:680px){.sb{display:none}.kpi-row{grid-template-columns:1fr 1fr}}
+/* ── OBRA OPERATIVA (con update inline) ── */
+.obra-op {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-left: 3px solid var(--oc, var(--c-gris3));
+  border-radius: var(--r-md); padding: var(--sp-md);
+}
+.obra-op__hd   { display: flex; align-items: flex-start; gap: var(--sp-sm); margin-bottom: 8px; }
+.obra-op__nombre{ font-size: 13px; font-weight: 600; color: var(--c-negro); flex: 1; line-height: 1.35; }
+.obra-op__meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.obra-op__info { font-size: 10px; color: var(--c-gris3); }
+.obra-op__pct-row {
+  display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+}
+.obra-op__pct-big {
+  font-family: var(--f-cond); font-size: 32px; font-weight: 800; line-height: 1; flex-shrink: 0;
+}
+.obra-op__bar-col { flex: 1; }
+.obra-op__upd  { display: flex; gap: 7px; padding-top: 9px; border-top: 1px solid var(--c-borde); }
+.obra-op__inp  {
+  flex: 1; border: 1.5px solid var(--c-borde); border-radius: var(--r-sm);
+  padding: 6px 10px; font-size: 13px; font-family: var(--f-sans);
+  color: var(--c-negro); outline: none;
+}
+.obra-op__inp:focus { border-color: var(--ac); }
+.obra-op__obs  {
+  width: 100%; border: 1.5px solid var(--c-borde); border-radius: var(--r-sm);
+  padding: 6px 10px; font-size: 12px; font-family: var(--f-sans);
+  color: var(--c-negro); outline: none; resize: none; margin-top: 6px;
+}
+.obra-op__obs:focus { border-color: var(--ac); }
+.obra-op__acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+
+/* ── COMP. SECTORIAL ── */
+.comp-sec {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-radius: var(--r-md); padding: var(--sp-md);
+}
+.comp-sec__hd   { display: flex; align-items: center; gap: var(--sp-sm); margin-bottom: 6px; flex-wrap: wrap; }
+.comp-sec__desc { font-size: 12px; font-weight: 500; color: var(--c-negro); line-height: 1.45; margin-bottom: 7px; }
+.comp-sec__foot { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.comp-sec__evidencia {
+  width: 100%; margin-top: 8px; border: 1.5px solid var(--c-borde);
+  border-radius: var(--r-sm); padding: 7px 10px; font-size: 12px;
+  font-family: var(--f-sans); color: var(--c-negro); outline: none; resize: none;
+}
+.comp-sec__evidencia:focus { border-color: var(--ac); }
+
+/* ── KPI SECTORIAL ── */
+.kpi-sec {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-radius: var(--r-md); padding: var(--sp-md);
+  display: flex; align-items: center; gap: var(--sp-md);
+}
+.kpi-sec__left { flex: 1; min-width: 0; }
+.kpi-sec__nombre{ font-size: 12px; font-weight: 600; color: var(--c-negro); margin-bottom: 4px; }
+.kpi-sec__bar  { margin-bottom: 4px; }
+.kpi-sec__meta { font-size: 10px; color: var(--c-gris3); }
+.kpi-sec__right{ text-align: right; flex-shrink: 0; min-width: 70px; }
+.kpi-sec__val  { font-family: var(--f-cond); font-size: 28px; font-weight: 800; line-height: 1; }
+.kpi-sec__meta2{ font-size: 10px; color: var(--c-gris3); margin-top: 2px; }
+
+/* ── ESCALAR AL GM ── */
+.escalar-gm {
+  background: var(--c-critico-bg); border: 1px solid var(--c-critico-brd);
+  border-radius: var(--r-lg); padding: var(--sp-md);
+}
+.escalar-gm__hd  { display: flex; align-items: center; gap: var(--sp-sm); margin-bottom: 7px; }
+.escalar-gm__ico { font-size: 20px; flex-shrink: 0; }
+.escalar-gm__ttl { font-size: 13px; font-weight: 700; color: var(--c-critico); }
+.escalar-gm__desc{ font-size: 11px; color: var(--c-gris2); line-height: 1.4; margin-bottom: 9px; }
+
+/* ── MODAL RESPONDER ── */
+.resp-ctx {
+  background: var(--c-bg); border-radius: var(--r-sm);
+  padding: 9px 11px; font-size: 11px; color: var(--c-gris2);
+  line-height: 1.5; margin-bottom: 11px; border-left: 3px solid var(--ac);
+}
+
+@media(max-width:680px) {
+  .sec-summary__kpis { display: none; }
+  .obra-op__pct-row  { flex-direction: column; align-items: flex-start; }
+}
 </style>
 </head>
 <body>
 
-<!-- SELECTOR -->
-<div id="selector">
-  <div class="sel-bg"></div>
-  <div class="sel-logo">
-    <div class="sel-brand">Kausay<em>Gerencias</em></div>
-    <div class="sel-tag">Panel sectorial municipal</div>
-    <div class="sel-muni">Municipalidad Provincial de Cajamarca</div>
-  </div>
-  <div class="sel-hint">Selecciona tu gerencia e ingresa con tu contraseña</div>
-  <div class="ger-grid" id="ger-grid"></div>
+<!-- LOADER -->
+<div class="kk-loader" id="loader">
+  <div class="kk-loader__spin"></div>
+  <div class="kk-loader__txt">Panel sectorial</div>
 </div>
 
-<!-- MODAL CONTRASEÑA -->
-<div id="modal-bg">
-  <div class="modal">
-    <div class="modal-hd">
-      <div class="modal-ico" id="m-ico"></div>
-      <div><div class="modal-n" id="m-nombre"></div><div class="modal-j" id="m-jefe"></div></div>
+<!-- MODAL: RESPONDER INSTRUCCIÓN -->
+<div class="kk-modal-bg" id="modal-resp">
+  <div class="kk-modal">
+    <div class="kk-modal__hd">
+      <span class="kk-modal__ttl">Responder instrucción</span>
+      <button class="kk-modal__close" onclick="cerrarModal('modal-resp')">✕</button>
     </div>
-    <label class="pw-lbl">Contraseña de acceso</label>
-    <input type="password" class="pw-inp" id="pw-inp" placeholder="Ingresa tu contraseña">
-    <div class="pw-err" id="pw-err">Contraseña incorrecta. Inténtalo de nuevo.</div>
-    <div class="modal-btns">
-      <button class="m-cancel" onclick="cerrarModal()">Cancelar</button>
-      <button class="m-entrar" id="m-entrar" onclick="verificarPW()">Ingresar al panel</button>
+    <div class="resp-ctx" id="resp-ctx">Cargando instrucción...</div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Tu respuesta <span style="color:var(--c-critico)">*</span></label>
+      <textarea class="kk-form-inp kk-form-ta" id="resp-txt" placeholder="Informa el estado, avance, acción tomada o consulta..."></textarea>
+      <div class="kk-form-err" id="resp-err">Campo requerido</div>
     </div>
+    <button class="kk-btn kk-btn--primary" onclick="enviarRespuesta()">Enviar respuesta →</button>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dash">
-  <div class="sb" id="sb"></div>
-  <div class="main">
-    <div class="tb">
-      <button class="tb-back" id="tb-back" onclick="nav('instruc')" style="display:none">← Menú</button><div class="tb-ttl" id="tb-ttl"></div>
-      <div class="tb-date" id="tb-date"></div>
-      <div class="rt" id="tb-rt"><span class="rt-dot"></span><span id="rt-txt"></span></div>
-      <button class="tb-bell">🔔<span class="tb-bdot" id="tb-bdot" style="display:none"></span></button>
+<!-- MODAL: REGISTRAR COMPROMISO -->
+<div class="kk-modal-bg" id="modal-comp">
+  <div class="kk-modal">
+    <div class="kk-modal__hd">
+      <span class="kk-modal__ttl">Registrar compromiso</span>
+      <button class="kk-modal__close" onclick="cerrarModal('modal-comp')">✕</button>
     </div>
-    <div class="content" id="content"></div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Descripción <span style="color:var(--c-critico)">*</span></label>
+      <input class="kk-form-inp" id="comp-desc" placeholder="¿Qué compromiso se registra?">
+    </div>
+    <div class="kk-form-2">
+      <div class="kk-form-row">
+        <label class="kk-form-lbl">Origen</label>
+        <select class="kk-form-inp kk-form-sel" id="comp-origen">
+          <option value="instruccion">Instrucción</option>
+          <option value="reunion">Reunión</option>
+          <option value="campo">Campo</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="kk-form-row">
+        <label class="kk-form-lbl">Fecha límite</label>
+        <input class="kk-form-inp" type="date" id="comp-fec">
+      </div>
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Prioridad</label>
+      <select class="kk-form-inp kk-form-sel" id="comp-prio">
+        <option value="alta">🔴 Alta</option>
+        <option value="media" selected>🟡 Media</option>
+        <option value="baja">🟢 Baja</option>
+      </select>
+    </div>
+    <button class="kk-btn kk-btn--primary" onclick="guardarCompromiso()">Registrar →</button>
   </div>
 </div>
 
+<!-- MODAL: ESCALAR AL GM -->
+<div class="kk-modal-bg" id="modal-escalar">
+  <div class="kk-modal">
+    <div class="kk-modal__hd">
+      <span class="kk-modal__ttl">Escalar al Gerente Municipal</span>
+      <button class="kk-modal__close" onclick="cerrarModal('modal-escalar')">✕</button>
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Tipo de situación</label>
+      <div class="kk-chips" id="escalar-chips">
+        <button class="kk-chip-btn sel" data-tipo="obra_paralizada">🚧 Obra</button>
+        <button class="kk-chip-btn" data-tipo="presupuesto">💰 Presupuesto</button>
+        <button class="kk-chip-btn" data-tipo="bloqueo">🔒 Bloqueo</button>
+        <button class="kk-chip-btn" data-tipo="plazo">⏰ Plazo</button>
+      </div>
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Descripción del problema <span style="color:var(--c-critico)">*</span></label>
+      <textarea class="kk-form-inp kk-form-ta" id="escalar-txt" placeholder="Describe el problema, qué intentaste y qué necesitas del GM..."></textarea>
+      <div class="kk-form-err" id="escalar-err">Campo requerido</div>
+    </div>
+    <button class="kk-btn kk-btn--danger kk-btn--full" style="margin-top:4px" onclick="enviarEscalamiento()">🚨 Escalar al GM →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="kk-toast" id="toast"></div>
+
+<!-- APP -->
+<div class="kk-app" id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <div class="kk-sb">
+    <div class="kk-sb__head">
+      <img class="kk-sb__escudo" src="escudo.png" alt="Escudo" onerror="this.style.display='none'">
+      <div class="kk-sb__muni" id="sb-muni">Municipalidad Provincial de Cajamarca</div>
+      <div class="kk-sb__tag" id="sb-tag">Panel sectorial</div>
+    </div>
+    <div class="kk-sb__nav" id="sb-nav"></div>
+    <div class="kk-sb__foot">
+      <div class="kk-sb__user">
+        <div class="kk-sb__av" id="sb-av">G</div>
+        <div>
+          <div class="kk-sb__name" id="sb-name">Gerente</div>
+          <div class="kk-sb__rol" id="sb-rol">Gerencia sectorial</div>
+        </div>
+        <button class="kk-sb__logout" onclick="logout()">Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="kk-main">
+    <div class="kk-offline-bar" id="offline-bar">📡 Sin conexión — los cambios se guardarán al recuperar señal</div>
+    <div class="kk-tb">
+      <button class="kk-tb__back" id="tb-back" onclick="nav('sectorial')">← Menú</button>
+      <div class="kk-tb__title" id="tb-title">Mi gerencia</div>
+      <div class="kk-tb__clock" id="tb-clock"></div>
+      <button class="kk-tb__notif" id="tb-notif">🔔<span class="kk-tb__dot" id="tb-dot" style="display:none"></span></button>
+    </div>
+    <div class="kk-content" id="content"></div>
+    <div class="kk-dock"    id="dock"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="branding.js"></script>
+<script src="freshness.js"></script>
+<script src="export.js"></script>
+
+
+<script src="auth.js"></script>
+<script src="shared.js"></script>
 <script>
-/* ══ DATOS ═══════════════════════════════════════════════ */
-const GC = {
-  INFRA:{
-    nombre:'Infraestructura y Obras', jefe:'Ing. Ana Quispe Herrera', ini:'AQ', ico:'🏗',
-    color:'#0F6E56', colorL:'#3ECAA5', colorBg:'#E1F5EE', pw:'infra2024',
-    kpis:[{n:'Metros pavimentados (ml)',v:2840,meta:4500,u:'ml'},{n:'Obras entregadas',v:11,meta:18,u:'obras'},{n:'En cronograma',v:14,meta:18,u:'obras'}],
-    pres:{asig:4850000,ejec:3421000}, comprometido:4200000,
-    comps:[{t:'Desblocar obra Jr. Lima — coordinar contratista',o:'Instrucción del alcalde',f:'Mañana',v:false},{t:'Actualizar 3 proyectos en Invierte.pe',o:'Plazo normativo',f:'08 Dic',v:false},{t:'Entregar informe mensual al GM',o:'Reunión de staff',f:'30 Nov',v:true}],
-  },
-  RENTAS:{
-    nombre:'Rentas y Tributación', jefe:'Cont. Carlos Herrera Díaz', ini:'CH', ico:'💰',
-    color:'#185FA5', colorL:'#70A8D8', colorBg:'#E6F1FB', pw:'rentas2024',
-    kpis:[{n:'Recaudación del mes (S/)',v:185420,meta:310000,u:'S/'},{n:'Contribuyentes al día',v:3840,meta:5200,u:'contrib.'},{n:'Recupero coactivo (S/)',v:42800,meta:80000,u:'S/'}],
-    pres:{asig:380000,ejec:155000}, comprometido:220000,
-    comps:[{t:'Informe de recaudación octubre al alcalde',o:'Instrucción del alcalde',f:'Ayer',v:true},{t:'Actualizar TUPA con nuevas tasas',o:'Acuerdo de concejo',f:'15 Dic',v:false}],
-  },
-  SERVICIOS:{
-    nombre:'Servicios Municipales', jefe:'Lic. Rosa Castro Vega', ini:'RC', ico:'♻️',
-    color:'#5C3E8F', colorL:'#9B7DC9', colorBg:'#EDE9F7', pw:'servicios2024',
-    kpis:[{n:'Toneladas/día recogidas',v:28,meta:35,u:'ton/día'},{n:'Cobertura limpieza (%)',v:78,meta:95,u:'%'},{n:'Parques mantenidos',v:24,meta:30,u:'espacios'}],
-    pres:{asig:920000,ejec:512000}, comprometido:710000,
-    comps:[{t:'Plan limpieza post-ferias diciembre',o:'Instrucción del alcalde',f:'05 Dic',v:false},{t:'Informe contrato residuos para renovación',o:'Plazo normativo',f:'10 Dic',v:false}],
-  },
-  SOCIAL:{
-    nombre:'Desarrollo Social', jefe:'Lic. Marco Torres León', ini:'MT', ico:'🤝',
-    color:'#B5540A', colorL:'#E08040', colorBg:'#FDF0E6', pw:'social2024',
-    kpis:[{n:'Atenciones salud',v:1840,meta:2400,u:'atenc.'},{n:'Beneficiarios programas',v:3240,meta:3800,u:'benef.'},{n:'Actividades culturales',v:8,meta:12,u:'eventos'}],
-    pres:{asig:1200000,ejec:940000}, comprometido:1100000,
-    comps:[{t:'Campaña salud zona rural antes de fin de año',o:'Instrucción del alcalde',f:'12 Dic',v:false},{t:'Informe mensual programas sociales',o:'Reunión de staff',f:'30 Nov',v:true}],
-  },
-  SECRETARIA:{
-    nombre:'Secretaría General', jefe:'Abg. Patricia Abanto R.', ini:'PA', ico:'📁',
-    color:'#4A4A70', colorL:'#8080B0', colorBg:'#EDEDF5', pw:'secretaria2024',
-    kpis:[{n:'Expedientes ingresados',v:284,meta:300,u:'exp.'},{n:'Resueltos en plazo',v:231,meta:284,u:'exp.'},{n:'Documentos notificados',v:196,meta:220,u:'docs'}],
-    pres:{asig:290000,ejec:198000}, comprometido:240000,
-    comps:[{t:'Remitir TUPA actualizado a alcaldía',o:'Instrucción del alcalde',f:'25 Nov',v:false},{t:'Actas últimas 3 sesiones del concejo',o:'Pedido regidores',f:'28 Nov',v:false}],
-  },
-  PLANIF:{
-    nombre:'Planeamiento y Presupuesto', jefe:'Econ. Eduardo Lima Soto', ini:'EL', ico:'📊',
-    color:'#2E6B5E', colorL:'#5AA090', colorBg:'#E3F0EE', pw:'planif2024',
-    kpis:[{n:'Ejecución presupuestal (%)',v:39,meta:75,u:'%'},{n:'Modificaciones presupuestales',v:4,meta:8,u:'modif.'},{n:'Informes emitidos',v:9,meta:12,u:'inform.'}],
-    pres:{asig:185000,ejec:72000}, comprometido:110000,
-    comps:[{t:'Devengar S/1.2M antes del 15 dic — SIAF',o:'Plazo normativo CRÍTICO',f:'15 Dic',v:false},{t:'Plan trabajo diciembre con metas de cierre',o:'Instrucción del alcalde',f:'30 Nov',v:true},{t:'Actualizar PIA 2025',o:'Reunión de staff',f:'10 Dic',v:false}],
-  },
-};
+/* ══ ESTADO SECTORIAL ════════════════════════════════ */
+// Determinado al cargar desde sessionStorage
+let gerCod    = null;   // 'INFRA', 'RENTAS', etc.
+let gerData   = null;   // objeto gerencia de shared.js
+let vista     = 'sectorial';
+let instrRespId = null; // id de instrucción que se está respondiendo
+let escalarTipo = 'obra_paralizada';
 
-const INSTRUC = {
-  INFRA:[
-    {tipo:'instruccion',txt:'Convocar urgente al contratista de Jr. Lima para mañana 9am. Si no confirma antes de las 5pm, iniciamos resolución de contrato.',hora:'09:15',leida:false,resp:''},
-    {tipo:'consulta',txt:'¿Cuál es el avance real de la obra Jr. Lima? Necesito el expediente técnico actualizado antes de las 10am.',hora:'Ayer 16:40',leida:true,resp:'Expediente listo para las 9am. Avance real: 34% — problemas de pago con subcontratistas.'},
-  ],
-  RENTAS:[
-    {tipo:'instruccion',txt:'Necesito el informe de recaudación de octubre a más tardar hoy. El concejo lo pide esta tarde.',hora:'08:30',leida:false,resp:''},
-    {tipo:'consulta',txt:'¿Cuánto hemos recaudado este año vs el año pasado? Necesito el dato para el concejo.',hora:'Ayer 14:20',leida:true,resp:''},
-  ],
-  SERVICIOS:[
-    {tipo:'alerta',txt:'Quejas de vecinos en San Sebastián por falta de recojo de basura los fines de semana. Necesito un plan de acción esta semana.',hora:'Ayer 11:00',leida:false,resp:''},
-  ],
-  SOCIAL:[
-    {tipo:'instruccion',txt:'Coordinar campaña de vacunación en comunidades rurales del norte del distrito antes de fin de año.',hora:'Hace 2d',leida:false,resp:''},
-  ],
-  SECRETARIA:[
-    {tipo:'instruccion',txt:'Remitir el TUPA actualizado a mi despacho antes del viernes. Hay observación del INDECOPI urgente.',hora:'Hace 2d',leida:true,resp:'En proceso. La corrección estará lista el jueves.'},
-  ],
-  PLANIF:[
-    {tipo:'instruccion',txt:'Presentar urgente el plan de ejecución del saldo del cuarto trimestre. El MEF vence en 18 días con S/1.2M sin devengar.',hora:'10:45',leida:false,resp:''},
-    {tipo:'consulta',txt:'¿Qué partidas tienen el mayor saldo sin ejecutar?',hora:'Ayer 09:30',leida:true,resp:'Bienes y servicios (S/480K) e inversiones menores (S/320K). Preparando plan de acción.'},
-  ],
-};
-
-const OBRAS = {
-  INFRA:[
-    {n:'Pavimentación Jr. Lima cuadra 8-12',est:'paralizada',pct:34,presup:'S/480K',fin:'15 Dic'},
-    {n:'Construcción mercado La Colmena',est:'ejecucion',pct:68,presup:'S/1.2M',fin:'28 Feb'},
-    {n:'Red agua potable sector norte',est:'ejecucion',pct:51,presup:'S/680K',fin:'31 Mar'},
-    {n:'Mejoramiento vial Av. Héroes',est:'proyecto',pct:0,presup:'S/340K',fin:'—'},
-  ],
-  SERVICIOS:[
-    {n:'Planta de residuos sólidos zona este',est:'ejecucion',pct:38,presup:'S/2.1M',fin:'Sep 2025'},
-    {n:'Mejoramiento parque principal',est:'ejecucion',pct:82,presup:'S/95K',fin:'08 Dic'},
-  ],
-  SOCIAL:[
-    {n:'Centro de salud Baños del Inca',est:'licitacion',pct:0,presup:'S/920K',fin:'Jun 2025'},
-    {n:'Local comunal sector Los Pinos',est:'ejecucion',pct:55,presup:'S/180K',fin:'Mar 2025'},
-  ],
-};
-
-/* ══ ESTADO ════════════════════════════════════════════ */
-let gerCod = null;
-let instrucciones = [];
-let obras = [];
-let avInputs = {};
-let vista = 'instruc';
-const hoy = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
-const fmt = n => n>=1000000?'S/'+(n/1000000).toFixed(1)+'M':n>=1000?'S/'+(n/1000).toFixed(0)+'K':'S/'+n;
-const pctC = p => p>=70?'#1A7A45':p>=50?'#C8880A':'#B02020';
-const mk = (t,c) => { const e=document.createElement(t); if(c)e.className=c; return e; };
-const NAV = [
-  {sec:'Mi área',items:[{id:'instruc',ico:'📬',lbl:'Instrucciones'},{id:'obras',ico:'🏗',lbl:'Obras'},{id:'presup',ico:'💰',lbl:'Presupuesto'},{id:'kpis',ico:'📊',lbl:'Indicadores KPI'}]},
-  {sec:'Compromisos',items:[{id:'comps',ico:'🤝',lbl:'Mis compromisos'}]},
+const NAV_DEF = [
+  { sec:'Mi panel', items:[
+    { id:'sectorial',    ico:'⚡', lbl:'Panel de hoy',         badge:()=>badgeTotal() },
+    { id:'instrucciones',ico:'📬', lbl:'Instrucciones',        badge:()=>instrPendientes() },
+  ]},
+  { sec:'Operativo', items:[
+    { id:'obras',        ico:'🏗', lbl:'Obras y actividades',  badge:()=>obrasCriticas() },
+    { id:'compromisos',  ico:'🤝', lbl:'Mis compromisos',      badge:()=>compVencidos() },
+  ]},
+  { sec:'Área', items:[
+    { id:'presupuesto',  ico:'💰', lbl:'Presupuesto y KPIs',   badge:()=>0 },
+    { id:'escalar',      ico:'🚨', lbl:'Escalar al GM',        badge:()=>calcEscalables() },
+  ]},
 ];
-const TITULOS = {instruc:'Instrucciones recibidas',obras:'Obras y proyectos',presup:'Mi presupuesto',kpis:'Indicadores KPI',comps:'Mis compromisos',exportar:'Exportar archivo de gestión'};
 
-/* ══ SELECTOR ══════════════════════════════════════════ */
-function buildSelector(){
-  const grid = document.getElementById('ger-grid');
-  Object.entries(GC).forEach(([cod,g])=>{
-    const pend = (INSTRUC[cod]||[]).filter(i=>!i.leida).length;
-    const card = mk('div','ger-card');
-    card.innerHTML = `
-      <span class="ger-ico">${g.ico}</span>
-      <div class="ger-nombre">${g.nombre}</div>
-      <div class="ger-jefe">${g.jefe}</div>
-      <span class="ger-badge" style="background:${pend?'#FDEAEA':'rgba(255,255,255,.1)'};color:${pend?'#B02020':'rgba(255,255,255,.4)'}">${pend?'⚠ '+pend+' pendiente'+(pend>1?'s':''):'🔒 Con contraseña'}</span>`;
-    card.onclick = () => abrirModal(cod);
-    grid.appendChild(card);
+const TITULOS = {
+  sectorial:'Panel de hoy', instrucciones:'Instrucciones',
+  obras:'Obras y actividades', compromisos:'Mis compromisos',
+  presupuesto:'Presupuesto y KPIs', escalar:'Escalar al GM',
+};
+
+/* ── Badges dinámicos ── */
+function badgeTotal()       { return instrPendientes() + obrasCriticas() + compVencidos(); }
+function instrPendientes()  { return (gerCod?KausayDB.getInstrucciones(gerCod):[]).filter(i=>!i.confirmada&&i.de==='alcalde').length; }
+function obrasCriticas()    { return (gerCod?KausayDB.getObras(gerCod):[]).filter(o=>['critico','alto'].includes(o.riesgo)).length; }
+function compVencidos()     { return (gerCod?KausayDB.getCompromisos(gerCod):[]).filter(c=>c.ven||c.estado==='vencido').length; }
+function calcEscalables()   {
+  if(!gerCod) return 0;
+  const obras = KausayDB.getObras(gerCod).filter(o=>o.riesgo==='critico').length;
+  const pres  = KausayDB.getPresupuestoArea(gerCod);
+  const bajo  = pres && pres.pct < 40 ? 1 : 0;
+  return obras + bajo;
+}
+
+/* ══ NAV ═════════════════════════════════════════════ */
+function nav(v) { vista=v; render(); window.scrollTo(0,0); }
+
+function buildNav() {
+  const sb=document.getElementById('sb-nav'); if(!sb) return;
+  sb.innerHTML='';
+  NAV_DEF.forEach(sec=>{
+    const s=mk('div','kk-sb__sec'); s.textContent=sec.sec; sb.appendChild(s);
+    sec.items.forEach(it=>{
+      const el=mk('div','kk-nav-item'+(vista===it.id?' on':''));
+      const b=it.badge?.()||0;
+      el.innerHTML=`<span class="kk-nav-item__ico">${it.ico}</span><span class="kk-nav-item__lbl">${it.lbl}</span>${b>0?`<span class="kk-nav-badge">${b}</span>`:''}`;
+      el.onclick=()=>nav(it.id);
+      sb.appendChild(el);
+    });
   });
 }
 
-/* ══ MODAL ════════════════════════════════════════════ */
-function abrirModal(cod){
-  gerCod = cod;
-  const g = GC[cod];
-  const ico = document.getElementById('m-ico');
-  ico.textContent = g.ico; ico.style.cssText = `background:${g.colorBg};width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0`;
-  document.getElementById('m-nombre').textContent = g.nombre;
-  document.getElementById('m-jefe').textContent = g.jefe;
-  document.getElementById('m-entrar').style.background = g.color;
-  document.getElementById('pw-inp').value = '';
-  document.getElementById('pw-err').classList.remove('show');
-  document.getElementById('modal-bg').classList.add('show');
-  setTimeout(()=>document.getElementById('pw-inp').focus(),100);
+/* ══ RELOJ ═══════════════════════════════════════════ */
+function tick() {
+  const n=new Date(), el=document.getElementById('tb-clock');
+  if(el) el.textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')} · ${n.toLocaleDateString('es-PE',{weekday:'short',day:'numeric',month:'short'})}`;
 }
-function cerrarModal(){ document.getElementById('modal-bg').classList.remove('show'); gerCod=null; }
-function verificarPW(){
-  if(!gerCod) return;
-  const val = document.getElementById('pw-inp').value;
-  if(val === GC[gerCod].pw){ cerrarModal(); iniciarDash(gerCod); }
-  else { document.getElementById('pw-err').classList.add('show'); document.getElementById('pw-inp').select(); }
-}
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('modal-bg').classList.contains('show')) verificarPW();
-  if(e.key==='Escape') cerrarModal();
-});
+tick(); setInterval(tick,15000);
 
-/* ══ DASHBOARD ════════════════════════════════════════ */
-function iniciarDash(cod){
-  gerCod = cod;
-  instrucciones = (INSTRUC[cod]||[]).map(x=>({...x}));
-  obras = (OBRAS[cod]||[]).map(o=>({...o}));
-  avInputs = {};
-  vista = 'instruc';
-  document.getElementById('selector').style.display = 'none';
-  document.getElementById('dash').classList.add('show');
-  document.querySelector('meta[name=theme-color]').content = GC[cod].color;
-  document.getElementById('tb-date').textContent = hoy;
-  buildSb();
+/* ══ RENDER ══════════════════════════════════════════ */
+function render() {
+  if(!gerCod) { renderSinGerencia(); return; }
+  const c=document.getElementById('content'); if(!c) return;
+  c.innerHTML='';
+  const ttl=document.getElementById('tb-title');
+  if(ttl) ttl.textContent=TITULOS[vista]||vista;
+  const back=document.getElementById('tb-back');
+  if(back) back.style.display=vista==='sectorial'?'none':'flex';
+  const dot=document.getElementById('tb-dot');
+  if(dot) dot.style.display=instrPendientes()>0?'block':'none';
+  buildNav(); buildDock();
+
+  if(vista==='sectorial')     vSectorial(c);
+  else if(vista==='instrucciones') vInstrucciones(c);
+  else if(vista==='obras')    vObras(c);
+  else if(vista==='compromisos') vCompromisos(c);
+  else if(vista==='presupuesto') vPresupuesto(c);
+  else if(vista==='escalar')  vEscalar(c);
+}
+
+function renderSinGerencia() {
+  const c=document.getElementById('content'); if(!c) return;
+  c.innerHTML='';
+  c.appendChild(emptyState('🔒','Gerencia no asignada','Este panel requiere que ingreses desde el selector de gerencias en la pantalla principal.'));
+  const btn=mk('button','kk-btn kk-btn--primary');
+  btn.style.cssText='margin:16px auto;display:block;width:auto;padding:10px 24px';
+  btn.textContent='← Ir al inicio';
+  btn.onclick=()=>{ window.location.href='index.html'; };
+  c.appendChild(btn);
+}
+
+/* ══ V1: PANEL DE HOY ════════════════════════════════ */
+function vSectorial(c) {
+  const g    = gerData;
+  const pres = KausayDB.getPresupuestoArea(gerCod);
+  const kpis = KausayDB.getIndicadores(gerCod);
+  const obras= KausayDB.getObras(gerCod);
+  const comps= KausayDB.getCompromisos(gerCod);
+  const instr= KausayDB.getInstrucciones(gerCod).filter(i=>i.de==='alcalde');
+  const sinAcuse = instr.filter(i=>!i.confirmada);
+  const obrasCrit= obras.filter(o=>o.riesgo==='critico');
+  const compVen  = comps.filter(x=>x.ven||x.estado==='vencido');
+  const pct      = pres?.pct||g.ejec||0;
+  const pctCol   = KausayDB.pctColor(pct);
+
+  // Resumen sectorial
+  const estadoCol = pct>=70?'var(--c-ok)':pct>=50?'var(--c-alerta)':'var(--c-critico)';
+  const estadoTxt = obrasCrit.length?`${obrasCrit.length} obra${obrasCrit.length>1?'s críticas':' crítica'}`:compVen.length?`${compVen.length} compromiso${compVen.length>1?'s vencidos':' vencido'}`:sinAcuse.length?`${sinAcuse.length} instrucción${sinAcuse.length>1?'es':''} sin acuse`:pct>=70?'Gerencia al día':'Gestión dentro del rango';
+
+  const summary=mk('div','sec-summary');
+  summary.style.background=`linear-gradient(135deg,${g.color}CC 0%,${g.color}88 100%)`;
+  summary.innerHTML=`
+    <div class="sec-summary__left">
+      <div class="sec-summary__area">${g.nombre}</div>
+      <div class="sec-summary__nombre">${KausayDB.getMuni().gm||'Gerente'}</div>
+      <div class="sec-summary__estado" style="color:${estadoCol}">${estadoTxt}</div>
+    </div>
+    <div class="sec-summary__kpis">
+      <div class="sec-kpi"><div class="sec-kpi__v" style="color:${sinAcuse.length>0?'var(--c-alerta)':'var(--c-ok)'}">${sinAcuse.length}</div><div class="sec-kpi__l">Instr.\nsin acuse</div></div>
+      <div class="sec-kpi"><div class="sec-kpi__v" style="color:${obrasCrit.length>0?'var(--c-critico)':'var(--c-ok)'}">${obrasCrit.length}</div><div class="sec-kpi__l">Obras\ncríticas</div></div>
+      <div class="sec-kpi"><div class="sec-kpi__v" style="color:${pctCol}">${pct}%</div><div class="sec-kpi__l">Ejec.\npresup.</div></div>
+    </div>`;
+  c.appendChild(summary);
+
+  // Instrucciones pendientes (urgentes primero)
+  if(sinAcuse.length) {
+    c.appendChild(secHead(`${sinAcuse.length} instrucción${sinAcuse.length>1?'es':''} sin confirmar`,'Ver todas',()=>nav('instrucciones')));
+    sinAcuse.filter(i=>i.prioridad==='urgente').slice(0,1).forEach(i=>c.appendChild(renderInstrSec(i)));
+    sinAcuse.filter(i=>i.prioridad!=='urgente').slice(0,1).forEach(i=>c.appendChild(renderInstrSec(i)));
+  }
+
+  // Obras críticas
+  if(obrasCrit.length) {
+    c.appendChild(secHead(`${obrasCrit.length} obra${obrasCrit.length>1?'s críticas':' crítica'} — acción requerida`,'Ver obras',()=>nav('obras')));
+    obrasCrit.slice(0,2).forEach(o=>c.appendChild(renderObraSec(o,true)));
+  }
+
+  // Compromisos vencidos
+  if(compVen.length) {
+    c.appendChild(secHead(`${compVen.length} compromiso${compVen.length>1?'s vencidos':' vencido'}`,'Ver compromisos',()=>nav('compromisos')));
+    compVen.slice(0,2).forEach(x=>c.appendChild(renderCompSec(x)));
+  }
+
+  // KPI principal
+  if(kpis.length) {
+    c.appendChild(secHead('KPI principal del área','Ver todos',()=>nav('presupuesto')));
+    c.appendChild(renderKPI(kpis[0]));
+  }
+
+  // Avances pendientes de reportar (obras en ejecución sin avance reciente)
+  const sinAvance = obras.filter(o=>o.estado==='ejecucion'&&o.dias_sin_av>=3);
+  if(sinAvance.length) {
+    c.appendChild(secHead(`${sinAvance.length} obra${sinAvance.length>1?'s':''} sin avance reciente`,'Actualizar',()=>nav('obras')));
+    const card=mk('div','kk-item');
+    card.style.borderLeft='3px solid var(--c-alerta)';
+    card.innerHTML=`
+      <div class="kk-item__hd"><span class="kk-item__tipo kk-tipo--campo">Pendiente reporte</span></div>
+      <div class="kk-item__txt">${sinAvance.slice(0,3).map(o=>`· ${o.nombre} (${o.dias_sin_av}d sin avance)`).join('<br>')}</div>
+      <button class="kk-btn kk-btn--ghost" style="font-size:11px;padding:5px 11px;margin-top:4px" onclick="nav('obras')">Ir a actualizar avances →</button>`;
+    c.appendChild(card);
+  }
+}
+
+/* ══ V2: INSTRUCCIONES ═══════════════════════════════ */
+function vInstrucciones(c) {
+  const instr = KausayDB.getInstrucciones(gerCod).filter(i=>i.de==='alcalde');
+  const sinAcuse  = instr.filter(i=>!i.confirmada);
+  const conResp   = instr.filter(i=>i.respuesta&&i.respuesta.length>0);
+  const confirmadas= instr.filter(i=>i.confirmada&&(!i.respuesta||!i.respuesta.length));
+
+  if(!instr.length){c.appendChild(emptyState('📬','Sin instrucciones','Las instrucciones del alcalde y del GM aparecerán aquí.'));return;}
+
+  if(sinAcuse.length) {
+    c.appendChild(secHead(`Sin confirmar (${sinAcuse.length})`,'',null));
+    sinAcuse.forEach(i=>c.appendChild(renderInstrSec(i)));
+  }
+  if(conResp.length) {
+    c.appendChild(secHead('Respondidas','',null));
+    conResp.forEach(i=>c.appendChild(renderInstrSec(i)));
+  }
+  if(confirmadas.length) {
+    c.appendChild(secHead('Confirmadas','',null));
+    confirmadas.forEach(i=>c.appendChild(renderInstrSec(i)));
+  }
+}
+
+/* ══ V3: OBRAS Y ACTIVIDADES ═════════════════════════ */
+function vObras(c) {
+  const obras = KausayDB.getObras(gerCod);
+  if(!obras.length){c.appendChild(emptyState('🏗','Sin obras registradas','Las obras de tu gerencia aparecerán aquí.'));return;}
+
+  const groups = [
+    {lbl:'Críticas — intervención inmediata', items:obras.filter(o=>o.riesgo==='critico')},
+    {lbl:'Riesgo alto',                       items:obras.filter(o=>o.riesgo==='alto')},
+    {lbl:'En ejecución',                      items:obras.filter(o=>o.riesgo==='medio'&&o.estado==='ejecucion')},
+    {lbl:'Normal / licitación',               items:obras.filter(o=>o.riesgo==='bajo'||o.estado==='licitacion')},
+  ];
+  groups.filter(g=>g.items.length).forEach(g=>{
+    c.appendChild(secHead(`${g.lbl} (${g.items.length})`,'',null));
+    g.items.forEach(o=>c.appendChild(renderObraSec(o,false)));
+  });
+}
+
+/* ══ V4: COMPROMISOS ═════════════════════════════════ */
+function vCompromisos(c) {
+  const comps = KausayDB.getCompromisos(gerCod);
+  const ven   = comps.filter(x=>x.ven||x.estado==='vencido');
+  const proc  = comps.filter(x=>x.estado==='en_proceso');
+  const pend  = comps.filter(x=>x.estado==='pendiente'&&!x.ven);
+  const cumpl = comps.filter(x=>x.estado==='cumplido');
+
+  c.appendChild(secHead('Compromisos de mi área','+ Registrar',()=>abrirModal('modal-comp')));
+  if(!comps.length){c.appendChild(emptyState('🤝','Sin compromisos','Registra compromisos asignados a tu gerencia.'));return;}
+
+  if(ven.length){
+    c.appendChild(secHead(`Vencidos (${ven.length})`,'',null));
+    ven.forEach(x=>c.appendChild(renderCompSec(x,true)));
+  }
+  if(proc.length){
+    c.appendChild(secHead('En proceso','',null));
+    proc.forEach(x=>c.appendChild(renderCompSec(x,false)));
+  }
+  if(pend.length){
+    c.appendChild(secHead(`Pendientes (${pend.length})`,'',null));
+    pend.forEach(x=>c.appendChild(renderCompSec(x,false)));
+  }
+  if(cumpl.length){
+    c.appendChild(secHead('Cumplidos','',null));
+    cumpl.forEach(x=>c.appendChild(renderCompSec(x,false)));
+  }
+}
+
+/* ══ V5: PRESUPUESTO Y KPIs ══════════════════════════ */
+function vPresupuesto(c) {
+  const pres = KausayDB.getPresupuestoArea(gerCod);
+  const kpis = KausayDB.getIndicadores(gerCod);
+  const pct  = pres?.pct||gerData.ejec||0;
+  const col  = KausayDB.pctColor(pct);
+
+  // Bloque presupuestal
+  if(pres) {
+    const card=mk('div','');
+    card.style.cssText='background:var(--c-sb);border-radius:var(--r-lg);padding:13px var(--sp-md);margin-bottom:8px';
+    card.innerHTML=`
+      <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${gerData.nombre} — Ejecución ${new Date().getFullYear()}</div>
+      <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:8px">
+        <div style="font-family:var(--f-cond);font-size:40px;font-weight:800;color:${col};line-height:1">${pct}%</div>
+        <div style="flex:1;padding-bottom:6px">
+          <div class="kk-bar-track" style="height:8px;margin-bottom:4px"><div class="kk-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5)">${KausayDB.fmt(pres.ejec)} de ${KausayDB.fmt(pres.asig)}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px">
+        <div><div style="font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase">Saldo</div><div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.85)">${KausayDB.fmt(pres.asig-pres.ejec)}</div></div>
+        <div><div style="font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase">Estado</div><div style="font-size:13px;font-weight:600;color:${col}">${KausayDB.pctLabel(pct)}</div></div>
+      </div>`;
+    c.appendChild(card);
+
+    // Alerta de ejecución baja
+    if(pct<50) {
+      const banner=mk('div','escalar-gm');
+      banner.innerHTML=`
+        <div class="escalar-gm__hd"><span class="escalar-gm__ico">⚠️</span><div class="escalar-gm__ttl">Ejecución crítica — riesgo de devolución</div></div>
+        <div class="escalar-gm__desc">Con ${pct}% de ejecución existe riesgo de no llegar al cierre fiscal. Coordina con Planeamiento un plan de devengado urgente.</div>
+        <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="abrirEscalar('presupuesto','Ejecución al ${pct}% — riesgo de devolución de recursos')">Escalar al GM</button>`;
+      c.appendChild(banner);
+    }
+  }
+
+  // KPIs
+  if(kpis.length) {
+    c.appendChild(secHead('Indicadores de desempeño','',null));
+    kpis.forEach(k=>c.appendChild(renderKPI(k)));
+  } else {
+    c.appendChild(emptyState('📊','Sin indicadores configurados','Los KPIs de tu área se configuran en el onboarding.'));
+  }
+}
+
+/* ══ V6: ESCALAR AL GM ═══════════════════════════════ */
+function vEscalar(c) {
+  const obras = KausayDB.getObras(gerCod).filter(o=>o.riesgo==='critico');
+  const pres  = KausayDB.getPresupuestoArea(gerCod);
+  const presLow = pres && pres.pct < 40;
+  const comps   = KausayDB.getCompromisos(gerCod).filter(x=>x.ven&&x.prioridad==='alta');
+
+  const total = obras.length + (presLow?1:0) + comps.length;
+
+  c.appendChild(secHead('Situaciones que requieren intervención del GM','',null));
+
+  if(!total) {
+    c.appendChild(emptyState('✅','Sin situaciones para escalar','Tu gerencia está dentro de los parámetros manejables.'));
+    // Botón siempre disponible
+    const btn=mk('button','kk-btn kk-btn--danger kk-btn--full');
+    btn.style.marginTop='16px';
+    btn.textContent='🚨 Escalar situación al GM';
+    btn.onclick=()=>abrirModal('modal-escalar');
+    c.appendChild(btn);
+    return;
+  }
+
+  // Obras críticas
+  obras.forEach(o=>{
+    const card=mk('div','escalar-gm'); card.style.marginBottom='8px';
+    card.innerHTML=`
+      <div class="escalar-gm__hd"><span class="escalar-gm__ico">🚧</span><div class="escalar-gm__ttl">${o.nombre}</div></div>
+      <div class="escalar-gm__desc">${o.estado==='paralizada'?`Paralizada ${o.dias_sin_av} días.`:'Riesgo crítico.'} Presupuesto comprometido: <strong>${KausayDB.fmt(o.presup)}</strong>. Se requiere decisión del GM.</div>
+      <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="abrirEscalar('obra_paralizada','${o.nombre.replace(/'/g,'')}')">🚨 Escalar al GM</button>`;
+    c.appendChild(card);
+  });
+
+  // Presupuesto bajo
+  if(presLow) {
+    const card=mk('div','escalar-gm'); card.style.marginBottom='8px';
+    card.innerHTML=`
+      <div class="escalar-gm__hd"><span class="escalar-gm__ico">💰</span><div class="escalar-gm__ttl">Ejecución presupuestal crítica (${pres.pct}%)</div></div>
+      <div class="escalar-gm__desc">Riesgo de no alcanzar el mínimo de ejecución. Saldo sin ejecutar: <strong>${KausayDB.fmt(pres.asig-pres.ejec)}</strong>.</div>
+      <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="abrirEscalar('presupuesto','Ejecución al ${pres.pct}%')">🚨 Escalar al GM</button>`;
+    c.appendChild(card);
+  }
+
+  // Compromisos vencidos de alta prioridad
+  comps.forEach(x=>{
+    const card=mk('div','escalar-gm'); card.style.marginBottom='8px';
+    card.innerHTML=`
+      <div class="escalar-gm__hd"><span class="escalar-gm__ico">🤝</span><div class="escalar-gm__ttl">Compromiso vencido: ${x.desc.slice(0,50)}${x.desc.length>50?'...':''}</div></div>
+      <div class="escalar-gm__desc">Alta prioridad · Fecha: <strong>${x.fec}</strong>. Requiere gestión de recursos o autorización superior.</div>
+      <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="abrirEscalar('bloqueo','${x.desc.slice(0,60).replace(/'/g,'')}')">🚨 Escalar al GM</button>`;
+    c.appendChild(card);
+  });
+
+  // Botón libre
+  const btnFree=mk('button','kk-btn kk-btn--ghost kk-btn--full');
+  btnFree.style.marginTop='8px';
+  btnFree.textContent='+ Escalar otra situación al GM';
+  btnFree.onclick=()=>abrirModal('modal-escalar');
+  c.appendChild(btnFree);
+}
+
+/* ══ RENDERERS ═══════════════════════════════════════ */
+function renderInstrSec(ins) {
+  const tipoCol={instruccion:'var(--c-critico)',consulta:'var(--c-info)',alerta:'var(--c-alerta)'}[ins.tipo]||'var(--c-gris3)';
+  const tipoLabel={instruccion:'Instrucción',consulta:'Consulta',alerta:'Alerta',difusion:'Difusión'}[ins.tipo]||ins.tipo;
+  const card=mk('div','kk-item');
+  card.style.borderLeft=`3px solid ${tipoCol}`;
+  card.innerHTML=`
+    <div class="kk-item__hd">
+      <span class="kk-item__tipo kk-tipo--${ins.tipo}">${tipoLabel}</span>
+      <span class="kk-item__ts" style="margin-left:auto">${ins.hora}</span>
+      <span class="kk-item__estado ${ins.confirmada?'kk-estado--ok':'kk-estado--pend'}">${ins.confirmada?'✓ Leída':'⏳ Sin confirmar'}</span>
+    </div>
+    <div class="kk-item__txt">${ins.contenido}</div>
+    ${ins.prioridad==='urgente'?'<div class="kk-item__prio-urgente" style="margin-bottom:5px">⚡ Urgente</div>':''}
+    ${ins.respuesta?`<div class="kk-item__resp"><strong>Mi respuesta:</strong> ${ins.respuesta}</div>`:''}
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      ${!ins.confirmada?`<button class="kk-btn kk-btn--ok" style="font-size:11px;padding:5px 11px" onclick="confirmarInstr('${ins.id}')">✓ Confirmar</button>`:''}
+      ${!ins.respuesta?`<button class="kk-btn kk-btn--ghost" style="font-size:11px;padding:5px 11px" onclick="abrirRespuesta('${ins.id}')">Responder</button>`:''}
+    </div>`;
+  return card;
+}
+
+function renderObraSec(o, compact=false) {
+  const col=KausayDB.riesgoColor(o.riesgo);
+  const card=mk('div','obra-op');
+  card.style.setProperty('--oc', col);
+  const compactBtns = compact
+    ? `<button class="kk-btn kk-btn--ghost" style="font-size:10px;padding:4px 10px" onclick="nav('obras')">Ver obra completa →</button>`
+    : '';
+  card.innerHTML=`
+    <div class="obra-op__hd">
+      <div class="obra-op__nombre">${o.nombre}</div>
+      <span class="kk-chip ${o.riesgo==='critico'?'kk-chip--critico':o.riesgo==='alto'?'kk-chip--alerta':'kk-chip--neutral'}">${o.riesgo}</span>
+    </div>
+    <div class="obra-op__pct-row">
+      <div class="obra-op__pct-big" style="color:${col}">${o.pct}%</div>
+      <div class="obra-op__bar-col">
+        <div class="kk-bar-track" style="height:7px;margin-bottom:5px"><div class="kk-bar-fill" style="width:${o.pct}%;background:${col}"></div></div>
+        <div class="obra-op__meta">
+          <span class="obra-op__info">${KausayDB.fmt(o.presup)} · Fin: ${o.fin}</span>
+          ${o.dias_sin_av>0?`<span style="font-size:10px;font-weight:600;color:${o.dias_sin_av>7?'var(--c-critico)':'var(--c-alerta)'}"> · ${o.dias_sin_av}d sin avance</span>`:''}
+        </div>
+      </div>
+    </div>
+    ${compact?compactBtns:`
+    <div class="obra-op__upd">
+      <input class="obra-op__inp" type="number" min="0" max="100" value="${o.pct}" id="pct-${o.id}" placeholder="% avance">
+      <button class="kk-btn kk-btn--ok" style="font-size:11px;padding:6px 14px" onclick="actualizarAvance('${o.id}')">Actualizar</button>
+      ${o.riesgo==='critico'?`<button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 12px" onclick="abrirEscalar('obra_paralizada','${o.nombre.replace(/'/g,'')}')">Escalar</button>`:''}
+    </div>
+    <textarea class="obra-op__obs" id="obs-${o.id}" rows="2" placeholder="Observación opcional (causa del retraso, acción tomada...)"></textarea>`}`;
+  return card;
+}
+
+function renderCompSec(comp, urgente=false) {
+  const col=comp.ven||comp.estado==='vencido'?'var(--c-critico)':comp.estado==='en_proceso'?'var(--c-info)':comp.estado==='cumplido'?'var(--c-ok)':'var(--c-alerta)';
+  const card=mk('div','comp-sec');
+  card.innerHTML=`
+    <div class="comp-sec__hd">
+      <span class="kk-item__tipo kk-tipo--${comp.origen}">${comp.origen}</span>
+      <span style="font-size:10px;font-weight:700;color:${col};margin-left:auto">${comp.estado==='vencido'||comp.ven?'VENCIDO':comp.estado.replace('_',' ').toUpperCase()}</span>
+      ${comp.prioridad==='alta'?'<span class="kk-chip kk-chip--critico">Alta</span>':''}
+    </div>
+    <div class="comp-sec__desc">${comp.desc}</div>
+    <div class="comp-sec__foot">
+      <span style="font-size:11px;font-weight:700;color:${col}">📅 ${comp.fec}</span>
+      ${comp.estado!=='cumplido'?`
+        <button class="kk-btn kk-btn--ok" style="font-size:10px;padding:3px 10px;margin-left:auto" onclick="marcarCumplido('${comp.id}')">✓ Cumplido</button>
+        <button class="kk-btn kk-btn--ghost" style="font-size:10px;padding:3px 10px" onclick="marcarEnProceso('${comp.id}')">En proceso</button>
+      `:`<span class="kk-chip kk-chip--ok" style="margin-left:auto">Cumplido</span>`}
+    </div>`;
+  return card;
+}
+
+function renderKPI(k) {
+  const pct=Math.min(100,Math.round(k.v/k.meta*100));
+  const col=KausayDB.pctColor(pct);
+  const card=mk('div','kpi-sec');
+  card.innerHTML=`
+    <div class="kpi-sec__left">
+      <div class="kpi-sec__nombre">${k.n}</div>
+      <div class="kpi-sec__bar">
+        <div class="kk-bar-track" style="height:6px;margin-bottom:3px"><div class="kk-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      </div>
+      <div class="kpi-sec__meta">Meta: <strong>${k.meta} ${k.u}</strong></div>
+    </div>
+    <div class="kpi-sec__right">
+      <div class="kpi-sec__val" style="color:${col}">${k.v}</div>
+      <div class="kpi-sec__meta2">${k.u} · ${pct}%</div>
+    </div>`;
+  return card;
+}
+
+/* ══ DOCK ════════════════════════════════════════════ */
+function buildDock() {
+  const dock=document.getElementById('dock'); if(!dock) return;
+  const items=[
+    {ico:'✓', lbl:'Confirmar\ninstrucción', fn:()=>{nav('instrucciones');KausayDB.Telemetry.firstAction();}, primary:true},
+    {ico:'🏗', lbl:'Actualizar\navance',     fn:()=>nav('obras')},
+    {ico:'🤝', lbl:'Registrar\ncompromiso',  fn:()=>abrirModal('modal-comp')},
+    {ico:'💬', lbl:'Responder\nAl GM/Alcalde',fn:()=>nav('instrucciones')},
+    {ico:'🚨', lbl:'Escalar\nal GM',          fn:()=>nav('escalar')},
+  ];
+  dock.innerHTML='';
+  items.forEach(it=>{
+    const btn=mk('button','kk-dock-btn'+(it.primary?' kk-dock-btn--primary':''));
+    btn.innerHTML=`<span class="kk-dock-btn__ico">${it.ico}</span><span class="kk-dock-btn__lbl">${it.lbl}</span>`;
+    btn.onclick=it.fn; dock.appendChild(btn);
+  });
+}
+
+/* ══ ACCIONES ════════════════════════════════════════ */
+function confirmarInstr(id) {
+  KausayDB.confirmarInstruccion(id);
+  KausayDB.Telemetry.firstAction();
+  toast('✓ Instrucción confirmada. El alcalde y GM fueron notificados.');
   render();
 }
 
-function salir(){
-  document.getElementById('dash').classList.remove('show');
-  document.getElementById('selector').style.display = 'flex';
-  document.querySelector('meta[name=theme-color]').content = '#0F0F12';
-  gerCod = null;
+function abrirRespuesta(id) {
+  instrRespId = id;
+  const ins = KausayDB.getInstrucciones(gerCod).find(i=>i.id===id);
+  document.getElementById('resp-ctx').textContent = ins ? ins.contenido.slice(0,120)+(ins.contenido.length>120?'...':'') : '';
+  document.getElementById('resp-txt').value = '';
+  document.getElementById('resp-err').classList.remove('show');
+  abrirModal('modal-resp');
 }
 
-function nav(v){ vista=v; render(); }
-
-function buildSb(){
-  const g = GC[gerCod];
-  const sb = document.getElementById('sb');
-  sb.innerHTML = `
-    <div class="sb-logo"><div class="sb-brand">Kausay<em style="color:${g.colorL}">Gerencia</em></div><div class="sb-tag">Panel sectorial</div></div>
-    <div class="sb-ger"><div class="sb-gn">${g.ico} ${g.nombre}</div><div class="sb-gm">Gerencia sectorial</div></div>
-    <div class="sb-muni">Municipalidad Provincial de Cajamarca</div>
-    <div class="sb-nav" id="sb-nav"></div>
-    <div class="sb-ft">
-      <div class="sb-av" style="background:${g.color}">${g.ini}</div>
-      <div><div class="sb-un">${g.jefe}</div><div class="sb-ur">Gerente Sectorial</div></div>
-      <button class="sb-logout" onclick="salir()">Salir</button>
-    </div>`;
+function enviarRespuesta() {
+  const txt = document.getElementById('resp-txt')?.value.trim();
+  if(!txt){ document.getElementById('resp-err').classList.add('show'); return; }
+  KausayDB.responderInstruccion(instrRespId, txt);
+  KausayDB.Telemetry.firstAction();
+  document.getElementById('resp-txt').value='';
+  cerrarModal('modal-resp');
+  toast('✓ Respuesta enviada al alcalde y al GM.');
+  render();
 }
 
-function render(){
-  const g = GC[gerCod];
-  const pend = instrucciones.filter(i=>!i.leida).length;
+function actualizarAvance(obraId) {
+  const inp=document.getElementById('pct-'+obraId);
+  const obs=document.getElementById('obs-'+obraId);
+  if(!inp) return;
+  const pct=parseInt(inp.value);
+  if(isNaN(pct)||pct<0||pct>100){ toast('⚠ Ingresa un porcentaje válido (0-100)'); return; }
+  KausayAuth.reauth('Actualizar avance de obra registrado en Contraloría').then(ok=>{ if(!ok){toast('⚠ Verificación cancelada');return;}
+  KausayDB.updateAvanceObra(obraId, pct);
+  KausayDB.Telemetry.obraActualizada();
+  if(obs?.value.trim()) {
+    KausayDB.Audit.emit('avance_obra',obraId,'Observación','update',null,{pct,obs:obs.value.trim()});
+  }
+  toast(`✓ Avance actualizado a ${pct}%`);
+  render();
+}
 
-  // Nav sidebar
-  const navEl = document.getElementById('sb-nav');
-  if(navEl){
-    navEl.innerHTML = '';
-    NAV.forEach(sec=>{
-      const sl=mk('div','sb-sec'); sl.textContent=sec.sec; navEl.appendChild(sl);
-      sec.items.forEach(it=>{
-        const b = it.id==='instruc'?pend : it.id==='comps'?g.comps.filter(c=>c.v).length : 0;
-        const item=mk('div','sb-it'+(vista===it.id?' on':''));
-        if(vista===it.id) item.style.borderLeftColor=g.color;
-        const span=mk('span','sb-n'); span.textContent=it.lbl;
-        item.innerHTML=`<span class="sb-ico">${it.ico}</span>`;
-        item.appendChild(span);
-        if(b){ const bd=mk('span','sb-badge'); bd.textContent=b; item.appendChild(bd); }
-        item.onclick=()=>nav(it.id);
-        navEl.appendChild(item);
-      });
-    });
+function marcarCumplido(id) {
+  KausayDB.updateCompromiso(id, { estado:'cumplido' });
+  KausayDB.Telemetry.firstAction();
+  toast('✓ Compromiso marcado como cumplido');
+  render();
+}
+function marcarEnProceso(id) {
+  KausayDB.updateCompromiso(id, { estado:'en_proceso' });
+  toast('✓ Compromiso marcado como en proceso');
+  render();
+}
+
+function guardarCompromiso() {
+  const desc = document.getElementById('comp-desc')?.value.trim();
+  const origen= document.getElementById('comp-origen')?.value;
+  const fec   = document.getElementById('comp-fec')?.value;
+  const prio  = document.getElementById('comp-prio')?.value;
+  if(!desc){ toast('⚠ La descripción es requerida'); return; }
+  KausayDB.addCompromiso({ desc, resp:gerCod, origen, fec:fec||'Por definir', prioridad:prio, ven:false, estado:'pendiente' });
+  document.getElementById('comp-desc').value='';
+  cerrarModal('modal-comp');
+  toast('✓ Compromiso registrado');
+  nav('compromisos');
+}
+
+function abrirEscalar(tipo, prefill='') {
+  escalarTipo = tipo;
+  document.querySelectorAll('#escalar-chips .kk-chip-btn').forEach(b=>{
+    b.classList.toggle('sel', b.dataset.tipo===tipo);
+  });
+  document.getElementById('escalar-txt').value = prefill;
+  document.getElementById('escalar-err').classList.remove('show');
+  abrirModal('modal-escalar');
+}
+
+function enviarEscalamiento() {
+  const txt = document.getElementById('escalar-txt')?.value.trim();
+  if(!txt){ document.getElementById('escalar-err').classList.add('show'); return; }
+  KausayAuth.reauth('Escalar situación al Gerente Municipal').then(ok=>{ if(!ok){toast('⚠ Verificación cancelada');return;}
+  KausayDB.addInstruccion({
+    tipo:'alerta', para:'GM', paraLabel:'Gerente Municipal',
+    contenido:`[ESCALAMIENTO ${gerData?.nombre||gerCod}] ${escalarTipo.toUpperCase()}: ${txt}`,
+    prioridad:'urgente',
+  });
+  KausayDB.Audit.emit('escalamiento', gerCod, txt.slice(0,60), 'escalar', null, { destino:'GM', tipo:escalarTipo });
+  KausayDB.Telemetry.firstAction();
+  document.getElementById('escalar-txt').value='';
+  cerrarModal('modal-escalar');
+  toast('🚨 Escalamiento enviado al GM');
+  render();
+}
+
+/* ══ CHIPS ESCALAR ════════════════════════════════════ */
+document.querySelectorAll('#escalar-chips .kk-chip-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('#escalar-chips .kk-chip-btn').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel'); escalarTipo=btn.dataset.tipo;
+  };
+});
+
+/* ══ MODALES ═════════════════════════════════════════ */
+function abrirModal(id){ document.getElementById(id)?.classList.add('show'); }
+function cerrarModal(id){ document.getElementById(id)?.classList.remove('show'); }
+
+/* ══ HELPERS ═════════════════════════════════════════ */
+function mk(tag,cls){ const el=document.createElement(tag); if(cls) el.className=cls; return el; }
+function secHead(ttl,lnkTxt,lnkFn){
+  const hd=mk('div','kk-sec-hd');
+  hd.innerHTML=`<span class="kk-sec-ttl">${ttl}</span>`;
+  if(lnkTxt&&lnkFn){const btn=mk('button','kk-sec-lnk');btn.textContent=lnkTxt;btn.onclick=lnkFn;hd.appendChild(btn);}
+  return hd;
+}
+function emptyState(ico,ttl,desc){
+  const el=mk('div','kk-empty');
+  el.innerHTML=`<div class="kk-empty__ico">${ico}</div><div class="kk-empty__ttl">${ttl}</div><div class="kk-empty__desc">${desc}</div>`;
+  return el;
+}
+function toast(msg,dur=2800){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ══ OFFLINE ═════════════════════════════════════════ */
+function updateOnlineStatus(){
+  const bar=document.getElementById('offline-bar');
+  if(bar) bar.classList.toggle('show',!navigator.onLine);
+}
+window.addEventListener('online', ()=>{updateOnlineStatus();toast('✓ Conexión restaurada');});
+window.addEventListener('offline', updateOnlineStatus);
+
+function logout(){ window.location.href='index.html'; }
+
+/* ══ INIT ════════════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  // ── AUTH ──
+  KausayAuth.requireAuth(['gerente_sectorial', 'gerente_municipal']);
+  const _sess = KausayAuth.getSession();
+  // Validar que gerente_sectorial tenga gerencia_id
+  if (_sess?.rol === 'gerente_sectorial' && !_sess?.gerencia_cod) {
+    window.location.href = 'login.html?error=sin_gerencia';
+    return;
+  }
+  // Determinar gerencia desde sessionStorage (URL params ya procesados por shared.js)
+  gerCod  = sessionStorage.getItem('kausay_demo_gerencia') || null;
+  gerData = gerCod ? KausayDB.getGerencia(gerCod) : null;
+
+  KausayBranding.applyGerente(gerCod);
+  const muni   = KausayDB.getMuni();
+  const nombre = sessionStorage.getItem('kausay_demo_nombre') || gerData?.jefe || 'Gerente';
+  const ini    = nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+
+  // Aplicar color del rol a --ac
+  if(gerData?.color) {
+    document.documentElement.style.setProperty('--ac',     gerData.color);
+    document.documentElement.style.setProperty('--ac-bg',  gerData.color+'18');
+    document.documentElement.style.setProperty('--ac-brd', gerData.color+'38');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', gerData.color);
   }
 
-  // Topbar
-  const ttl = document.getElementById('tb-ttl'); if(ttl) ttl.textContent = TITULOS[vista]||vista;
-  const rt = document.getElementById('tb-rt'), rtTxt = document.getElementById('rt-txt');
-  const bdot = document.getElementById('tb-bdot');
-  const rtDot = rt.querySelector('.rt-dot');
-  if(pend>0){
-    rt.style.background='#FDEAEA'; rt.style.color='#B02020';
-    rtDot.style.background='#B02020'; rtTxt.textContent=pend+' sin confirmar';
-    bdot.style.display='block';
-  } else {
-    rt.style.background='#E8F5EE'; rt.style.color='#1A7A45';
-    rtDot.style.background='#1A7A45'; rtTxt.textContent='Alcalde ve esto';
-    bdot.style.display='none';
-  }
+  // Sidebar
+  document.getElementById('sb-muni').textContent = muni.nombre||'Municipalidad';
+  document.getElementById('sb-tag').textContent  = gerData?.nombre||'Gerencia sectorial';
+  document.getElementById('sb-av').textContent   = ini;
+  document.getElementById('sb-name').textContent = nombre;
+  document.getElementById('sb-rol').textContent  = gerData?.nombre||'Gerencia sectorial';
 
-  const c = document.getElementById('content'); if(!c) return; c.innerHTML='';
-  if(vista==='instruc') vInstruc(c,g);
-  else if(vista==='obras') vObras(c,g);
-  else if(vista==='presup') vPresup(c,g);
-  else if(vista==='kpis') vKpis(c,g);
-  else if(vista==='comps') vComps(c,g);
-  else if(vista==='exportar') vExportar(c,g);
-}
+  updateOnlineStatus();
 
-/* ══ VISTA INSTRUCCIONES ══════════════════════════════ */
-function vInstruc(c,g){
-  const pend = instrucciones.filter(i=>!i.leida).length;
-  const hd=mk('div','sec-hd');
-  hd.innerHTML=`<span class="sec-ttl">Instrucciones del alcalde</span>`;
-  const badge=mk('span','pill '+(pend>0?'p-r':'p-g'));
-  badge.textContent=pend>0?pend+' sin confirmar':'Todas confirmadas';
-  hd.appendChild(badge); c.appendChild(hd);
+  // EventBus — dentro de load
+  KausayDB.EventBus.on('instruccion:nueva',        ()=>render());
+  KausayDB.EventBus.on('instruccion:confirmada',   ()=>render());
+  KausayDB.EventBus.on('instruccion:respondida',   ()=>render());
+  KausayDB.EventBus.on('obra:avance',              ()=>render());
+  KausayDB.EventBus.on('compromiso:nuevo',         ()=>render());
+  KausayDB.EventBus.on('compromiso:updated',       ()=>render());
+  KausayDB.EventBus.on('wq:conflict',              ()=>render());
+  KausayDB.EventBus.on('remote:instruccion:nueva', ()=>render());
+  KausayDB.EventBus.on('remote:obra:avance',       ()=>render());
 
-  c.appendChild(ExportBar('Instrucciones', ()=>exportarGerencia(gerCod,'instruc')));
-  if(!instrucciones.length){
-    const e=mk('div',''); e.style.cssText='text-align:center;padding:32px;color:#8A90A0;font-size:13px';
-    e.textContent='✓ No hay instrucciones pendientes.'; c.appendChild(e); return;
-  }
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('app').style.display='flex';
 
-  instrucciones.forEach((ins,i)=>{
-    const tipoCols={instruccion:'#B02020',consulta:'#185FA5',alerta:'#C8880A',informe:'#1A7A45'};
-    const tipoPill={instruccion:'p-r',consulta:'p-b',alerta:'p-a',informe:'p-g'};
-    const tipoLbl={instruccion:'Instrucción',consulta:'Consulta',alerta:'Alerta',informe:'Informe'};
-    const item=mk('div','ins');
-    item.style.borderLeftColor=tipoCols[ins.tipo]||'#B02020';
+  render();
 
-    const hd2=mk('div','ins-hd');
-    hd2.innerHTML=`<span class="ins-from">Del Alcalde · vía Gte. Municipal</span><span class="ins-hora">${ins.hora}</span>`;
-    const tp=mk('span','pill '+tipoPill[ins.tipo]); tp.textContent=tipoLbl[ins.tipo]||ins.tipo;
-    hd2.appendChild(tp);
-
-    const body=mk('div','ins-body'); body.textContent=ins.txt;
-    const st=mk('div','ins-st '+(ins.leida?'ok':'pend'));
-    st.textContent=ins.leida?'✓ Lectura confirmada al alcalde':'⚠ Pendiente — el alcalde no sabe que lo leíste';
-
-    const acts=mk('div','ins-acts');
-    if(!ins.leida){
-      const ok=mk('button','ibtn ibtn-ok'); ok.textContent='✓ Confirmar lectura';
-      ok.onclick=()=>{ instrucciones[i].leida=true; render(); };
-      acts.appendChild(ok);
-    }
-
-    const rb=mk('button','ibtn ibtn-resp');
-    rb.textContent=ins.resp?'✏ Editar respuesta':'💬 Responder al alcalde';
-    const box=mk('div','resp-box'+(ins.resp?' open':''));
-    const ta=mk('textarea','resp-ta'); ta.rows=3;
-    ta.placeholder=ins.tipo==='consulta'?'Escribe tu respuesta a la consulta del alcalde...':'Reporta el estado de cumplimiento de esta instrucción...';
-    ta.value=ins.resp||'';
-    const row=mk('div','resp-row');
-    const send=mk('button','resp-send'); send.style.background=g.color;
-    send.textContent=ins.tipo==='consulta'?'Enviar respuesta':'Reportar cumplimiento';
-    const cancel=mk('button','resp-cancel'); cancel.textContent='Cancelar';
-    send.onclick=()=>{
-      if(!ta.value.trim()) return;
-      instrucciones[i].resp=ta.value; instrucciones[i].leida=true;
-      send.textContent='✓ Enviado'; send.disabled=true;
-      setTimeout(()=>render(),900);
-    };
-    cancel.onclick=()=>box.classList.remove('open');
-    rb.onclick=()=>box.classList.toggle('open');
-    row.appendChild(send); row.appendChild(cancel);
-    box.appendChild(ta); box.appendChild(row);
-    acts.appendChild(rb);
-
-    item.appendChild(hd2); item.appendChild(body); item.appendChild(st); item.appendChild(acts); item.appendChild(box);
-    c.appendChild(item);
+  
+  // ── REALTIME SUPABASE (Etapa 4) ──
+  KausayDB.subscribeRealtime('instrucciones', payload => {
+    KausayDB.Cache.invalidate('instrucciones');
+    KausayDB.EventBus.emit('instruccion:nueva', payload.new);
+    render();
   });
-}
-
-/* ══ VISTA OBRAS ═══════════════════════════════════════ */
-function vObras(c,g){
-  c.appendChild(ExportBar('Obras', ()=>exportarGerencia(gerCod,'obras')));
-  if(!obras.length){
-    const e=mk('div',''); e.style.cssText='text-align:center;padding:32px;color:#8A90A0;font-size:13px';
-    e.textContent='Esta gerencia no tiene obras registradas.'; c.appendChild(e); return;
-  }
-
-  const enEjec=obras.filter(o=>o.est==='ejecucion').length;
-  const paraliz=obras.filter(o=>o.est==='paralizada').length;
-
-  const kRow=mk('div','kpi-row');
-  [{v:obras.length,l:'Total obras',col:g.color},{v:enEjec,l:'En ejecución',col:'#1A7A45'},{v:paraliz,l:'Paralizadas',col:paraliz?'#B02020':'#1A7A45'}].forEach(k=>{
-    const km=mk('div','kpi-m');
-    km.style.borderTop=`2px solid ${k.col}`;
-    km.innerHTML=`<div class="kpi-mv" style="color:${k.col}">${k.v}</div><div class="kpi-ml">${k.l}</div>`;
-    kRow.appendChild(km);
+  KausayDB.subscribeRealtime('obras', payload => {
+    KausayDB.Cache.invalidate('obras');
+    KausayDB.EventBus.emit('obra:avance', { id: payload.new?.id, pct: payload.new?.porcentaje_avance });
+    render();
   });
-  c.appendChild(kRow);
-
-  const hd=mk('div','sec-hd');
-  hd.innerHTML='<span class="sec-ttl">Estado de obras</span>';
-  const rt=mk('span','rt'); rt.style.background='#E8F5EE'; rt.style.color='#1A7A45';
-  rt.innerHTML='<span class="rt-dot" style="background:#1A7A45"></span>Alcalde ve esto en vivo';
-  hd.appendChild(rt); c.appendChild(hd);
-
-  obras.forEach((o,idx)=>{
-    const col=pctC(o.pct);
-    const estLbl={paralizada:'⚠️ Paralizada',ejecucion:'En ejecución',proyecto:'En proyecto',licitacion:'Licitación',entregada:'✓ Entregada'};
-    const estPill={paralizada:'p-r',ejecucion:'p-g',proyecto:'p-x',licitacion:'p-a',entregada:'p-g'};
-
-    const item=mk('div','obra');
-    const hd2=mk('div','obra-hd');
-    const nm=mk('div','obra-n'); nm.textContent=o.n;
-    const pct=mk('div','obra-pct'); pct.textContent=o.pct+'%'; pct.style.color=col;
-    hd2.appendChild(nm); hd2.appendChild(pct);
-
-    const meta=mk('div','obra-meta');
-    const pill=mk('span','pill '+estPill[o.est]); pill.textContent=estLbl[o.est]||o.est;
-    const fin=mk('span','obra-fin'); fin.textContent='📅 '+o.fin;
-    const presup=mk('span',''); presup.style.cssText='font-size:11px;color:#8A90A0'; presup.textContent=o.presup;
-    meta.appendChild(pill); meta.appendChild(fin); meta.appendChild(presup);
-
-    const pb=mk('div','pbar');
-    const pbf=mk('div','pbar-f'); pbf.style.width=o.pct+'%'; pbf.style.background=col;
-    pb.appendChild(pbf);
-
-    item.appendChild(hd2); item.appendChild(meta); item.appendChild(pb);
-
-    if(o.est!=='proyecto'&&o.est!=='entregada'){
-      const avf=mk('div','av-form');
-      const lbl=mk('span','av-lbl'); lbl.textContent='Actualizar avance:';
-      const inp=mk('input','av-inp'); inp.type='number'; inp.min='0'; inp.max='100'; inp.placeholder='% nuevo';
-      inp.value=avInputs[idx]||'';
-      inp.oninput=e=>{ avInputs[idx]=e.target.value; };
-      const okSp=mk('span','av-ok'); okSp.textContent='✓ Guardado — el alcalde ya puede verlo';
-      const btn=mk('button','av-btn'); btn.style.background=g.color; btn.textContent='Registrar';
-      btn.onclick=()=>{
-        const val=parseInt(avInputs[idx]||'');
-        if(isNaN(val)||val<0||val>100) return;
-        obras[idx].pct=val; avInputs[idx]=''; okSp.style.display='inline';
-        setTimeout(()=>{ okSp.style.display='none'; render(); },2000);
-      };
-      avf.appendChild(lbl); avf.appendChild(inp); avf.appendChild(btn); avf.appendChild(okSp);
-      item.appendChild(avf);
-    }
-    c.appendChild(item);
+  KausayDB.subscribeRealtime('compromisos', payload => {
+    KausayDB.Cache.invalidate('compromisos');
+    render();
   });
-}
-
-/* ══ VISTA PRESUPUESTO ════════════════════════════════ */
-function vPresup(c,g){
-  const p=g.pres, pctE=Math.round(p.ejec/p.asig*100), saldo=p.asig-p.ejec;
-  const pctComp=Math.min(Math.round(g.comprometido/p.asig*100),100);
-
-  const hd=mk('div','sec-hd');
-  hd.innerHTML='<span class="sec-ttl">Ejecución presupuestal</span><span style="font-size:11px;color:#8A90A0">Año 2024</span>';
-  c.appendChild(hd);
-
-  [{lbl:'Presupuesto ejecutado',val:p.ejec,pct:pctE,col:pctC(pctE)},
-   {lbl:'Presupuesto comprometido',val:g.comprometido,pct:pctComp,col:'#185FA5'}
-  ].forEach(row=>{
-    const item=mk('div','pres');
-    const lbl=mk('div','pres-lbl'); lbl.textContent=row.lbl;
-    const bw=mk('div','pres-bw');
-    const bar=mk('div','pres-bar');
-    const barf=mk('div','pres-bar-f'); barf.style.width=row.pct+'%'; barf.style.background=row.col;
-    bar.appendChild(barf);
-    const pct=mk('div','pres-pct'); pct.textContent=row.pct+'%'; pct.style.color=row.col;
-    bw.appendChild(bar); bw.appendChild(pct);
-    const montos=mk('div','pres-montos');
-    montos.innerHTML=`<span>Monto: <strong>${fmt(row.val)}</strong></span><span>Asignado: <strong>${fmt(p.asig)}</strong></span>`;
-    item.appendChild(lbl); item.appendChild(bw); item.appendChild(montos);
-    c.appendChild(item);
-  });
-
-  const al=mk('div','info-box');
-  if(saldo>p.asig*.3){
-    al.style.background='#FDEAEA'; al.style.color='#B02020';
-    al.innerHTML=`⚠️ <strong>Riesgo de cierre:</strong> tienes <strong>${fmt(saldo)}</strong> sin ejecutar. El MEF puede recuperar este saldo al 31 de diciembre.`;
-  } else {
-    al.style.background='#E8F5EE'; al.style.color='#1A7A45';
-    al.innerHTML=`✓ Ejecución dentro del rango esperado. Saldo restante: <strong>${fmt(saldo)}</strong>.`;
-  }
-  c.appendChild(al);
-
-  const fs=mk('div','');
-  const fhd=mk('div','sec-hd'); fhd.innerHTML='<span class="sec-ttl">Registrar devengado del mes</span>';
-  fs.appendChild(fhd);
-  const card=mk('div','card');
-  const devOk=mk('div',''); devOk.style.cssText='font-size:12px;color:#1A7A45;font-weight:600;margin-top:8px;display:none';
-  devOk.textContent='✓ Devengado registrado. El GM y el alcalde pueden verlo.';
-  card.innerHTML=`
-    <div class="form-row"><label class="form-lbl">Monto devengado este mes (S/.)</label><input class="form-inp" type="number" placeholder="0.00" id="dev-m"></div>
-    <div class="form-row"><label class="form-lbl">Concepto / partida presupuestal</label><input class="form-inp" placeholder="Ej: Pago valorización N°3 — Jr. Lima" id="dev-c"></div>`;
-  const devBtn=mk('button','form-btn'); devBtn.style.background=g.color; devBtn.textContent='Registrar devengado';
-  devBtn.onclick=()=>{ devOk.style.display='block'; setTimeout(()=>devOk.style.display='none',3000); };
-  card.appendChild(devBtn); card.appendChild(devOk);
-  fs.appendChild(card); c.appendChild(fs);
-}
-
-/* ══ VISTA KPIs ════════════════════════════════════════ */
-function vKpis(c,g){
-  const hd=mk('div','sec-hd');
-  hd.innerHTML='<span class="sec-ttl">Indicadores de gestión</span><span style="font-size:11px;color:#8A90A0">Actualizar mensualmente</span>';
-  c.appendChild(hd);
-
-  g.kpis.forEach((kpi,i)=>{
-    const pct=Math.round(kpi.v/kpi.meta*100), col=pctC(pct);
-    const item=mk('div','ind');
-
-    const hd2=mk('div','ind-hd');
-    const nm=mk('div','ind-n'); nm.textContent=kpi.n;
-    const editBtn=mk('button','ind-edit'); editBtn.textContent='✏ Actualizar';
-
-    const form=mk('div','ind-form');
-    const frow=mk('div','form-row');
-    const flbl=mk('label','form-lbl'); flbl.textContent='Nuevo valor';
-    const finp=mk('input','form-inp'); finp.type='number'; finp.value=kpi.v;
-    const frow2=mk('div',''); frow2.style.cssText='display:flex;gap:8px;margin-top:0';
-    const fsave=mk('button','resp-send'); fsave.style.background=g.color; fsave.textContent='Guardar';
-    const fcancel=mk('button','resp-cancel'); fcancel.textContent='Cancelar';
-    fsave.onclick=()=>{
-      const v=parseFloat(finp.value);
-      if(!isNaN(v)){ g.kpis[i].v=v; render(); }
-    };
-    fcancel.onclick=()=>form.classList.remove('open');
-    editBtn.onclick=()=>form.classList.toggle('open');
-    frow.appendChild(flbl); frow.appendChild(finp);
-    frow2.appendChild(fsave); frow2.appendChild(fcancel);
-    form.appendChild(frow); form.appendChild(frow2);
-
-    hd2.appendChild(nm); hd2.appendChild(editBtn);
-
-    const val=mk('div','ind-v'); val.style.color=col;
-    val.innerHTML=`${kpi.v.toLocaleString('es-PE')}<span class="ind-meta"> ${kpi.u} / meta: ${kpi.meta.toLocaleString('es-PE')}</span>`;
-
-    const prog=mk('div','ind-prog');
-    const progf=mk('div','ind-prog-f'); progf.style.width=Math.min(pct,100)+'%'; progf.style.background=col;
-    prog.appendChild(progf);
-
-    const foot=mk('div','ind-foot');
-    const per=mk('span','ind-per'); per.textContent='Nov 2024';
-    const badge=mk('span','pill '+(pct>=80?'p-g':pct>=50?'p-a':'p-r'));
-    badge.textContent=pct+'% de la meta';
-    foot.appendChild(per); foot.appendChild(badge);
-
-    item.appendChild(hd2); item.appendChild(val); item.appendChild(prog); item.appendChild(foot); item.appendChild(form);
-    c.appendChild(item);
-  });
-}
-
-/* ══ VISTA COMPROMISOS ════════════════════════════════ */
-function vComps(c,g){
-  const venc=g.comps.filter(x=>x.v).length;
-  const hd=mk('div','sec-hd');
-  hd.innerHTML=`<span class="sec-ttl">Mis compromisos</span>`;
-  const badge=mk('span','pill '+(venc>0?'p-r':'p-g'));
-  badge.textContent=venc>0?venc+' vencidos':'Al día';
-  hd.appendChild(badge); c.appendChild(hd);
-
-  g.comps.forEach(comp=>{
-    const col=comp.v?'#B02020':'#1A7A45';
-    const item=mk('div','comp');
-    const dot=mk('span','comp-dot'); dot.style.background=col;
-    const bd=mk('div','comp-bd');
-    const ttl=mk('div','comp-ttl'); ttl.textContent=comp.t;
-    const meta=mk('div','comp-meta');
-    const or=mk('span',''); or.textContent=comp.o;
-    meta.appendChild(or);
-    if(comp.v){ const vc=mk('span','pill p-r'); vc.textContent='Vencido'; meta.appendChild(vc); }
-    bd.appendChild(ttl); bd.appendChild(meta);
-    const fec=mk('span','comp-fec'); fec.textContent=comp.f; fec.style.color=col;
-    item.appendChild(dot); item.appendChild(bd); item.appendChild(fec);
-    c.appendChild(item);
-  });
-
-  const fhd=mk('div','sec-hd'); fhd.style.marginTop='4px';
-  fhd.innerHTML='<span class="sec-ttl">Reportar cumplimiento</span>';
-  c.appendChild(fhd);
-
-  const card=mk('div','card');
-  const sel=mk('select','form-inp');
-  g.comps.forEach(comp=>{ const o=mk('option'); o.textContent=comp.t; sel.appendChild(o); });
-  const ta=mk('textarea','form-inp'); ta.rows=3; ta.placeholder='¿Cómo se cumplió? ¿Qué resultados? ¿Hay documentos de respaldo?';
-  const reportBtn=mk('button','form-btn'); reportBtn.style.background=g.color;
-  reportBtn.textContent='Reportar cumplimiento al GM y alcalde';
-  const ok=mk('div',''); ok.style.cssText='font-size:12px;color:#1A7A45;font-weight:600;margin-top:8px;display:none';
-  ok.textContent='✓ Reporte enviado al Gerente Municipal y al Alcalde.';
-  reportBtn.onclick=()=>{ ok.style.display='block'; setTimeout(()=>ok.style.display='none',3000); };
-  const r1=mk('div','form-row'); r1.innerHTML='<label class="form-lbl">Compromiso cumplido</label>'; r1.appendChild(sel);
-  const r2=mk('div','form-row'); r2.innerHTML='<label class="form-lbl">Evidencia o descripción</label>'; r2.appendChild(ta);
-  card.appendChild(r1); card.appendChild(r2); card.appendChild(reportBtn); card.appendChild(ok);
-  c.appendChild(card);
-}
-
-/* ══ ARRANQUE ══════════════════════════════════════════ */
-/* ══ LEER CONFIGURACIÓN DE LA MUNICIPALIDAD ══════════ */
-function loadConfig() {
-  try {
-    const raw = sessionStorage.getItem('kausay_config') || localStorage.getItem('kausay_config');
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
-  return null;
-}
-function applyConfig(cfg) {
-  if (!cfg) return;
-  // Actualizar nombre municipalidad en sidebar
-  document.querySelectorAll('.sb-muni').forEach(el => { el.textContent = cfg.muni_nombre || el.textContent; });
-}
-
-/* ══ LEER PARÁMETROS DE URL (modo demo sin sessionStorage) ══ */
-(function() {
-  const p = new URLSearchParams(window.location.search);
-  const rol = p.get('rol');
-  const nombre = p.get('nombre');
-  const gerencia = p.get('gerencia');
-  if (rol)     { sessionStorage.setItem('kausay_demo_rol', rol); }
-  if (nombre)  { sessionStorage.setItem('kausay_demo_nombre', decodeURIComponent(nombre)); }
-  if (gerencia){ sessionStorage.setItem('kausay_demo_gerencia', gerencia); }
-})();
-
-buildSelector();
-</script>
-<script src="shared.js"></script>
-<script>
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
-  }
+  if (KausayDB.CONFIG.USE_SUPABASE) KausayDB.loadInitialData().then(() => render());
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  KausayFreshness.autoMount();
+  KausayExport.renderExportBtn('kk-fresh-wrap', ["obras", "compromisos", "instrucciones"]);
+  setTimeout(()=>document.getElementById('loader').remove(),500);
+});
 </script>
 </body>
 </html>

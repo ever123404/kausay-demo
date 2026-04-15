@@ -3,250 +3,673 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#8B0000">
+<meta name="theme-color" content="#0F1015">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Municipalidad Provincial de Cajamarca</title>
+<title id="page-title">Sistema Municipal · Cajamarca</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui-kit.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Barlow',sans-serif;background:#0D0D0D;overflow:hidden}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 20% 0%,rgba(139,0,0,.22) 0%,transparent 55%),radial-gradient(ellipse at 80% 100%,rgba(139,0,0,.1) 0%,transparent 55%),#0D0D0D}
-.loader{position:fixed;inset:0;z-index:200;background:#0D0D0D;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .5s}
-.loader.hide{opacity:0;pointer-events:none}
-.loader-spin{width:26px;height:26px;border:2.5px solid rgba(255,255,255,.1);border-top-color:rgba(200,20,20,.8);border-radius:50%;animation:spin .7s linear infinite}
-.loader-txt{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.5px}
-.page{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;align-items:center}
-/* HEADER */
-.hd{width:100%;background:linear-gradient(180deg,rgba(100,0,0,.55) 0%,transparent 100%);padding:16px 16px 12px;display:flex;align-items:center;gap:12px;flex-shrink:0;animation:fadeUp .5s ease both}
-.escudo{width:44px;height:auto;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
-.hd-txt{flex:1;min-width:0}
-.hd-muni{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;line-height:1.15}
-.hd-sub{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
-.hd-r{text-align:right;flex-shrink:0}
-.hd-hora{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1}
-.hd-fecha{font-size:9px;color:rgba(255,255,255,.38);margin-top:2px;text-transform:capitalize}
-/* ESTADO */
-.estado{width:100%;padding:8px 14px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;animation:fadeUp .45s .08s ease both;opacity:0;animation-fill-mode:forwards}
-.estado-ttl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:6px}
-.estado-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
-.e-item{background:rgba(255,255,255,.05);border-radius:7px;padding:6px 4px;text-align:center;border:1px solid rgba(255,255,255,.06)}
-.e-val{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;line-height:1}
-.e-lbl{font-size:7.5px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;line-height:1.3}
-/* DECISIONES */
-.decs{width:100%;padding:8px 14px 4px;flex-shrink:0;animation:fadeUp .45s .13s ease both;opacity:0;animation-fill-mode:forwards}
-.sec-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-bottom:6px}
-.dec{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--c,#8B0000);border-radius:8px;padding:8px 11px;display:flex;align-items:center;gap:9px;margin-bottom:5px}
-.dec-ico{font-size:16px;flex-shrink:0}
-.dec-bd{flex:1;min-width:0}
-.dec-ttl{font-size:11.5px;font-weight:600;color:#fff;line-height:1.3}
-.dec-desc{font-size:9.5px;color:rgba(255,255,255,.42);margin-top:1px}
-.dec-tag{font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:7px;text-transform:uppercase;flex-shrink:0}
-.t-r{background:rgba(180,20,20,.3);color:#FF7070;border:1px solid rgba(180,20,20,.35)}
-.t-a{background:rgba(200,130,10,.25);color:#F0A80C;border:1px solid rgba(200,130,10,.3)}
-.t-i{background:rgba(24,95,165,.25);color:#70A8D8;border:1px solid rgba(24,95,165,.3)}
-/* APPS */
-.apps-sec{flex:1;width:100%;padding:8px 14px 4px;display:flex;flex-direction:column;min-height:0;animation:fadeUp .45s .18s ease both;opacity:0;animation-fill-mode:forwards}
-.apps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;flex:1}
-.app{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;text-decoration:none;border:none;background:none;font-family:'Barlow',sans-serif;-webkit-tap-highlight-color:transparent}
-.app:active .app-ico{transform:scale(.92)}
-.app-ico{width:100%;aspect-ratio:1;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:transform .15s;border:1px solid rgba(255,255,255,.1)}
-.app-shine{position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.16) 0%,transparent 100%);pointer-events:none}
-.app-sup{font-size:8px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1px;margin-bottom:2px}
-.app-letra{font-family:'Barlow Condensed',sans-serif;font-size:clamp(22px,6vw,32px);font-weight:800;color:#fff;line-height:1}
-.app-badge{position:absolute;top:5px;right:5px;background:#C42020;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:9px;border:1.5px solid rgba(0,0,0,.3)}
-.app-lbl{font-size:11px;font-weight:600;color:#fff;text-align:center;line-height:1.2}
-.app-cargo{font-size:9px;color:rgba(255,255,255,.38);text-align:center}
-/* DOCK */
-.dock{width:100%;padding:5px 14px max(env(safe-area-inset-bottom),8px);flex-shrink:0;animation:fadeUp .45s .22s ease both;opacity:0;animation-fill-mode:forwards}
-.dock-in{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:7px 10px;display:flex;justify-content:space-around}
-.dbtn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:none;background:none;font-family:'Barlow',sans-serif;-webkit-tap-highlight-color:transparent}
-.dbtn:active .dico{transform:scale(.9)}
-.dico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
-.dico-l{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:#fff}
-.dlbl{font-size:9px;color:rgba(255,255,255,.4);font-weight:600}
-/* MODAL */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
-.modal-bg.show{display:flex}
-.modal{background:#1A1A1A;border:1px solid rgba(255,255,255,.12);border-radius:17px;padding:20px 18px;width:100%;max-width:280px}
-.modal-hd{display:flex;align-items:center;gap:10px;margin-bottom:13px}
-.m-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#fff;flex-shrink:0}
-.m-n{font-size:13px;font-weight:700;color:#fff}
-.m-j{font-size:10px;color:rgba(255,255,255,.36);margin-top:1px}
-.pw-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;display:block}
-.pw-inp{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:15px;font-family:'Barlow',sans-serif;color:#fff;outline:none;letter-spacing:3px}
-.pw-inp:focus{border-color:rgba(255,255,255,.35)}
-.pw-inp::placeholder{letter-spacing:0;color:rgba(255,255,255,.2);font-size:12px}
-.pw-err{font-size:11px;color:#FF6B6B;margin-top:5px;display:none;font-weight:600}
-.pw-err.show{display:block}
-.m-btns{display:flex;gap:7px;margin-top:11px}
-.m-ok{flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;color:#fff}
-.m-cancel{padding:10px 12px;border-radius:8px;background:rgba(255,255,255,.07);border:none;color:rgba(255,255,255,.38);font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif}
-/* PANEL GERENCIAS */
-.panel-ger{position:fixed;inset:0;z-index:50;background:#0D0D0D;display:none;flex-direction:column}
-.panel-ger.show{display:flex}
-.pg-hd{padding:max(env(safe-area-inset-top),14px) 14px 10px;display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
-.pg-back{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;font-family:'Barlow',sans-serif}
-.pg-ttl{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff}
-.pg-body{flex:1;padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:9px;align-content:start;overflow-y:auto}
-.g-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:13px 11px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;transition:transform .15s}
-.g-card:active{transform:scale(.95)}
-.g-dot{width:9px;height:9px;border-radius:50%;margin:0 auto 7px;display:block}
-.g-n{font-size:12px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:3px}
-.g-jefe{font-size:9.5px;color:rgba(255,255,255,.38);margin-bottom:6px;line-height:1.3}
-.g-est{font-size:8.5px;font-weight:700;padding:2px 8px;border-radius:7px;display:inline-block;text-transform:uppercase}
+/* ── OVERRIDE GLOBAL para portada oscura ── */
+html,body { overflow: auto; background: #0F1015; color: #fff; }
+
+/* ── FONDO INSTITUCIONAL ── */
+.ix-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 20% 0%,   rgba(139,26,26,.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(24,50,95,.15)  0%, transparent 55%),
+    #0F1015;
+}
+
+/* ── LAYOUT PRINCIPAL ── */
+.ix-page { position: relative; z-index: 1; min-height: 100vh;
+  display: flex; flex-direction: column; max-width: 440px;
+  margin: 0 auto; padding: 0 0 40px; }
+
+/* ── HEADER INSTITUCIONAL ── */
+.ix-header {
+  padding: 28px 20px 20px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 0;
+}
+.ix-escudo {
+  width: 68px; height: auto;
+  filter: drop-shadow(0 3px 16px rgba(0,0,0,.7));
+  margin-bottom: 12px; display: block;
+}
+.ix-muni-nombre {
+  font-family: var(--f-cond); font-size: 22px; font-weight: 800;
+  color: #fff; line-height: 1.2; letter-spacing: .2px; margin-bottom: 3px;
+}
+.ix-muni-tipo {
+  font-size: 10px; color: rgba(255,255,255,.35);
+  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+}
+.ix-divider {
+  width: 36px; height: 1.5px;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  margin: 0 auto 10px;
+}
+.ix-sistema-tag {
+  font-size: 10px; color: rgba(255,255,255,.22);
+  letter-spacing: .5px; font-weight: 500;
+}
+
+/* ── ESTADO GENERAL MUNICIPIO ── */
+.ix-estado {
+  margin: 4px 16px 0;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 16px; padding: 16px;
+}
+.ix-estado__header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.ix-semaforo {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.ix-semaforo--critico { background: #E03030; animation: pulse 2s infinite; }
+.ix-semaforo--alerta  { background: #D4900A; animation: pulse 2.5s infinite; }
+.ix-semaforo--normal  { background: #2A9A55; }
+.ix-estado__ttl {
+  font-family: var(--f-cond); font-size: 15px; font-weight: 700;
+  color: rgba(255,255,255,.9); flex: 1;
+}
+.ix-estado__ts {
+  font-size: 10px; color: rgba(255,255,255,.3);
+}
+.ix-kpis {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 6px;
+}
+.ix-kpi {
+  background: rgba(255,255,255,.06); border-radius: 10px;
+  padding: 9px 6px; text-align: center;
+}
+.ix-kpi__v {
+  font-family: var(--f-cond); font-size: 22px; font-weight: 800; line-height: 1;
+}
+.ix-kpi__l {
+  font-size: 8px; color: rgba(255,255,255,.38);
+  text-transform: uppercase; letter-spacing: .3px;
+  margin-top: 3px; line-height: 1.3;
+}
+.ix-estado__sub {
+  margin-top: 11px; font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,.42); line-height: 1.6;
+  padding-top: 11px; border-top: 1px solid rgba(255,255,255,.07);
+}
+
+/* ── ACCESO CONTEXTUAL ── */
+.ix-acceso {
+  margin: 12px 16px 0; padding: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+}
+.ix-acceso--autenticado {
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.07);
+}
+.ix-acceso__hd {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.ix-acceso__av {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.ix-acceso__nombre {
+  font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2;
+}
+.ix-acceso__rol {
+  font-size: 10px; color: rgba(255,255,255,.45); margin-top: 1px;
+}
+.ix-acceso__logout {
+  margin-left: auto; background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.45);
+  padding: 4px 10px; cursor: pointer; font-family: var(--f-sans);
+}
+.ix-acceso__logout:hover { background: rgba(255,255,255,.15); }
+
+.ix-btn-main {
+  width: 100%; padding: 14px; border-radius: 12px; border: none;
+  font-family: var(--f-sans); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.ix-btn-main--login {
+  background: #8B1A1A; color: #fff;
+}
+.ix-btn-main--login:hover { background: #6A1010; }
+.ix-btn-main--panel {
+  color: #fff;
+}
+.ix-btn-main--panel:hover { filter: brightness(.9); }
+
+/* ── ACCESOS SECUNDARIOS (otros roles) ── */
+.ix-accesos-sec {
+  margin-top: 10px; display: flex; gap: 7px; flex-wrap: wrap;
+}
+.ix-acc-btn {
+  flex: 1; min-width: 80px; padding: 9px 6px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1); border-radius: 10px;
+  cursor: pointer; text-align: center; font-family: var(--f-sans);
+  transition: background .12s; text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.ix-acc-btn:hover { background: rgba(255,255,255,.12); }
+.ix-acc-btn:active { transform: scale(.96); }
+.ix-acc-btn__ico { font-size: 18px; display: block; margin-bottom: 3px; }
+.ix-acc-btn__lbl {
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.65); line-height: 1.3;
+}
+.ix-acc-btn__sub {
+  font-size: 9px; color: rgba(255,255,255,.3); margin-top: 1px;
+}
+
+/* ── SEC HEADER ── */
+.ix-sec-hd {
+  padding: 16px 20px 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ix-sec-ttl {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,.3);
+  text-transform: uppercase; letter-spacing: 1.5px;
+}
+
+/* ── SEMÁFORO DE GERENCIAS ── */
+.ix-gerencias {
+  padding: 0 16px; display: flex; flex-direction: column; gap: 8px;
+}
+.ix-ger-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.09);
+  border-left: 4px solid var(--gc, rgba(255,255,255,.2));
+  border-radius: 14px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: default; transition: background .12s;
+}
+.ix-ger-card:active { background: rgba(255,255,255,.09); }
+.ix-ger-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.ix-ger-body { flex: 1; min-width: 0; }
+.ix-ger-nombre {
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,.85);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.ix-ger-jefe  { font-size: 10px; color: rgba(255,255,255,.32); }
+.ix-ger-right { text-align: right; flex-shrink: 0; }
+.ix-ger-pct   {
+  font-family: var(--f-cond); font-size: 24px; font-weight: 800; line-height: 1;
+}
+.ix-ger-pct-l { font-size: 9px; color: rgba(255,255,255,.3); }
+.ix-ger-badge {
+  font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 7px;
+  text-transform: uppercase; letter-spacing: .3px; margin-top: 3px;
+  display: inline-block;
+}
+
+/* ── OBRAS CRÍTICAS (mini) ── */
+.ix-obras { padding: 0 16px; display: flex; flex-direction: column; gap: 7px; }
+.ix-obra-mini {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-left: 3px solid rgba(180,32,32,.7);
+  border-radius: 12px; padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ix-obra-mini__body { flex: 1; min-width: 0; }
+.ix-obra-mini__nombre { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ix-obra-mini__meta  { font-size: 10px; color: rgba(255,255,255,.38); }
+.ix-obra-mini__pct   { font-family: var(--f-cond); font-size: 22px; font-weight: 800; color: #E05050; flex-shrink: 0; }
+
+/* ── FOOTER ── */
+.ix-footer {
+  margin: 20px 16px 0; padding: 14px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07); border-radius: 12px;
+  text-align: center;
+}
+.ix-footer__txt {
+  font-size: 10px; color: rgba(255,255,255,.2); line-height: 1.8;
+}
+.ix-footer__txt strong { color: rgba(255,255,255,.35); }
+.ix-powered {
+  margin-top: 16px; text-align: center;
+  font-size: 9px; color: rgba(255,255,255,.12); letter-spacing: .5px;
+}
+
+/* ── LOADER ── */
+.ix-loader {
+  position: fixed; inset: 0; z-index: 100; background: #0F1015;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 14px; transition: opacity .4s;
+}
+.ix-loader.gone { opacity: 0; pointer-events: none; }
+.ix-loader__spin {
+  width: 24px; height: 24px;
+  border: 2px solid rgba(255,255,255,.1);
+  border-top-color: rgba(139,26,26,.8);
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+.ix-loader__txt { font-size: 11px; color: rgba(255,255,255,.25); letter-spacing: .5px; }
+
+/* ── ANIMACIONES ── */
+@keyframes fadeUp2 { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
+.anim-1 { animation: fadeUp2 .45s .05s ease both; opacity:0; }
+.anim-2 { animation: fadeUp2 .45s .15s ease both; opacity:0; }
+.anim-3 { animation: fadeUp2 .45s .25s ease both; opacity:0; }
+.anim-4 { animation: fadeUp2 .45s .35s ease both; opacity:0; }
+.anim-5 { animation: fadeUp2 .45s .45s ease both; opacity:0; }
+
+@media(min-width:480px){ .ix-page { padding-bottom: 60px; } }
 </style>
 </head>
 <body>
-<div class="loader" id="loader"><div class="loader-spin"></div><div class="loader-txt">Municipalidad Provincial de Cajamarca</div></div>
-<div class="bg"></div>
 
-<!-- MODAL -->
-<div class="modal-bg" id="modal-bg">
-  <div class="modal">
-    <div class="modal-hd"><div class="m-ico" id="m-ico"></div><div><div class="m-n" id="m-n"></div><div class="m-j" id="m-j"></div></div></div>
-    <label class="pw-lbl">Contraseña de acceso</label>
-    <input type="password" class="pw-inp" id="pw-inp" placeholder="Ingresa tu contraseña">
-    <div class="pw-err" id="pw-err">Contraseña incorrecta</div>
-    <div class="m-btns">
-      <button class="m-cancel" onclick="cerrarModal()">Cancelar</button>
-      <button class="m-ok" id="m-ok" onclick="verificarPW()">Ingresar</button>
+<div class="ix-bg"></div>
+
+<!-- LOADER -->
+<div class="ix-loader" id="loader">
+  <div class="ix-loader__spin"></div>
+  <div class="ix-loader__txt">Cargando sistema municipal...</div>
+</div>
+
+<div class="ix-page" id="page" style="display:none">
+
+  <!-- ══ HEADER INSTITUCIONAL ══ -->
+  <header class="ix-header anim-1">
+    <img class="ix-escudo" id="ix-escudo" src="escudo.png"
+      alt="Escudo Municipal" onerror="this.style.display='none'">
+    <div class="ix-muni-nombre" id="ix-muni-nombre">Municipalidad Provincial de Cajamarca</div>
+    <div class="ix-muni-tipo"   id="ix-muni-tipo">Municipalidad Provincial · Región Cajamarca</div>
+    <div class="ix-divider"></div>
+    <div class="ix-sistema-tag">Sistema de gestión municipal integrado</div>
+  </header>
+
+  <!-- ══ ESTADO GENERAL ══ -->
+  <section class="ix-estado anim-2" id="ix-estado">
+    <div class="ix-estado__header">
+      <span class="ix-semaforo" id="ix-semaforo"></span>
+      <span class="ix-estado__ttl" id="ix-estado-ttl">Cargando estado...</span>
+      <span class="ix-estado__ts" id="ix-estado-ts"></span>
     </div>
-  </div>
-</div>
+    <div class="ix-kpis" id="ix-kpis"></div>
+    <div class="ix-estado__sub" id="ix-estado-sub"></div>
+  </section>
 
-<!-- PANEL GERENCIAS -->
-<div class="panel-ger" id="panel-ger">
-  <div class="pg-hd">
-    <button class="pg-back" onclick="cerrarGer()">← Volver</button>
-    <div class="pg-ttl">Gerencias Sectoriales</div>
-  </div>
-  <div class="pg-body" id="pg-body"></div>
-</div>
+  <!-- ══ ACCESO CONTEXTUAL ══ -->
+  <section class="ix-acceso anim-3" id="ix-acceso">
+    <!-- Se construye dinámicamente según sesión -->
+  </section>
 
-<!-- PÁGINA -->
-<div class="page">
-  <div class="hd">
-    <img class="escudo" src="escudo.png" alt="Escudo" onerror="this.style.display='none'">
-    <div class="hd-txt"><div class="hd-muni" id="muni-n">Municipalidad Provincial de Cajamarca</div><div class="hd-sub">Sistema de gestión municipal · Kausay</div></div>
-    <div class="hd-r"><div class="hd-hora" id="hora">--:--</div><div class="hd-fecha" id="fecha"></div></div>
+  <!-- ══ GERENCIAS ══ -->
+  <div class="ix-sec-hd anim-4">
+    <span class="ix-sec-ttl">Estado por gerencia</span>
+    <span id="ix-ger-ts" style="font-size:10px;color:rgba(255,255,255,.2)"></span>
   </div>
-  <div class="estado">
-    <div class="estado-ttl">Estado del municipio hoy</div>
-    <div class="estado-grid" id="estado-grid"></div>
-  </div>
-  <div class="decs"><div class="sec-lbl">Decisiones del día</div><div id="dec-cards"></div></div>
-  <div class="apps-sec"><div class="sec-lbl" style="margin-bottom:6px">Acceder como</div><div class="apps-grid" id="apps-grid"></div></div>
-  <div class="dock">
-    <div class="dock-in">
-      <button class="dbtn" onclick="ir('config.html',null,null)"><div class="dico" style="background:#2A2A2A"><span class="dico-l">⚙</span></div><span class="dlbl">Configurar</span></button>
-      <button class="dbtn" onclick="mostrarGer()"><div class="dico" style="background:#0F6E56"><span class="dico-l">G</span></div><span class="dlbl">Gerencias</span></button>
-      <button class="dbtn" onclick="ir('login.html',null,null)"><div class="dico" style="background:#1A1D23"><span class="dico-l">→</span></div><span class="dlbl">Login</span></button>
+  <div class="ix-gerencias anim-4" id="ix-gerencias"></div>
+
+  <!-- ══ OBRAS CRÍTICAS ══ -->
+  <div id="ix-obras-section" style="display:none">
+    <div class="ix-sec-hd anim-5">
+      <span class="ix-sec-ttl">Obras que requieren atención</span>
     </div>
+    <div class="ix-obras anim-5" id="ix-obras"></div>
   </div>
+
+  <!-- ══ FOOTER INSTITUCIONAL ══ -->
+  <footer class="ix-footer anim-5">
+    <div class="ix-footer__txt">
+      <strong id="foot-muni">Municipalidad Provincial de Cajamarca</strong><br>
+      Sistema de gestión municipal · Acceso restringido al personal autorizado<br>
+      <span id="foot-ubigeo">Ubigeo 060101 · Cajamarca, Perú</span>
+    </div>
+  </footer>
+  <div class="ix-powered">Powered by <strong style="color:rgba(255,255,255,.22)">Kausay Municipal</strong></div>
+
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="branding.js"></script>
+<script src="freshness.js"></script>
+
+<script src="auth.js"></script>
 <script src="shared.js"></script>
 <script>
-(function(){const p=new URLSearchParams(window.location.search);const r=p.get('rol'),n=p.get('nombre'),g=p.get('gerencia');if(r)sessionStorage.setItem('kausay_demo_rol',r);if(n)sessionStorage.setItem('kausay_demo_nombre',decodeURIComponent(n));if(g)sessionStorage.setItem('kausay_demo_gerencia',g);})();
+/* ══ CONSTANTES ══════════════════════════════════════ */
+const ROL_LABELS = {
+  alcalde:           'Alcalde',
+  secretaria:        'Secretaria del Despacho',
+  gerente_municipal: 'Gerente Municipal',
+  gerente_sectorial: 'Gerente Sectorial',
+  asesor_despacho:   'Asesor del Despacho',
+  oci_lectura:       'OCI — Lectura',
+  soporte_kausay:    'Soporte Técnico',
+};
 
-let gerActiva=null;
-const PW={INFRA:'infra2024',RENTAS:'rentas2024',SERVICIOS:'servicios2024',SOCIAL:'social2024',SECRETARIA:'secretaria2024',PLANIF:'planif2024'};
+const ROL_DASHBOARD = {
+  alcalde:           'alcalde.html',
+  secretaria:        'secretaria.html',
+  gerente_municipal: 'gm.html',
+  gerente_sectorial: 'gerente.html',
+  asesor_despacho:   'alcalde.html',
+  oci_lectura:       'gm.html',
+};
 
-function tick(){const n=new Date();document.getElementById('hora').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');document.getElementById('fecha').textContent=n.toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});}
-tick();setInterval(tick,10000);
+const ROL_COLOR = {
+  alcalde:           '#8B1A1A',
+  secretaria:        '#9E6A06',
+  gerente_municipal: '#185FA5',
+  gerente_sectorial: '#0F6E56',
+  oci_lectura:       '#4A5060',
+};
 
-function ir(url,rol,nombre){
-  if(!url)return;
-  const m=KausayDB.getMuni();
-  let nm=nombre||'';
-  if(rol==='alcalde')nm=m.alcalde||nm;
-  if(rol==='secretaria')nm=m.secretaria||nm;
-  if(rol==='gerente_municipal')nm=m.gm||nm;
-  const p=rol?`?rol=${rol}&nombre=${encodeURIComponent(nm)}`:'';
-  window.location.href=url+p;
+const ACCESOS_SEC = [
+  { ico:'👤', lbl:'Alcalde',       sub:'Sala de mando',     dest:'alcalde.html',     rol:'alcalde'           },
+  { ico:'📋', lbl:'Secretaria',    sub:'Despacho',           dest:'secretaria.html',  rol:'secretaria'        },
+  { ico:'🏛', lbl:'Gte. Municipal',sub:'Coordinación',       dest:'gm.html',          rol:'gerente_municipal'  },
+  { ico:'🏗', lbl:'Infraestructura',sub:'INFRA',             dest:'gerente.html?rol=gerente_sectorial&gerencia=INFRA', rol:'gerente_sectorial' },
+  { ico:'💰', lbl:'Rentas',        sub:'RENTAS',             dest:'gerente.html?rol=gerente_sectorial&gerencia=RENTAS', rol:'gerente_sectorial' },
+  { ico:'🌿', lbl:'Servicios',     sub:'SERVICIOS',          dest:'gerente.html?rol=gerente_sectorial&gerencia=SERVICIOS', rol:'gerente_sectorial' },
+  { ico:'❤', lbl:'Social',         sub:'SOCIAL',             dest:'gerente.html?rol=gerente_sectorial&gerencia=SOCIAL', rol:'gerente_sectorial' },
+  { ico:'📂', lbl:'Sec. General',  sub:'SECRETARIA',         dest:'gerente.html?rol=gerente_sectorial&gerencia=SECRETARIA', rol:'gerente_sectorial' },
+  { ico:'📊', lbl:'Planeamiento',  sub:'PLANIF',             dest:'gerente.html?rol=gerente_sectorial&gerencia=PLANIF', rol:'gerente_sectorial' },
+];
+
+/* ══ RELOJ ═══════════════════════════════════════════ */
+function actualizarReloj() {
+  const n = new Date();
+  const el = document.getElementById('ix-estado-ts');
+  if (el) el.textContent = n.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
 }
+actualizarReloj();
+setInterval(actualizarReloj, 30000);
 
-function renderEstado(){
-  const r=KausayDB.getResumenEjecutivo();
-  const items=[
-    {v:r.ejec_global+'%',l:'Ejec.\npresup.',c:KausayDB.pctColor(r.ejec_global)},
-    {v:r.alertas_criticas,l:'Alertas\ncríticas',c:r.alertas_criticas>0?'#FF6B6B':'#5AC88A'},
-    {v:r.obras_riesgo,l:'Obras\nen riesgo',c:r.obras_riesgo>0?'#F0A80C':'#5AC88A'},
-    {v:r.compromisos_ven,l:'Comp.\nvencidos',c:r.compromisos_ven>0?'#FF6B6B':'#5AC88A'},
-    {v:r.docs_pendientes,l:'Docs.\npara firma',c:r.docs_pendientes>0?'#F0A80C':'rgba(255,255,255,.45)'},
+/* ══ CONSTRUIR ESTADO EJECUTIVO ══════════════════════ */
+function buildEstado() {
+  const r = KausayDB.getResumenEjecutivo();
+
+  // Semáforo
+  const sem = document.getElementById('ix-semaforo');
+  const ttl = document.getElementById('ix-estado-ttl');
+  const sub = document.getElementById('ix-estado-sub');
+
+  if (r.estado === 'critico') {
+    sem.className = 'ix-semaforo ix-semaforo--critico';
+    ttl.textContent = 'Municipio con alertas críticas activas';
+  } else if (r.estado === 'alerta') {
+    sem.className = 'ix-semaforo ix-semaforo--alerta';
+    ttl.textContent = `${r.alertas_criticas + r.alertas_alerta} situaciones de riesgo en seguimiento`;
+  } else {
+    sem.className = 'ix-semaforo ix-semaforo--normal';
+    ttl.textContent = `Gestión municipal estable · ${r.ejec_global}% ejecutado`;
+  }
+
+  // KPIs
+  const kpiData = [
+    { v: r.alertas_criticas, l:'Alertas\ncríticas',   c: r.alertas_criticas > 0 ? '#E05050' : '#2A9A55' },
+    { v: r.obras_criticas,   l:'Obras\ncríticas',     c: r.obras_criticas > 0   ? '#E05050' : '#2A9A55' },
+    { v: r.compromisos_ven,  l:'Comp.\nvencidos',     c: r.compromisos_ven > 0  ? '#E05050' : '#2A9A55' },
+    { v: r.ejec_global+'%',  l:'Ejec.\nglobal',       c: r.ejec_global >= 70 ? '#2A9A55' : r.ejec_global >= 50 ? '#D4900A' : '#E05050' },
   ];
-  document.getElementById('estado-grid').innerHTML=items.map(i=>`<div class="e-item"><div class="e-val" style="color:${i.c}">${i.v}</div><div class="e-lbl">${i.l}</div></div>`).join('');
+  const kpisEl = document.getElementById('ix-kpis');
+  kpisEl.innerHTML = kpiData.map(k => `
+    <div class="ix-kpi">
+      <div class="ix-kpi__v" style="color:${k.c}">${k.v}</div>
+      <div class="ix-kpi__l">${k.l}</div>
+    </div>`).join('');
+
+  // Sub-texto contextual
+  const msgs = [];
+  if (r.docs_pendientes > 0)   msgs.push(`${r.docs_pendientes} doc${r.docs_pendientes>1?'s':''} para firma`);
+  if (r.plazos_criticos > 0)   msgs.push(`${r.plazos_criticos} plazo${r.plazos_criticos>1?'s normativos críticos':' normativo crítico'}`);
+  if (r.instr_sin_leer > 0)    msgs.push(`${r.instr_sin_leer} instrucción${r.instr_sin_leer>1?'es':''}  sin acuse`);
+  if (r.dias_mef > 0)          msgs.push(`MEF cierra en ${r.dias_mef} días`);
+  sub.textContent = msgs.length ? msgs.join(' · ') : `${r.agenda_hoy} eventos en agenda hoy.`;
 }
 
-function renderDecisiones(){
-  const obras=KausayDB.getObras().filter(o=>o.riesgo==='critico');
-  const plazos=KausayDB.getCriticos();
-  const agenda=KausayDB.getAgenda();
-  const decs=[];
-  if(obras.length)decs.push({ico:'🚨',ttl:obras[0].nombre+' — paralizada',desc:'Decidir: continuar o resolver contrato',tag:'Urgente',tc:'t-r',c:'#8B0000'});
-  if(plazos.length)decs.push({ico:'⏰',ttl:'MEF vence en '+plazos[0].dias+' días — S/1.2M sin devengar',desc:'Exigir plan de devengado a Planeamiento',tag:plazos[0].dias+'d',tc:'t-a',c:'#C8880A'});
-  const conc=agenda.find(a=>a.tipo==='concejo');
-  if(conc)decs.push({ico:'🏛',ttl:'Sesión concejo '+conc.hora,desc:conc.br?'✓ Briefing IA listo':'Briefing pendiente de preparar',tag:'Hoy',tc:'t-i',c:'#185FA5'});
-  document.getElementById('dec-cards').innerHTML=decs.slice(0,3).map(d=>`<div class="dec" style="--c:${d.c}"><span class="dec-ico">${d.ico}</span><div class="dec-bd"><div class="dec-ttl">${d.ttl}</div><div class="dec-desc">${d.desc}</div></div><span class="dec-tag ${d.tc}">${d.tag}</span></div>`).join('');
+/* ══ CONSTRUIR ACCESO CONTEXTUAL ═════════════════════ */
+function buildAcceso(session) {
+  const el = document.getElementById('ix-acceso');
+  el.innerHTML = '';
+
+  if (session && KausayAuth.isSessionValid()) {
+    // ── AUTENTICADO ──
+    el.classList.add('ix-acceso--autenticado');
+    const rolColor = ROL_COLOR[session.rol] || '#185FA5';
+    const iniciales = session.nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+    const rolLabel  = ROL_LABELS[session.rol] || session.rol;
+    const dest      = construirDestino(session);
+
+    el.innerHTML = `
+      <div class="ix-acceso__hd">
+        <div class="ix-acceso__av" style="background:${rolColor}">${iniciales}</div>
+        <div>
+          <div class="ix-acceso__nombre">${session.nombre}</div>
+          <div class="ix-acceso__rol">${rolLabel}${session.gerencia_cod?' · '+session.gerencia_cod:''}</div>
+        </div>
+        <button class="ix-acceso__logout" onclick="cerrarSesion()">Salir</button>
+      </div>
+      <button class="ix-btn-main ix-btn-main--panel"
+        style="background:${rolColor}"
+        onclick="window.location.href='${dest}'">
+        ⚡ Entrar a mi panel
+      </button>`;
+
+    // Accesos secundarios (otros dashboards según rol)
+    const secBtns = buildAccesosSec(session);
+    if (secBtns) el.appendChild(secBtns);
+
+  } else {
+    // ── SIN SESIÓN ──
+    el.classList.remove('ix-acceso--autenticado');
+    el.innerHTML = `
+      <div style="text-align:center;margin-bottom:12px">
+        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.65);margin-bottom:4px">
+          Sistema de acceso oficial
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.5">
+          Ingresa con tus credenciales institucionales para acceder al centro de mando municipal.
+        </div>
+      </div>
+      <button class="ix-btn-main ix-btn-main--login"
+        onclick="window.location.href='login.html'">
+        🔐 Iniciar sesión
+      </button>`;
+
+    // Mostrar accesos demo solo en modo dev
+    const secBtns = buildAccesosSec(null);
+    if (secBtns) el.appendChild(secBtns);
+  }
 }
 
-function renderApps(){
-  const m=KausayDB.getMuni();
-  const r=KausayDB.getResumenEjecutivo();
-  const apps=[
-    {url:'alcalde.html',rol:'alcalde',nm:m.alcalde,letra:'A',color:'#8B0000',lbl:'Alcalde',cargo:(m.alcalde||'').split(' ').slice(0,2).join(' '),badge:r.alertas_criticas+r.compromisos_ven},
-    {url:'secretaria.html',rol:'secretaria',nm:m.secretaria,letra:'S',color:'#9E6A06',lbl:'Secretaria',cargo:(m.secretaria||'').split(' ').slice(0,2).join(' '),badge:r.docs_pendientes},
-    {url:'gm.html',rol:'gerente_municipal',nm:m.gm,letra:'GM',color:'#0E3D6E',lbl:'Gte. Municipal',cargo:(m.gm||'').split(' ').slice(0,2).join(' '),badge:r.instr_sin_leer},
-  ];
-  const grid=document.getElementById('apps-grid');grid.innerHTML='';
-  apps.forEach(a=>{
-    const btn=document.createElement('button');btn.className='app';
-    btn.innerHTML=`<div class="app-ico" style="background:${a.color}"><div class="app-shine"></div><span class="app-sup">KAUSAY</span><span class="app-letra">${a.letra}</span>${a.badge>0?`<span class="app-badge">${a.badge}</span>`:''}</div><span class="app-lbl">${a.lbl}</span><span class="app-cargo">${a.cargo}</span>`;
-    btn.onclick=()=>ir(a.url,a.rol,a.nm);
-    grid.appendChild(btn);
+function construirDestino(session) {
+  const base = ROL_DASHBOARD[session.rol] || 'login.html';
+  const params = new URLSearchParams({
+    rol:    session.rol,
+    nombre: session.nombre,
+    ...(session.gerencia_cod ? { gerencia: session.gerencia_cod } : {}),
+  });
+  return `${base}?${params.toString()}`;
+}
+
+function buildAccesosSec(session) {
+  // Filtrar según sesión o mostrar todos en demo sin sesión
+  const mostrar = ACCESOS_SEC.filter(a => {
+    if (!session) return true;                            // sin sesión: mostrar todos (demo)
+    if (session.rol === 'alcalde') return true;           // alcalde: accede a todo
+    if (session.rol === 'gerente_municipal') return ['alcalde','secretaria','gerente_municipal','gerente_sectorial'].includes(a.rol);
+    return a.rol === session.rol;                         // solo su propio rol
+  });
+  if (!mostrar.length) return null;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'ix-accesos-sec';
+  wrapper.style.marginTop = '10px';
+
+  // Etiqueta
+  const lbl = document.createElement('div');
+  lbl.style.cssText = 'width:100%;font-size:9px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px';
+  lbl.textContent = session ? 'También puedes acceder a' : 'Accesos rápidos de demostración';
+  wrapper.appendChild(lbl);
+
+  mostrar.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'ix-acc-btn';
+    btn.innerHTML = `<span class="ix-acc-btn__ico">${a.ico}</span><span class="ix-acc-btn__lbl">${a.lbl}</span><span class="ix-acc-btn__sub">${a.sub}</span>`;
+    btn.onclick = () => { window.location.href = a.dest; };
+    wrapper.appendChild(btn);
+  });
+  return wrapper;
+}
+
+/* ══ GERENCIAS ═══════════════════════════════════════ */
+function buildGerencias() {
+  const gers = KausayDB.getGerencias();
+  const el   = document.getElementById('ix-gerencias');
+  el.innerHTML = '';
+
+  gers.forEach(g => {
+    const col   = g.ejec >= 70 ? '#2A9A55' : g.ejec >= 50 ? '#D4900A' : '#E05050';
+    const label = g.ejec >= 70 ? 'Al día' : g.ejec >= 50 ? 'En alerta' : 'Crítico';
+    const bgBadge = g.ejec >= 70 ? 'rgba(42,154,85,.25)' : g.ejec >= 50 ? 'rgba(212,144,10,.25)' : 'rgba(224,80,80,.25)';
+
+    const obras = KausayDB.getObras(g.cod);
+    const obrasCrit = obras.filter(o=>o.riesgo==='critico').length;
+    const kpis  = KausayDB.getIndicadores(g.cod);
+    const kpiPct= kpis.length ? Math.round(kpis[0].v/kpis[0].meta*100) : null;
+
+    const card = document.createElement('div');
+    card.className = 'ix-ger-card';
+    card.style.setProperty('--gc', g.color || col);
+    card.innerHTML = `
+      <span class="ix-ger-dot" style="background:${col}"></span>
+      <div class="ix-ger-body">
+        <div class="ix-ger-nombre">${g.nombre}</div>
+        <div class="ix-ger-jefe">${g.jefe}</div>
+        ${obrasCrit ? `<div style="font-size:10px;color:#E05050;margin-top:3px;font-weight:700">⚠ ${obrasCrit} obra${obrasCrit>1?'s':''}  crítica${obrasCrit>1?'s':''}</div>` : ''}
+      </div>
+      <div class="ix-ger-right">
+        <div class="ix-ger-pct" style="color:${col}">${g.ejec}%</div>
+        <div class="ix-ger-pct-l">ejecución</div>
+        <div class="ix-ger-badge" style="background:${bgBadge};color:${col}">${label}</div>
+        ${kpiPct !== null ? `<div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:2px">KPI ${kpiPct}%</div>` : ''}
+      </div>`;
+    el.appendChild(card);
+  });
+
+  // Timestamp
+  const ts = document.getElementById('ix-ger-ts');
+  if (ts) {
+    const sync = KausayDB.getIntegraciones().find(i=>i.sistema==='SIAF_GL');
+    ts.textContent = sync ? KausayDB.relativeTime(sync.ultima_sync) : '';
+  }
+}
+
+/* ══ OBRAS CRÍTICAS ══════════════════════════════════ */
+function buildObras() {
+  const criticas = KausayDB.getObras().filter(o=>o.riesgo==='critico');
+  const sec = document.getElementById('ix-obras-section');
+  const el  = document.getElementById('ix-obras');
+  if (!criticas.length) { sec.style.display='none'; return; }
+  sec.style.display = '';
+  el.innerHTML = '';
+  criticas.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'ix-obra-mini';
+    card.innerHTML = `
+      <div class="ix-obra-mini__body">
+        <div class="ix-obra-mini__nombre">${o.nombre}</div>
+        <div class="ix-obra-mini__meta">${o.estado==='paralizada'?'Paralizada '+o.dias_sin_av+'d':o.estado} · ${KausayDB.fmt(o.presup)}</div>
+      </div>
+      <div class="ix-obra-mini__pct">${o.pct}%</div>`;
+    el.appendChild(card);
   });
 }
 
-function mostrarGer(){
-  const gers=KausayDB.getGerencias();
-  document.getElementById('pg-body').innerHTML=gers.map(g=>{
-    const ec=g.comp_ven>0?'background:rgba(180,20,20,.25);color:#FF7070':'background:rgba(26,122,69,.25);color:#5AC88A';
-    return `<div class="g-card" onclick="abrirGer('${g.cod}','${g.color}','${g.nombre}','${g.jefe}')"><span class="g-dot" style="background:${g.color}"></span><div class="g-n">${g.nombre}</div><div class="g-jefe">${g.jefe}</div><span class="g-est" style="${ec}">${g.comp_ven>0?g.comp_ven+' vencidos':'Al día'}</span></div>`;
-  }).join('');
-  document.getElementById('panel-ger').classList.add('show');
+/* ══ CERRAR SESIÓN ═══════════════════════════════════ */
+function cerrarSesion() {
+  KausayAuth.logout();
 }
-function cerrarGer(){document.getElementById('panel-ger').classList.remove('show');}
 
-function abrirGer(cod,color,nombre,jefe){
-  gerActiva={cod,color,jefe,pw:PW[cod]||'kausay2024'};
-  const ico=document.getElementById('m-ico');ico.textContent=cod[0];ico.style.background=color;
-  document.getElementById('m-n').textContent=nombre;
-  document.getElementById('m-j').textContent=jefe;
-  document.getElementById('m-ok').style.background=color;
-  document.getElementById('pw-inp').value='';
-  document.getElementById('pw-err').classList.remove('show');
-  document.getElementById('modal-bg').classList.add('show');
-  setTimeout(()=>document.getElementById('pw-inp').focus(),120);
+/* ══ FOOTER ══════════════════════════════════════════ */
+function buildFooter() {
+  const muni = KausayDB.getMuni();
+  const footMuni  = document.getElementById('foot-muni');
+  const footUbi   = document.getElementById('foot-ubigeo');
+  if (footMuni) footMuni.textContent = muni.nombre || 'Municipalidad';
+  if (footUbi)  footUbi.textContent  = `Ubigeo ${muni.ubigeo||'—'} · ${muni.departamento||''}, Perú`;
 }
-function cerrarModal(){document.getElementById('modal-bg').classList.remove('show');gerActiva=null;}
-function verificarPW(){
-  const val=document.getElementById('pw-inp').value;
-  if(!gerActiva)return;
-  if(val===gerActiva.pw){cerrarModal();cerrarGer();window.location.href=`gerente.html?rol=gerente_sectorial&gerencia=${gerActiva.cod}&nombre=${encodeURIComponent(gerActiva.jefe)}`;}
-  else{document.getElementById('pw-err').classList.add('show');document.getElementById('pw-inp').select();}
-}
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('modal-bg').classList.contains('show'))verificarPW();if(e.key==='Escape'){cerrarModal();cerrarGer();}});
 
-window.addEventListener('load',()=>{
-  const m=KausayDB.getMuni();
-  if(m?.nombre)document.getElementById('muni-n').textContent=m.nombre;
-  renderEstado();renderDecisiones();renderApps();
-  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-  setTimeout(()=>{document.getElementById('loader').classList.add('hide');setTimeout(()=>{const l=document.getElementById('loader');if(l)l.remove();},500);},700);
+/* ══ APLICAR BRANDING INSTITUCIONAL ═════════════════ */
+function applyBranding() {
+  const muni = KausayDB.getMuni();
+  // Nombre y tipo
+  const elNombre = document.getElementById('ix-muni-nombre');
+  const elTipo   = document.getElementById('ix-muni-tipo');
+  if (elNombre) elNombre.textContent = muni.nombre || 'Municipalidad';
+  if (elTipo)   elTipo.textContent   = `Municipalidad ${muni.tipo||'provincial'} · Región ${muni.departamento||''}`;
+  // Título de pestaña
+  document.title = (muni.nombre_corto || muni.nombre || 'Municipalidad') + ' · Sistema Municipal';
+  // Color primario como acento del header
+  if (muni.color_primario) {
+    document.documentElement.style.setProperty('--ac', muni.color_primario);
+  }
+}
+
+/* ══ INTEGRACIONES / FRESHNESS ══════════════════════ */
+function buildIntegraciones() {
+  const integ = KausayDB.getIntegraciones();
+  const caidas = integ.filter(i=>i.estado==='desconectado').length;
+  const degrada = integ.filter(i=>i.estado==='degradado').length;
+  if (caidas > 0 || degrada > 0) {
+    const sub = document.getElementById('ix-estado-sub');
+    if (sub) {
+      const actual = sub.textContent;
+      const badge = caidas > 0 ? `⚡ ${caidas} integración${caidas>1?'es caídas':' caída'}` : `⚠ ${degrada} degradada${degrada>1?'s':''}`;
+      sub.textContent = actual ? actual + ' · ' + badge : badge;
+    }
+  }
+}
+
+/* ══ INIT ════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  // index.html no bloquea por rol — portada pública
+  const session = KausayAuth.getSession();
+
+  KausayBranding.applyPublic();
+  applyBranding();
+  buildEstado();
+  buildAcceso(session);
+  buildGerencias();
+  buildObras();
+  buildFooter();
+  buildIntegraciones();
+
+  // Telemetría de apertura de portada
+  KausayDB.Telemetry.track('index_viewed', {
+    autenticado: !!session,
+    rol: session?.rol || 'anonimo',
+  });
+
+  // Mostrar página
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('page').style.display = '';
+
+  // Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+  KausayFreshness.autoMount();
+  setTimeout(() => document.getElementById('loader').remove(), 500);
 });
 </script>
 </body>

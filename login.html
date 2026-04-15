@@ -3,215 +3,561 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#0F0F12">
-<title>Kausay — Ingresar</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<meta name="theme-color" content="#0F1015">
+<title>Acceso seguro · Sistema Municipal</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--rojo:#B02020;--rojo-d:#8C1818;--oro:#C8880A;--txt:#1A1D23;--txt2:#4A5060;--txt3:#8A90A0;--borde:#E2E6ED}
-html,body{height:100%;font-family:'Barlow',sans-serif;background:#0F0F12}
-
-.page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
-.bg-glow{position:absolute;top:-20%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(176,32,32,.15) 0%,transparent 65%);pointer-events:none}
-.bg-glow2{position:absolute;bottom:-20%;left:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(200,136,10,.08) 0%,transparent 65%);pointer-events:none}
-
-.card{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;position:relative;z-index:1}
-
-.logo{margin-bottom:28px;text-align:center}
-.logo-mark{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:var(--txt);letter-spacing:.3px;line-height:1}
-.logo-mark span{color:var(--rojo)}
-.logo-sub{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px}
-.logo-muni{font-size:12px;color:var(--txt2);font-weight:500;margin-top:8px;padding:6px 14px;background:#F5F7FA;border-radius:20px;display:inline-block}
-
-/* CONFIG WARNING */
-.config-warn{background:#FFF4DC;border:1px solid #F0A80C;border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:12px;color:#633806;line-height:1.6;display:none}
-.config-warn strong{display:block;font-weight:600;margin-bottom:4px}
-.config-warn code{background:rgba(0,0,0,.08);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px}
-
-.form-group{margin-bottom:16px}
-label{display:block;font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-input[type=email],input[type=password]{width:100%;border:1.5px solid var(--borde);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Barlow',sans-serif;color:var(--txt);outline:none;transition:border-color .15s;background:#fff}
-input:focus{border-color:var(--rojo)}
-input::placeholder{color:var(--txt3)}
-
-.btn-login{width:100%;padding:13px;background:var(--rojo);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;margin-top:8px;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-login:hover{background:var(--rojo-d)}
-.btn-login:disabled{opacity:.6;cursor:not-allowed}
-.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+:root{--rojo:#8B1A1A;--negro:#0F1015;--gris1:#1C1F28;--borde:rgba(255,255,255,.1);--txt:#fff;--f-sans:'Barlow',system-ui,sans-serif;--f-cond:'Barlow Condensed','Arial Narrow',sans-serif}
+html,body{min-height:100%;font-family:var(--f-sans);background:var(--negro);color:var(--txt);overflow-x:hidden}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-.error-box{background:#FDEAEA;border:1px solid rgba(176,32,32,.3);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--rojo);margin-top:12px;display:none;line-height:1.5}
-.error-box.show{display:block}
+/* BG */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 20% 0%,rgba(139,26,26,.2) 0%,transparent 55%),
+             radial-gradient(ellipse at 80% 100%,rgba(24,50,95,.16) 0%,transparent 55%),#0F1015}
 
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--txt3);font-size:11px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--borde)}
+.page{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px 48px}
 
-/* DEMO BUTTONS */
-.demo-title{font-size:11px;font-weight:600;color:var(--txt3);text-align:center;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
-.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.demo-btn{padding:9px 10px;border-radius:9px;border:1.5px solid var(--borde);background:none;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s;text-align:left}
-.demo-btn:hover{border-color:var(--txt2);background:#F5F7FA}
-.demo-btn .db-label{font-size:11px;font-weight:600;color:var(--txt);display:block}
-.demo-btn .db-name{font-size:10px;color:var(--txt3);margin-top:1px;display:block}
-.demo-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+/* HEADER */
+.header{text-align:center;margin-bottom:26px;animation:fadeUp .5s ease both}
+.escudo{width:64px;height:auto;margin:0 auto 12px;display:block;filter:drop-shadow(0 3px 16px rgba(0,0,0,.7))}
+.muni-nombre{font-family:var(--f-cond);font-size:20px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:3px}
+.muni-tipo{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.divider{width:36px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);margin:0 auto 10px}
+.sistema-tag{font-size:10px;color:rgba(255,255,255,.22);letter-spacing:.5px;font-weight:500}
 
-.footer-note{text-align:center;font-size:11px;color:var(--txt3);margin-top:20px;line-height:1.6}
+/* CARD */
+.card{width:100%;max-width:360px;background:rgba(255,255,255,.04);border:1px solid var(--borde);border-radius:18px;padding:26px 22px;animation:fadeUp .5s .1s ease both;opacity:0;animation-fill-mode:forwards}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:rgba(255,255,255,.06);border-radius:10px;padding:3px;margin-bottom:20px}
+.tab{flex:1;padding:7px;border-radius:8px;border:none;background:none;font-family:var(--f-sans);font-size:12px;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s;text-align:center}
+.tab.on{background:rgba(255,255,255,.1);color:#fff}
+
+/* ALERTS */
+.msg-box{border-radius:9px;padding:10px 12px;font-size:12px;font-weight:500;line-height:1.5;text-align:center;display:none;margin-bottom:12px}
+.msg-box.show{display:block}
+.msg-box.error{background:rgba(180,30,30,.2);border:1px solid rgba(180,30,30,.3);color:#FF8080}
+.msg-box.ok   {background:rgba(30,150,80,.2);border:1px solid rgba(30,150,80,.3);color:#80D4A0}
+.msg-box.info {background:rgba(24,95,165,.2);border:1px solid rgba(24,95,165,.3);color:#80B8E8}
+.msg-box.warn {background:rgba(200,136,10,.18);border:1px solid rgba(200,136,10,.3);color:#F0C060}
+
+/* NEW DEVICE BANNER */
+.new-device-banner{background:rgba(200,136,10,.15);border:1px solid rgba(200,136,10,.3);border-radius:9px;padding:9px 12px;font-size:11px;color:#F0C060;line-height:1.5;display:none;margin-bottom:12px}
+.new-device-banner.show{display:block}
+
+/* FIELD */
+.form{display:flex;flex-direction:column;gap:13px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
+.field-wrap{position:relative}
+.field-inp{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;font-size:14px;font-family:var(--f-sans);color:#fff;outline:none;transition:border-color .15s;appearance:none}
+.field-inp::placeholder{color:rgba(255,255,255,.2);font-size:13px}
+.field-inp:focus{border-color:rgba(255,255,255,.38)}
+.field-inp.error{border-color:#E05050}
+.field-err{font-size:11px;color:#E07070;font-weight:600;display:none}
+.field-err.show{display:block}
+.toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:15px;padding:4px}
+.toggle-pw:hover{color:rgba(255,255,255,.65)}
+
+/* EXTRAS */
+.extras{display:flex;align-items:center;justify-content:space-between}
+.remember{display:flex;align-items:center;gap:6px;cursor:pointer}
+.remember input{accent-color:var(--rojo);width:14px;height:14px;cursor:pointer}
+.remember-lbl{font-size:11px;color:rgba(255,255,255,.38);font-weight:500}
+.forgot-btn{font-size:11px;color:rgba(255,255,255,.38);font-weight:600;background:none;border:none;cursor:pointer;font-family:var(--f-sans);padding:0}
+.forgot-btn:hover{color:rgba(255,255,255,.7)}
+
+/* BUTTONS */
+.btn-main{width:100%;padding:13px;border-radius:11px;border:none;font-family:var(--f-sans);font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-main--login{background:var(--rojo);color:#fff}
+.btn-main--login:hover:not(:disabled){background:#6A1010}
+.btn-main--ghost{background:rgba(255,255,255,.07);border:1px solid var(--borde);color:rgba(255,255,255,.65)}
+.btn-main--ghost:hover{background:rgba(255,255,255,.12)}
+.btn-main:disabled{opacity:.5;cursor:not-allowed}
+.btn-spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;display:none}
+.loading .btn-spin{display:block}
+.loading .btn-lbl{display:none}
+
+/* MFA PANEL */
+.mfa-panel{display:none;text-align:center}
+.mfa-panel.show{display:block}
+.mfa-ico{font-size:40px;margin-bottom:12px;display:block}
+.mfa-ttl{font-family:var(--f-cond);font-size:20px;font-weight:700;margin-bottom:6px}
+.mfa-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:18px}
+.mfa-code{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.mfa-digit{width:44px;height:52px;background:rgba(255,255,255,.08);border:1.5px solid var(--borde);border-radius:10px;font-size:22px;font-weight:700;text-align:center;color:#fff;font-family:var(--f-cond);outline:none;transition:border-color .15s}
+.mfa-digit:focus{border-color:rgba(255,255,255,.45)}
+.mfa-foot{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px}
+.mfa-timer{font-size:11px;color:rgba(255,255,255,.3)}
+.mfa-resend{font-size:11px;color:rgba(255,255,255,.38);cursor:pointer;background:none;border:none;font-family:var(--f-sans);font-weight:600}
+.mfa-resend:hover{color:rgba(255,255,255,.7)}
+
+/* MFA ENROLLMENT PANEL */
+.enroll-panel{display:none}
+.enroll-panel.show{display:block}
+.enroll-qr{text-align:center;margin-bottom:14px}
+.enroll-qr img,.enroll-qr svg{width:160px;height:160px;border-radius:8px;border:3px solid rgba(255,255,255,.1)}
+.enroll-secret{background:rgba(255,255,255,.06);border:1px solid var(--borde);border-radius:8px;padding:8px 12px;font-family:'Courier New',monospace;font-size:12px;color:rgba(255,255,255,.7);text-align:center;word-break:break-all;margin-bottom:10px;cursor:text}
+.enroll-step{font-size:11px;color:rgba(255,255,255,.42);line-height:1.6;margin-bottom:12px}
+.enroll-step strong{color:rgba(255,255,255,.7)}
+
+/* REAUTH OVERLAY */
+.reauth-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.reauth-overlay.show{display:flex}
+.reauth-card{background:#1C1F28;border:1px solid var(--borde);border-radius:18px;padding:24px 20px;width:100%;max-width:300px}
+.reauth-ico{font-size:32px;text-align:center;display:block;margin-bottom:12px}
+.reauth-ttl{font-family:var(--f-cond);font-size:18px;font-weight:700;text-align:center;margin-bottom:6px}
+.reauth-sub{font-size:12px;color:rgba(255,255,255,.45);text-align:center;margin-bottom:12px;line-height:1.5}
+.reauth-motivo{font-size:11px;font-weight:600;color:#F0A80C;text-align:center;background:rgba(200,136,10,.15);border:1px solid rgba(200,136,10,.2);border-radius:8px;padding:6px 10px;margin-bottom:14px}
+
+/* DEMO HINT */
+.demo-hint{margin-top:14px;text-align:center;animation:fadeUp .5s .3s ease both;opacity:0;animation-fill-mode:forwards}
+.demo-hint__ttl{font-size:9px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px}
+.demo-roles{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.demo-role{padding:7px 10px;background:rgba(255,255,255,.05);border:1px solid var(--borde);border-radius:8px;cursor:pointer;transition:background .12s;text-align:left}
+.demo-role:hover{background:rgba(255,255,255,.1)}
+.demo-role__nom{font-size:11px;font-weight:600;color:rgba(255,255,255,.7)}
+.demo-role__email{font-size:9px;color:rgba(255,255,255,.3);margin-top:1px;font-family:'Courier New',monospace}
+
+/* FOOTER */
+.footer{margin-top:18px;text-align:center;animation:fadeUp .5s .2s ease both;opacity:0;animation-fill-mode:forwards}
+.footer-txt{font-size:10px;color:rgba(255,255,255,.18);line-height:1.7}
+.footer-txt strong{color:rgba(255,255,255,.3)}
+.security-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:9px;color:rgba(255,255,255,.2)}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="bg-glow"></div>
-  <div class="bg-glow2"></div>
-  <div class="card">
-    <div class="logo">
-      <div class="logo-mark">Kausay<span>Alcalde</span></div>
-      <div class="logo-sub">Gestión Municipal Inteligente</div>
-      <div class="logo-muni" id="muni-label">Municipalidad Provincial de Cajamarca</div>
-    </div>
+<div class="bg"></div>
 
-    <div class="config-warn" id="config-warn">
-      <strong>⚙️ Configuración pendiente</strong>
-      Abre este archivo y reemplaza las constantes al inicio del script:<br>
-      <code>SUPABASE_URL</code> y <code>SUPABASE_ANON_KEY</code><br>
-      con los valores de tu proyecto en supabase.com.
+<!-- REAUTH OVERLAY (usado por dashboards via CustomEvent) -->
+<div class="reauth-overlay" id="reauth-overlay">
+  <div class="reauth-card">
+    <span class="reauth-ico">🔐</span>
+    <div class="reauth-ttl">Verificación requerida</div>
+    <div class="reauth-sub">Confirma tu contraseña para continuar con esta acción.</div>
+    <div class="reauth-motivo" id="reauth-motivo">Acción sensible</div>
+    <div class="msg-box error" id="reauth-err" style="margin-bottom:10px"></div>
+    <div class="field" style="margin-bottom:12px">
+      <label class="field-lbl">Tu contraseña</label>
+      <input type="password" class="field-inp" id="reauth-pw" placeholder="Ingresa tu contraseña" autocomplete="current-password">
     </div>
-
-    <div class="form-group">
-      <label for="email">Correo electrónico</label>
-      <input type="email" id="email" placeholder="tu@municipalidad.gob.pe" autocomplete="email">
-    </div>
-    <div class="form-group">
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="btn-login" id="btn-login" onclick="doLogin()">
-      <span id="btn-text">Ingresar</span>
-    </button>
-    <div class="error-box" id="error-box"></div>
-
-    <div class="divider">o ingresar como demo</div>
-    <div class="demo-title">Modo demostración (sin contraseña)</div>
-    <div class="demo-grid">
-      <button class="demo-btn" onclick="demoLogin('alcalde')">
-        <span class="demo-dot" style="background:#B02020"></span><span class="db-label">Alcalde</span>
-        <span class="db-name">Roberto Sánchez Q.</span>
-      </button>
-      <button class="demo-btn" onclick="demoLogin('secretaria')">
-        <span class="demo-dot" style="background:#C8880A"></span><span class="db-label">Secretaria</span>
-        <span class="db-name">Carmen Flores R.</span>
-      </button>
-      <button class="demo-btn" onclick="demoLogin('gerente_municipal')">
-        <span class="demo-dot" style="background:#185FA5"></span><span class="db-label">Gte. Municipal</span>
-        <span class="db-name">Carlos Vásquez D.</span>
-      </button>
-      <button class="demo-btn" onclick="demoLogin('gerente_sectorial')">
-        <span class="demo-dot" style="background:#0F6E56"></span><span class="db-label">Gte. Sectorial</span>
-        <span class="db-name">Ana Quispe · Infra.</span>
+    <div style="display:flex;gap:8px">
+      <button class="btn-main btn-main--ghost" style="flex:1;padding:10px" onclick="cancelarReauth()">Cancelar</button>
+      <button class="btn-main btn-main--login" id="btn-reauth" style="flex:2;padding:10px" onclick="confirmarReauth()">
+        <span class="btn-spin"></span><span class="btn-lbl">Verificar →</span>
       </button>
     </div>
-    <div class="footer-note">v1.0 · Kausay Municipal SaaS<br>Seguridad gestionada por Supabase Auth</div>
   </div>
 </div>
 
+<!-- MAIN PAGE -->
+<div class="page">
+  <div class="header">
+    <img class="escudo" id="ix-escudo" src="escudo.png" alt="Escudo" onerror="this.style.display='none'">
+    <div class="muni-nombre" id="ix-nombre">Sistema Municipal</div>
+    <div class="muni-tipo" id="ix-tipo">Gestión municipal · Sistema oficial</div>
+    <div class="divider"></div>
+    <div class="sistema-tag">Acceso seguro · Kausay Municipal</div>
+  </div>
+
+  <div class="card">
+    <!-- NUEVO DISPOSITIVO -->
+    <div class="new-device-banner" id="new-device-banner">
+      🔔 <strong>Acceso desde dispositivo nuevo.</strong><br>
+      Si no fuiste tú, cambia tu contraseña inmediatamente.
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="setTab('login')">Ingresar</button>
+      <button class="tab"    onclick="setTab('reset')">Recuperar acceso</button>
+    </div>
+
+    <div class="msg-box" id="msg-box"></div>
+
+    <!-- PANEL LOGIN -->
+    <div id="panel-login">
+      <div class="form">
+        <div class="field">
+          <label class="field-lbl" for="email">Correo institucional</label>
+          <input class="field-inp" type="email" id="email" placeholder="usuario@municipalidad.gob.pe" autocomplete="email">
+          <div class="field-err" id="email-err">Correo inválido</div>
+        </div>
+        <div class="field">
+          <label class="field-lbl" for="password">Contraseña</label>
+          <div class="field-wrap">
+            <input class="field-inp" type="password" id="password" placeholder="Tu contraseña segura" autocomplete="current-password">
+            <button class="toggle-pw" type="button" onclick="togglePW()">👁</button>
+          </div>
+          <div class="field-err" id="pw-err">Contraseña requerida</div>
+        </div>
+        <div class="extras">
+          <label class="remember">
+            <input type="checkbox" id="remember" checked>
+            <span class="remember-lbl">Mantener sesión</span>
+          </label>
+          <button class="forgot-btn" onclick="setTab('reset')">¿Olvidaste tu contraseña?</button>
+        </div>
+        <button class="btn-main btn-main--login" id="btn-login" onclick="doLogin()">
+          <span class="btn-spin"></span><span class="btn-lbl">Ingresar al sistema →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PANEL MFA: VERIFICACIÓN -->
+    <div class="mfa-panel" id="panel-mfa">
+      <span class="mfa-ico">🔐</span>
+      <div class="mfa-ttl">Verificación en dos pasos</div>
+      <div class="mfa-sub" id="mfa-sub">Tu cuenta requiere verificación adicional.<br>Abre tu aplicación autenticadora e ingresa el código.</div>
+      <div class="mfa-code" id="mfa-digits">
+        <input class="mfa-digit" type="tel" maxlength="1" id="d0" oninput="mfaInput(0)" onkeydown="mfaKey(event,0)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="d1" oninput="mfaInput(1)" onkeydown="mfaKey(event,1)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="d2" oninput="mfaInput(2)" onkeydown="mfaKey(event,2)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="d3" oninput="mfaInput(3)" onkeydown="mfaKey(event,3)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="d4" oninput="mfaInput(4)" onkeydown="mfaKey(event,4)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="d5" oninput="mfaInput(5)" onkeydown="mfaKey(event,5)">
+      </div>
+      <div class="msg-box error" id="mfa-err" style="margin-bottom:12px"></div>
+      <div class="mfa-foot">
+        <span class="mfa-timer" id="mfa-timer">Código válido por 30s</span>
+        <button class="mfa-resend" onclick="reiniciarMFA()">Nuevo código</button>
+      </div>
+      <button class="btn-main btn-main--login" id="btn-mfa" onclick="doMFA()">
+        <span class="btn-spin"></span><span class="btn-lbl">Verificar y acceder →</span>
+      </button>
+      <button class="btn-main btn-main--ghost" style="margin-top:8px" onclick="volverLogin()">← Volver</button>
+    </div>
+
+    <!-- PANEL MFA: ENROLLAMIENTO [F1] -->
+    <div class="enroll-panel" id="panel-enroll">
+      <div style="text-align:center;margin-bottom:16px">
+        <span style="font-size:36px;display:block;margin-bottom:10px">📱</span>
+        <div class="mfa-ttl">Configurar autenticación de dos factores</div>
+        <div class="mfa-sub">Tu rol requiere MFA. Configúralo ahora para proteger tu cuenta de alta autoridad.</div>
+      </div>
+      <div class="enroll-step">
+        <strong>Paso 1:</strong> Instala una aplicación autenticadora en tu teléfono:<br>
+        Google Authenticator, Microsoft Authenticator, Authy o similar.
+      </div>
+      <div class="enroll-qr" id="enroll-qr">
+        <div style="width:160px;height:160px;background:rgba(255,255,255,.05);border-radius:8px;margin:0 auto;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:12px">Generando QR...</div>
+      </div>
+      <div class="enroll-step" style="margin-top:10px">
+        <strong>Paso 2:</strong> Escanea el código QR con tu aplicación autenticadora.<br>
+        Si no puedes escanear, ingresa este código manualmente:
+      </div>
+      <div class="enroll-secret" id="enroll-secret">Cargando...</div>
+      <div class="enroll-step">
+        <strong>Paso 3:</strong> Ingresa el código de 6 dígitos que muestra la app para confirmar:
+      </div>
+      <div class="mfa-code">
+        <input class="mfa-digit" type="tel" maxlength="1" id="e0" oninput="enrollInput(0)" onkeydown="enrollKey(event,0)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="e1" oninput="enrollInput(1)" onkeydown="enrollKey(event,1)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="e2" oninput="enrollInput(2)" onkeydown="enrollKey(event,2)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="e3" oninput="enrollInput(3)" onkeydown="enrollKey(event,3)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="e4" oninput="enrollInput(4)" onkeydown="enrollKey(event,4)">
+        <input class="mfa-digit" type="tel" maxlength="1" id="e5" oninput="enrollInput(5)" onkeydown="enrollKey(event,5)">
+      </div>
+      <div class="msg-box error" id="enroll-err" style="margin-bottom:12px"></div>
+      <button class="btn-main btn-main--login" id="btn-enroll" onclick="confirmarEnroll()">
+        <span class="btn-spin"></span><span class="btn-lbl">Activar autenticación →</span>
+      </button>
+    </div>
+
+    <!-- PANEL RESET -->
+    <div id="panel-reset" style="display:none">
+      <div class="form">
+        <div class="field">
+          <label class="field-lbl" for="reset-email">Correo institucional</label>
+          <input class="field-inp" type="email" id="reset-email" placeholder="usuario@municipalidad.gob.pe" autocomplete="email">
+        </div>
+        <button class="btn-main btn-main--login" id="btn-reset" onclick="doReset()">
+          <span class="btn-spin"></span><span class="btn-lbl">Enviar enlace de recuperación</span>
+        </button>
+        <button class="btn-main btn-main--ghost" onclick="setTab('login')">← Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMO HINT -->
+  <div class="demo-hint" id="demo-hint">
+    <div class="demo-hint__ttl">Acceso de demostración</div>
+    <div class="demo-roles" id="demo-roles"></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-txt">
+      <strong id="foot-muni">Municipalidad Provincial de Cajamarca</strong><br>
+      Sistema de gestión municipal · Acceso restringido y auditado<br>
+      Todos los accesos quedan registrados
+    </div>
+    <div class="security-badge">🔒 Acceso cifrado y auditado · Kausay Municipal</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="branding.js"></script>
+<script src="auth.js"></script>
 <script>
-// ═══ CONFIGURACIÓN — Reemplaza con tus valores de Supabase ═══
-const SUPABASE_URL  = 'TU_SUPABASE_URL';
-const SUPABASE_KEY  = 'TU_SUPABASE_ANON_KEY';
-// ════════════════════════════════════════════════════════════
+/* ══ ESTADO ══════════════════════════════════════════ */
+let sessionPendingMFA = null;
+let enrollTotpId      = null;
+let mfaTimerInterval  = null;
+let mfaSecsLeft       = 30;
 
-const CONFIGURED = !SUPABASE_URL.startsWith('TU_');
-const ROL_PAGES  = {
-  alcalde:           'alcalde.html',
-  secretaria:        'secretaria.html',
-  gerente_municipal: 'gm.html',
-  gerente_sectorial: 'gerente.html',
-};
+/* ══ INIT ════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  // Aplicar branding si hay datos en localStorage
+  try {
+    const db = JSON.parse(localStorage.getItem('kausay_db_v2')||'{}');
+    const m  = db.municipalidad || db;
+    if (m?.nombre) {
+      document.getElementById('ix-nombre').textContent = m.nombre;
+      document.getElementById('ix-tipo').textContent   = `Municipalidad ${m.tipo||'provincial'} · Sistema oficial`;
+      document.getElementById('foot-muni').textContent = m.nombre;
+      document.title = (m.nombre_corto||m.nombre) + ' · Acceso seguro';
+    }
+  } catch(e){}
 
-let supabase = null;
-if (CONFIGURED) {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} else {
-  document.getElementById('config-warn').style.display = 'block';
-}
+  // Sesión ya válida → redirigir
+  if (KausayAuth.isSessionValid()) {
+    const s = KausayAuth.getSession();
+    if (!KausayAuth.requiresMFA(s.rol) || s.mfa_verified) {
+      KausayAuth.redirectByRole(s); return;
+    }
+  }
 
-// Verificar si ya hay sesión activa
-window.addEventListener('load', async () => {
-  // Primero verificar modo demo
-  const demoRol = sessionStorage.getItem('kausay_demo_rol');
-  if (demoRol) { redirectTo(demoRol); return; }
+  // Params URL
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('error')==='no_autorizado') showMsg('No tienes permiso para acceder a esa sección.','error');
+  if (params.get('error')==='sin_gerencia')  showMsg('Tu usuario no tiene gerencia asignada. Contacta al administrador.','error');
+  if (params.get('error')==='sesion_invalidada') showMsg('Tu sesión fue invalidada (inicio desde otro dispositivo). Vuelve a ingresar.','warn');
+  if (params.get('mfa')==='1') mostrarMFA(KausayAuth.getSession());
 
-  if (!supabase) return;
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) await redirectFromSession(session);
+  // Nuevo dispositivo detectado
+  window.addEventListener('kausay:new_device', e => {
+    const banner = document.getElementById('new-device-banner');
+    if (banner) banner.classList.add('show');
+  });
+
+  // Reauth desde dashboards
+  window.addEventListener('kausay:reauth_required', e => {
+    const motivo = e.detail?.motivo || 'Acción sensible';
+    document.getElementById('reauth-motivo').textContent = motivo;
+    document.getElementById('reauth-pw').value = '';
+    document.getElementById('reauth-err').className = 'msg-box error';
+    document.getElementById('reauth-overlay').classList.add('show');
+    setTimeout(() => document.getElementById('reauth-pw')?.focus(), 150);
+  });
+
+  renderDemoRoles();
+
+  // Enter keys
+  document.getElementById('password').addEventListener('keydown',   e=>{ if(e.key==='Enter') doLogin(); });
+  document.getElementById('email').addEventListener('keydown',       e=>{ if(e.key==='Enter') document.getElementById('password').focus(); });
+  document.getElementById('reset-email').addEventListener('keydown', e=>{ if(e.key==='Enter') doReset(); });
+  document.getElementById('reauth-pw').addEventListener('keydown',   e=>{ if(e.key==='Enter') confirmarReauth(); });
 });
 
-async function redirectFromSession(session) {
-  const { data: user } = await supabase
-    .from('usuarios').select('rol').eq('id', session.user.id).single();
-  if (user) redirectTo(user.rol);
-}
-
-function redirectTo(rol) {
-  window.location.href = ROL_PAGES[rol] || 'alcalde.html';
-}
-
+/* ══ LOGIN ════════════════════════════════════════════ */
 async function doLogin() {
   const email    = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
-  const errBox   = document.getElementById('error-box');
-  const btn      = document.getElementById('btn-login');
-  const btnText  = document.getElementById('btn-text');
+  let valid = true;
+  if (!email||!email.includes('@')) { showFieldErr('email-err',true); showFieldBorder('email',true); valid=false; }
+  else { showFieldErr('email-err',false); showFieldBorder('email',false); }
+  if (!password) { showFieldErr('pw-err',true); showFieldBorder('password',true); valid=false; }
+  else { showFieldErr('pw-err',false); showFieldBorder('password',false); }
+  if (!valid) return;
 
-  if (!email || !password) {
-    showError('Ingresa tu correo y contraseña.');
-    return;
-  }
-
-  if (!supabase) {
-    showError('Supabase no está configurado. Usa el modo demostración.');
-    return;
-  }
-
-  btn.disabled = true;
-  btnText.innerHTML = '<span class="spinner"></span> Ingresando...';
-  errBox.classList.remove('show');
-
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    btn.disabled = false;
-    btnText.textContent = 'Ingresar';
-    showError(error.message === 'Invalid login credentials'
-      ? 'Correo o contraseña incorrectos.'
-      : error.message);
-    return;
-  }
-
-  await redirectFromSession(data.session);
+  setLoading('btn-login', true); hideMsg();
+  try {
+    const { user, session } = await KausayAuth.login(email, password);
+    // [F1] Requiere MFA?
+    if (KausayAuth.requiresMFA(session.rol)) {
+      // [F1] ¿Está enrolado?
+      const factors = await KausayAuth.listMFAFactors();
+      if (factors.length === 0 || !session.mfa_habilitado) {
+        // Iniciar enrollamiento
+        sessionPendingMFA = session;
+        await iniciarEnroll(session);
+      } else {
+        sessionPendingMFA = session;
+        mostrarMFA(session);
+      }
+    } else {
+      KausayAuth.redirectByRole(session);
+    }
+  } catch(err) {
+    KausayAuth.recordFailedAttempt(email);
+    showMsg(err.message || 'Error al iniciar sesión.', 'error');
+    document.getElementById('password').value = '';
+    document.getElementById('password').focus();
+  } finally { setLoading('btn-login', false); }
 }
 
-function demoLogin(rol) {
-  sessionStorage.setItem('kausay_demo_rol', rol);
-  sessionStorage.setItem('kausay_demo_nombre', {
-    alcalde: 'Roberto Sánchez Quiroz',
-    secretaria: 'Carmen Flores Ríos',
-    gerente_municipal: 'Carlos Vásquez Díaz',
-    gerente_sectorial: 'Ana Quispe Herrera',
-  }[rol]);
-  redirectTo(rol);
+/* ══ MFA VERIFICACIÓN ════════════════════════════════ */
+function mostrarMFA(session) {
+  document.getElementById('panel-login').style.display='none';
+  document.getElementById('panel-mfa').classList.add('show');
+  document.getElementById('panel-enroll').classList.remove('show');
+  document.getElementById('panel-reset').style.display='none';
+  document.getElementById('tabs').style.display='none';
+  document.getElementById('demo-hint').style.display='none';
+  hideMsg(); iniciarTimerMFA();
+  setTimeout(()=>document.getElementById('d0')?.focus(),100);
 }
 
-function showError(msg) {
-  const box = document.getElementById('error-box');
-  box.textContent = msg;
-  box.classList.add('show');
+function volverLogin() {
+  sessionPendingMFA=null;
+  document.getElementById('panel-login').style.display='';
+  document.getElementById('panel-mfa').classList.remove('show');
+  document.getElementById('panel-enroll').classList.remove('show');
+  document.getElementById('tabs').style.display='';
+  document.getElementById('demo-hint').style.display='';
+  clearMFA('d'); clearInterval(mfaTimerInterval);
 }
 
-// Enter para login
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
+function mfaInput(i) { const v=document.getElementById('d'+i).value; if(v&&i<5)document.getElementById('d'+(i+1)).focus(); if(getCode('d').length===6)doMFA(); }
+function mfaKey(e,i) { if(e.key==='Backspace'&&!document.getElementById('d'+i).value&&i>0)document.getElementById('d'+(i-1)).focus(); }
+function getCode(prefix) { return [0,1,2,3,4,5].map(i=>document.getElementById(prefix+i)?.value||'').join(''); }
+function clearMFA(p)  { [0,1,2,3,4,5].forEach(i=>{const el=document.getElementById(p+i);if(el)el.value='';}); }
+function iniciarTimerMFA() { clearInterval(mfaTimerInterval); mfaSecsLeft=30; mfaTimerInterval=setInterval(()=>{ mfaSecsLeft--; const el=document.getElementById('mfa-timer'); if(el)el.textContent=`Código válido por ${mfaSecsLeft}s`; if(mfaSecsLeft<=0){clearInterval(mfaTimerInterval);if(el)el.textContent='Código expirado';} },1000); }
+function reiniciarMFA() { clearMFA('d'); iniciarTimerMFA(); document.getElementById('d0')?.focus(); }
+
+async function doMFA() {
+  const code = getCode('d');
+  if (code.length<6) { showMFAErr('Ingresa los 6 dígitos.'); return; }
+  setLoading('btn-mfa',true); hideMFAErr();
+  try {
+    const ok = await KausayAuth.verifyMFA(code);
+    if (ok) { clearInterval(mfaTimerInterval); KausayAuth.redirectByRole(sessionPendingMFA); }
+    else    { showMFAErr('Código incorrecto. Revisa tu app.'); clearMFA('d'); document.getElementById('d0')?.focus(); }
+  } catch(err) { showMFAErr(err.message||'Error de verificación.'); }
+  finally { setLoading('btn-mfa',false); }
+}
+
+/* ══ MFA ENROLLAMIENTO [F1] ══════════════════════════ */
+async function iniciarEnroll(session) {
+  document.getElementById('panel-login').style.display='none';
+  document.getElementById('panel-mfa').classList.remove('show');
+  document.getElementById('panel-enroll').classList.add('show');
+  document.getElementById('tabs').style.display='none';
+  document.getElementById('demo-hint').style.display='none';
+
+  setLoading('btn-enroll',true);
+  try {
+    const data = await KausayAuth.startMFAEnrollment();
+    enrollTotpId = data.totp_id;
+    // Mostrar QR
+    const qrEl = document.getElementById('enroll-qr');
+    if (data.qr_code_url.startsWith('<svg')) {
+      qrEl.innerHTML = data.qr_code_url;  // SVG directo de Supabase
+    } else {
+      qrEl.innerHTML = `<img src="${data.qr_code_url}" alt="QR Code MFA">`;
+    }
+    document.getElementById('enroll-secret').textContent = data.secret || '';
+    setTimeout(()=>document.getElementById('e0')?.focus(),100);
+  } catch(err) {
+    showMsg('Error al generar QR: '+err.message,'error');
+    volverLogin();
+  } finally { setLoading('btn-enroll',false); }
+}
+
+function enrollInput(i) { const v=document.getElementById('e'+i).value; if(v&&i<5)document.getElementById('e'+(i+1)).focus(); if(getCode('e').length===6)confirmarEnroll(); }
+function enrollKey(e,i) { if(e.key==='Backspace'&&!document.getElementById('e'+i).value&&i>0)document.getElementById('e'+(i-1)).focus(); }
+
+async function confirmarEnroll() {
+  const code = getCode('e');
+  if (code.length<6) { showEnrollErr('Ingresa el código de 6 dígitos.'); return; }
+  if (!enrollTotpId) { showEnrollErr('Error interno. Recarga la página.'); return; }
+  setLoading('btn-enroll',true); hideEnrollErr();
+  try {
+    const ok = await KausayAuth.confirmMFAEnrollment(enrollTotpId, code);
+    if (ok) {
+      showMsg('✓ Autenticación de dos factores activada. Ahora puedes ingresar.','ok');
+      setTimeout(()=>{ mostrarMFA(sessionPendingMFA); },1200);
+    } else {
+      showEnrollErr('Código incorrecto. Verifica tu app autenticadora.');
+      clearMFA('e');
+    }
+  } catch(err) { showEnrollErr(err.message||'Error al confirmar MFA.'); }
+  finally { setLoading('btn-enroll',false); }
+}
+
+/* ══ REAUTH ══════════════════════════════════════════ */
+async function confirmarReauth() {
+  const pw = document.getElementById('reauth-pw').value;
+  if (!pw) { showReauthErr('Ingresa tu contraseña.'); return; }
+  setLoading('btn-reauth',true); hideReauthErr();
+  await KausayAuth.confirmReauth(pw);
+  setLoading('btn-reauth',false);
+  document.getElementById('reauth-overlay').classList.remove('show');
+}
+function cancelarReauth() {
+  document.getElementById('reauth-overlay').classList.remove('show');
+  window.dispatchEvent(new CustomEvent('kausay:reauth_done',{detail:{success:false}}));
+}
+
+/* ══ RESET ════════════════════════════════════════════ */
+async function doReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  if (!email||!email.includes('@')) { showMsg('Ingresa un correo válido.','error'); return; }
+  setLoading('btn-reset',true); hideMsg();
+  try {
+    await KausayAuth.requestPasswordReset(email);
+    showMsg(`Enlace enviado a ${email}. Revisa tu bandeja y sigue las instrucciones.`,'ok');
+    document.getElementById('reset-email').value='';
+  } catch(err) { showMsg(err.message||'No se pudo enviar. Contacta al administrador.','error'); }
+  finally { setLoading('btn-reset',false); }
+}
+
+/* ══ TABS ════════════════════════════════════════════ */
+function setTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',(i===0&&tab==='login')||(i===1&&tab==='reset')));
+  document.getElementById('panel-login').style.display  = tab==='login'?'':'none';
+  document.getElementById('panel-reset').style.display  = tab==='reset'?'':'none';
+  document.getElementById('panel-mfa').classList.remove('show');
+  hideMsg();
+}
+
+/* ══ DEMO ROLES ══════════════════════════════════════ */
+const DEMO_QUICK = [
+  {nom:'Alcalde',         email:'alcalde@cajamarca.gob.pe',    pw:'Cajamarca2024!'},
+  {nom:'Secretaria',      email:'secretaria@cajamarca.gob.pe', pw:'Despacho2024!' },
+  {nom:'Gte. Municipal',  email:'gm@cajamarca.gob.pe',         pw:'Gerencia2024!' },
+  {nom:'Infraestructura', email:'infra@cajamarca.gob.pe',      pw:'Infra2024!'    },
+  {nom:'Rentas',          email:'rentas@cajamarca.gob.pe',     pw:'Rentas2024!'   },
+  {nom:'OCI Lectura',     email:'oci@cajamarca.gob.pe',        pw:'Oci2024!'      },
+  {nom:'Asesor Despacho',email:'asesor@cajamarca.gob.pe',    pw:'Asesor2024!'   },
+];
+function renderDemoRoles() {
+  const grid = document.getElementById('demo-roles');
+  DEMO_QUICK.forEach(r=>{
+    const btn=document.createElement('button');
+    btn.className='demo-role';
+    btn.innerHTML=`<div class="demo-role__nom">${r.nom}</div><div class="demo-role__email">${r.email.split('@')[0]}</div>`;
+    btn.onclick=()=>{ document.getElementById('email').value=r.email; document.getElementById('password').value=r.pw; hideMsg(); doLogin(); };
+    grid.appendChild(btn);
+  });
+}
+
+/* ══ HELPERS UI ══════════════════════════════════════ */
+function togglePW() { const i=document.getElementById('password'),b=document.querySelector('.toggle-pw'); if(i.type==='password'){i.type='text';b.textContent='🙈';}else{i.type='password';b.textContent='👁';} }
+function setLoading(btnId,on) { const b=document.getElementById(btnId); if(!b)return; if(on)b.classList.add('loading');else b.classList.remove('loading'); b.disabled=on; }
+function showMsg(msg,tipo) { const el=document.getElementById('msg-box'); el.textContent=msg; el.className=`msg-box show ${tipo}`; }
+function hideMsg()          { document.getElementById('msg-box').className='msg-box'; }
+function showFieldErr(id,v) { document.getElementById(id).classList.toggle('show',v); }
+function showFieldBorder(id,v) { document.getElementById(id).classList.toggle('error',v); }
+function showMFAErr(msg)    { const el=document.getElementById('mfa-err'); el.textContent=msg; el.classList.add('show'); }
+function hideMFAErr()       { document.getElementById('mfa-err').classList.remove('show'); }
+function showEnrollErr(msg) { const el=document.getElementById('enroll-err'); el.textContent=msg; el.classList.add('show'); }
+function hideEnrollErr()    { document.getElementById('enroll-err').classList.remove('show'); }
+function showReauthErr(msg) { const el=document.getElementById('reauth-err'); el.textContent=msg; el.classList.add('show'); }
+function hideReauthErr()    { document.getElementById('reauth-err').classList.remove('show'); }
 </script>
 </body>
 </html>

@@ -3,872 +3,1043 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#8B1A1A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest-alcalde.json">
 <link rel="apple-touch-icon" href="icons/icon-alcalde-192.png">
-<meta name="theme-color" content="#B02020">
-<title>Kausay Alcalde</title>
+<title>Centro de Mando · Alcalde</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ac:#B02020;--ac-d:#8C1818;--ac-bg:#FDEAEA;
-  --oro:#C8880A;--oro-bg:#FFF4DC;
-  --verde:#1A7A45;--verde-bg:#E8F5EE;
-  --azul:#185FA5;--azul-bg:#E6F1FB;
-  --teal:#0F6E56;--teal-bg:#E1F5EE;
-  --gris:#F0F2F5;--card:#fff;
-  --txt:#1A1D23;--txt2:#4A5060;--txt3:#8A90A0;
-  --borde:#E2E6ED;--sb:#0F0F12;
+  --rojo:#8B1A1A;--rojo-l:#B02020;--rojo-bg:#FAF0F0;
+  --ambar:#9E6A06;--ambar-bg:#FDF8EE;
+  --verde:#1A7A45;--verde-bg:#EEF8F3;
+  --azul:#1A4A7A;--azul-bg:#EEF3FA;
+  --negro:#1A1D23;--gris1:#2C2F38;--gris2:#4A5060;--gris3:#8A90A0;
+  --borde:#E2E6ED;--bg:#F5F6F8;--card:#FFFFFF;--sb:#0F1015;
 }
-html,body{height:100%;font-family:'Barlow',sans-serif;color:var(--txt);background:var(--gris)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--bg);color:var(--negro);overflow:hidden}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+
+/* ── LOADER ── */
+.loader{position:fixed;inset:0;z-index:300;background:var(--sb);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .4s}
+.loader.gone{opacity:0;pointer-events:none}
+.loader-spin{width:28px;height:28px;border:2.5px solid rgba(255,255,255,.1);border-top-color:rgba(180,30,30,.8);border-radius:50%;animation:spin .7s linear infinite}
+.loader-txt{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.5px}
 
 /* ── LAYOUT ── */
-.layout{display:flex;height:100vh;overflow:hidden}
-.sb{width:220px;background:var(--sb);display:flex;flex-direction:column;flex-shrink:0}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.app{display:flex;height:100vh;overflow:hidden}
 
 /* ── SIDEBAR ── */
-.sb-logo{padding:15px 16px 11px;border-bottom:1px solid rgba(255,255,255,.07)}
-.sb-brand{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#fff;line-height:1}
-.sb-brand em{color:#F07070;font-style:normal}
-.sb-tag{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
-.sb-muni{padding:8px 12px;background:rgba(255,255,255,.05);margin:8px 10px 4px;border-radius:8px;font-size:11px;color:rgba(255,255,255,.65);font-weight:500;line-height:1.3}
-.sb-nav{flex:1;overflow-y:auto;padding:4px 0}
-.sb-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.22);padding:10px 16px 4px}
-.sb-it{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;color:rgba(255,255,255,.46);font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all .12s;user-select:none}
-.sb-it:hover{color:#fff;background:rgba(255,255,255,.05)}
-.sb-it.on{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--ac)}
-.sb-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
-.sb-badge{margin-left:auto;background:var(--ac);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px}
-.sb-ft{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
-.sb-av{width:30px;height:30px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.sb-un{font-size:11px;color:#fff;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-ur{font-size:9px;color:rgba(255,255,255,.33);margin-top:1px}
-.sb-logout{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.38);font-size:9px;padding:4px 8px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif}
-.sb-logout:hover{background:rgba(255,255,255,.15);color:#fff}
+.sb{width:200px;background:var(--sb);display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid rgba(255,255,255,.05)}
+.sb-head{padding:14px 14px 10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sb-escudo{width:32px;height:auto;margin-bottom:8px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5));display:block}
+.sb-muni{font-size:10px;font-weight:600;color:rgba(255,255,255,.55);line-height:1.4;margin-bottom:3px}
+.sb-tag{font-size:8px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1.2px}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 0;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-sec{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.2);padding:10px 14px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;color:rgba(255,255,255,.42);font-size:12px;font-weight:500;border-left:2.5px solid transparent;transition:all .12s;position:relative;user-select:none}
+.nav-item:hover{color:rgba(255,255,255,.75);background:rgba(255,255,255,.04)}
+.nav-item.on{color:#fff;background:rgba(255,255,255,.07);border-left-color:var(--rojo-l)}
+.nav-ico{font-size:13px;width:16px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--rojo-l);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:9px;min-width:18px;text-align:center}
+.nav-badge.amber{background:var(--ambar)}
+.sb-foot{padding:10px 12px;border-top:1px solid rgba(255,255,255,.06)}
+.sb-user{display:flex;align-items:center;gap:8px}
+.sb-av{width:28px;height:28px;border-radius:50%;background:var(--rojo-l);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-name{font-size:11px;font-weight:600;color:rgba(255,255,255,.8);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-rol{font-size:9px;color:rgba(255,255,255,.3)}
+.logout-btn{background:rgba(255,255,255,.07);border:none;color:rgba(255,255,255,.35);font-size:9px;padding:4px 7px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif}
+.logout-btn:hover{background:rgba(255,255,255,.13);color:rgba(255,255,255,.7)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
 
 /* ── TOPBAR ── */
-.tb{height:52px;background:var(--card);border-bottom:1px solid var(--borde);display:flex;align-items:center;gap:10px;padding:0 18px;flex-shrink:0}
-.tb-ttl{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;flex:1;color:var(--txt)}
-.tb-date{font-size:11px;color:var(--txt3);white-space:nowrap}
-.rt{display:inline-flex;align-items:center;gap:4px;background:var(--verde-bg);color:var(--verde);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
-.rt-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite}
-.tb-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;position:relative}
-.tb-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--ac);border-radius:50%;border:1.5px solid #fff}
+.tb{height:48px;background:var(--card);border-bottom:1px solid var(--borde);display:flex;align-items:center;gap:10px;padding:0 16px;flex-shrink:0}
+.tb-back{display:none;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;border:1px solid var(--borde);background:none;cursor:pointer;font-size:11px;font-weight:600;color:var(--gris2);font-family:'Barlow',sans-serif}
+.tb-back:active{background:var(--bg)}
+.tb-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--negro);flex:1}
+.tb-clock{font-size:11px;color:var(--gris3);white-space:nowrap}
+.tb-notif{width:32px;height:32px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;position:relative;flex-shrink:0}
+.tb-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--rojo-l);border-radius:50%;border:1.5px solid #fff;animation:pulse 2s infinite}
+.offline-bar{background:var(--ambar);color:#fff;font-size:10px;font-weight:600;padding:4px 16px;text-align:center;display:none;flex-shrink:0}
+.offline-bar.show{display:block}
 
-/* ── CONTENT ── */
-.content{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:16px}
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.sec-ttl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt)}
-.sec-sub{font-size:11px;color:var(--txt3)}
-.card{background:var(--card);border:1px solid var(--borde);border-radius:12px;overflow:hidden}
-.cp{padding:14px 16px}
+/* ── CONTENIDO ── */
+.content{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin;scrollbar-color:var(--borde) transparent}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--borde);border-radius:2px}
 
-/* ── PILLS ── */
-.pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;display:inline-block}
-.p-r{background:var(--ac-bg);color:var(--ac)}
-.p-a{background:var(--oro-bg);color:var(--oro)}
-.p-g{background:var(--verde-bg);color:var(--verde)}
-.p-b{background:var(--azul-bg);color:var(--azul)}
-.p-t{background:var(--teal-bg);color:var(--teal)}
-.p-x{background:var(--gris);color:var(--txt3);border:1px solid var(--borde)}
+/* ── ESTADO DEL MUNICIPIO ── */
+.estado-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.e-card{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:10px 8px;text-align:center;cursor:default}
+.e-val{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;line-height:1}
+.e-lbl{font-size:9px;color:var(--gris3);text-transform:uppercase;letter-spacing:.3px;margin-top:3px;line-height:1.3}
+.e-card.critico{border-color:rgba(176,32,32,.25);background:var(--rojo-bg)}
+.e-card.alerta{border-color:rgba(158,106,6,.2);background:var(--ambar-bg)}
+.e-card.ok{border-color:rgba(26,122,69,.2);background:var(--verde-bg)}
 
-/* ── KPI ── */
-.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.kpi{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 13px;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--ac))}
-.kpi-l{font-size:10px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.kpi-v{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;line-height:1;margin-bottom:3px}
-.kpi-v small{font-size:14px;font-weight:400}
-.kpi-d{font-size:10px;font-weight:600}
-.up{color:var(--verde)}.dn{color:var(--ac)}.wn{color:var(--oro)}
-.kpi-ico{position:absolute;bottom:8px;right:10px;font-size:24px;opacity:.1}
+/* ── SECCIÓN HEADER ── */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.sec-ttl{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gris2)}
+.sec-lnk{font-size:11px;color:var(--azul);font-weight:600;cursor:pointer;background:none;border:none;font-family:'Barlow',sans-serif}
+.sec-lnk:hover{text-decoration:underline}
 
-/* ── BRIEFING IA ── */
-.briefing{background:#0F0F12;border-radius:12px;padding:15px;color:#fff;position:relative;overflow:hidden}
-.briefing::after{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(176,32,32,.2) 0%,transparent 70%);pointer-events:none}
-.br-hd{display:flex;align-items:center;gap:9px;margin-bottom:10px}
-.br-ico{width:28px;height:28px;border-radius:7px;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.br-ttl{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700}
-.br-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
-.br-body{font-size:12px;color:rgba(255,255,255,.72);line-height:1.75}
-.br-hl{background:rgba(200,136,10,.2);color:#F0A80C;padding:0 3px;border-radius:3px;font-weight:600}
-.br-acts{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
-.br-btn{padding:7px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
-.br-p{background:var(--ac);color:#fff}.br-s{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
+/* ── DECISIONES DEL DÍA ── */
+.dec-card{background:var(--card);border:1px solid var(--borde);border-left:3px solid var(--c,var(--rojo));border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:11px;animation:fadeUp .3s ease both}
+.dec-ico{font-size:20px;flex-shrink:0}
+.dec-body{flex:1;min-width:0}
+.dec-ttl{font-size:13px;font-weight:600;color:var(--negro);line-height:1.35}
+.dec-desc{font-size:11px;color:var(--gris3);margin-top:2px;line-height:1.4}
+.dec-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.dec-tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.t-r{background:var(--rojo-bg);color:var(--rojo-l);border:1px solid rgba(176,32,32,.2)}
+.t-a{background:var(--ambar-bg);color:var(--ambar);border:1px solid rgba(158,106,6,.2)}
+.t-v{background:var(--verde-bg);color:var(--verde);border:1px solid rgba(26,122,69,.2)}
+.t-b{background:var(--azul-bg);color:var(--azul);border:1px solid rgba(26,74,122,.2)}
+.dec-btn{font-size:10px;font-weight:600;padding:4px 10px;border-radius:7px;border:1px solid var(--borde);background:none;cursor:pointer;color:var(--gris2);font-family:'Barlow',sans-serif;white-space:nowrap}
+.dec-btn:active{background:var(--bg)}
 
 /* ── ALERTAS ── */
-.alerta{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;gap:10px;border-left:4px solid var(--al,var(--ac));margin-bottom:8px}
-.al-ico{font-size:17px;flex-shrink:0;margin-top:1px}
-.al-bd{flex:1;min-width:0}
-.al-ttl{font-size:13px;font-weight:600;line-height:1.3}
-.al-desc{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.5}
-.al-meta{display:flex;gap:5px;align-items:center;margin-top:5px;flex-wrap:wrap}
-.al-meta span{font-size:10px;color:var(--txt3)}
+.alerta-item{background:var(--card);border:1px solid var(--borde);border-left:3px solid var(--ac,#ccc);border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;transition:opacity .2s}
+.alerta-item.leida{opacity:.45}
+.al-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.al-body{flex:1;min-width:0}
+.al-ttl{font-size:12px;font-weight:600;color:var(--negro)}
+.al-desc{font-size:11px;color:var(--gris3);margin-top:2px;line-height:1.4}
+.al-foot{display:flex;align-items:center;gap:6px;margin-top:5px}
+.al-area{font-size:9px;background:var(--bg);border:1px solid var(--borde);padding:1px 7px;border-radius:6px;color:var(--gris2);font-weight:600}
+.al-ts{font-size:10px;color:var(--gris3)}
+.al-mark{background:none;border:1px solid var(--borde);border-radius:6px;font-size:10px;font-weight:600;color:var(--gris3);padding:2px 8px;cursor:pointer;font-family:'Barlow',sans-serif;margin-left:auto}
+.al-mark:hover{background:var(--bg)}
 
-/* ── CMD ── */
-.cmd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.cmd{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .15s;text-align:center;font-family:'Barlow',sans-serif}
-.cmd:hover{border-color:var(--ac);background:var(--ac-bg);transform:translateY(-1px)}
-.cmd:active{transform:scale(.97)}
-.cmd-ico{font-size:20px}
-.cmd-lbl{font-size:11px;font-weight:600;color:var(--txt);line-height:1.3}
+/* ── INSTRUCCIONES ── */
+.instr-card{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px}
+.instr-hd{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.instr-tipo{font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.3px}
+.tipo-instruccion{background:#FAF0F0;color:var(--rojo-l);border:1px solid rgba(176,32,32,.2)}
+.tipo-consulta{background:var(--azul-bg);color:var(--azul);border:1px solid rgba(26,74,122,.2)}
+.tipo-alerta{background:var(--ambar-bg);color:var(--ambar);border:1px solid rgba(158,106,6,.2)}
+.instr-para{font-size:11px;font-weight:600;color:var(--gris2);flex:1}
+.instr-hora{font-size:10px;color:var(--gris3)}
+.instr-estado{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600}
+.estado-ok{color:var(--verde)}
+.estado-pend{color:var(--ambar);animation:pulse 2s infinite}
+.instr-txt{font-size:12px;color:var(--negro);line-height:1.5;margin-bottom:7px}
+.instr-resp{background:var(--verde-bg);border-radius:7px;padding:7px 10px;font-size:11px;color:var(--verde);line-height:1.4;margin-bottom:7px;border:1px solid rgba(26,122,69,.15)}
+.instr-resp strong{font-weight:600}
+.instr-prioridad{font-size:9px;font-weight:700;color:var(--rojo-l);text-transform:uppercase;letter-spacing:.3px}
 
-/* ── COMPROMISOS ── */
-.comp{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.comp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.comp-bd{flex:1;min-width:0}
-.comp-ttl{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.comp-meta{display:flex;gap:5px;align-items:center;margin-top:3px}
-.comp-resp{background:var(--gris);border:1px solid var(--borde);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:600;color:var(--txt2)}
-.comp-fec{font-size:11px;font-weight:700;flex-shrink:0}
-
-/* ── PRESUPUESTO ── */
-.pres-row{padding:11px 14px;border-bottom:1px solid var(--borde)}
-.pres-row:last-child{border-bottom:none}
-.pres-row:hover{background:var(--gris);cursor:pointer}
-.pres-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.pres-nombre{font-size:13px;font-weight:600}
-.pres-pct{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700}
-.pbar{height:5px;background:var(--borde);border-radius:3px;overflow:hidden}
-.pbar-f{height:100%;border-radius:3px}
-.pres-montos{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-top:4px}
-.pres-montos strong{color:var(--txt2)}
-
-/* ── NORMATIVO ── */
-.plazo{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;gap:10px;border-left:4px solid var(--pl,var(--ac));margin-bottom:8px}
-
-/* ════════════════════════════════════════════════════════════
-   MÓDULO DE COMUNICACIÓN DIRIGIDA — el corazón del cambio
-   ════════════════════════════════════════════════════════════ */
-
-/* Paso 1 — Destinatarios */
-.dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-@media(min-width:640px){.dest-grid{grid-template-columns:repeat(6,1fr)}}
-.dest-card{background:var(--card);border:1.5px solid var(--borde);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .18s;font-family:'Barlow',sans-serif}
-.dest-card:hover{border-color:var(--txt3);transform:translateY(-1px)}
-.dest-card.sel{border-color:var(--ac);background:var(--ac-bg)}
-.dest-card.sel-azul{border-color:var(--azul);background:var(--azul-bg)}
-.dest-card.sel-teal{border-color:var(--teal);background:var(--teal-bg)}
-.dest-ico{font-size:22px;display:block;margin-bottom:5px}
-.dest-nombre{font-size:11px;font-weight:700;color:var(--txt);line-height:1.2}
-.dest-cargo{font-size:9px;color:var(--txt3);margin-top:2px;line-height:1.3}
-.dest-pend{font-size:9px;font-weight:700;color:var(--ac);margin-top:3px}
-
-/* Paso 2 — Tipos de mensaje */
-.tipo-panel{animation:fadeIn .2s ease both}
-.tipo-grid{display:flex;flex-direction:column;gap:7px}
-.tipo-btn{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--borde);background:var(--card);cursor:pointer;text-align:left;font-family:'Barlow',sans-serif;transition:all .15s}
-.tipo-btn:hover{border-color:var(--txt3);background:var(--gris)}
-.tipo-btn.sel{background:var(--ac-bg);border-color:var(--ac)}
-.tipo-btn.sel-azul{background:var(--azul-bg);border-color:var(--azul)}
-.tipo-btn.sel-oro{background:var(--oro-bg);border-color:var(--oro)}
-.tipo-btn.sel-verde{background:var(--verde-bg);border-color:var(--verde)}
-.tipo-btn.sel-teal{background:var(--teal-bg);border-color:var(--teal)}
-.tipo-ico{font-size:20px;flex-shrink:0;margin-top:1px}
-.tipo-info{}
-.tipo-nombre{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px}
-.tipo-desc{font-size:11px;color:var(--txt2);line-height:1.5}
-.tipo-tag{font-size:9px;font-weight:700;margin-top:4px;padding:2px 7px;border-radius:8px;display:inline-block;text-transform:uppercase;letter-spacing:.3px}
-
-/* Paso 3 — Composición */
-.comp-panel{animation:fadeIn .2s ease both}
-.msg-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--gris);border-radius:10px;margin-bottom:10px}
-.msg-header-ico{font-size:18px}
-.msg-header-ttl{font-size:13px;font-weight:600;color:var(--txt)}
-.msg-header-sub{font-size:11px;color:var(--txt3);margin-top:1px}
-.msg-to{font-size:12px;color:var(--txt2);margin-bottom:8px;padding:7px 10px;background:var(--gris);border-radius:8px;display:flex;align-items:center;gap:6px}
-.msg-to strong{color:var(--txt)}
-.msg-ta{width:100%;border:1.5px solid var(--borde);border-radius:9px;padding:10px 12px;font-size:13px;font-family:'Barlow',sans-serif;resize:none;outline:none;color:var(--txt);background:#fff;line-height:1.6;transition:border-color .15s}
-.msg-ta:focus{border-color:var(--ac)}
-.msg-send-row{display:flex;gap:8px;margin-top:8px}
-.msg-send{flex:1;padding:11px;background:var(--ac);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s}
-.msg-send:hover{background:var(--ac-d)}
-.msg-back{padding:11px 14px;background:var(--gris);border:1px solid var(--borde);border-radius:9px;font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif;color:var(--txt2)}
-.msg-back:hover{background:var(--borde)}
-.msg-sent{background:var(--verde-bg);border:1px solid rgba(26,122,69,.2);border-radius:9px;padding:12px 14px;font-size:13px;font-weight:600;color:var(--verde);display:none;align-items:center;gap:8px}
-.msg-sent.show{display:flex}
-.msg-sent-ico{font-size:18px}
-
-/* Coord: selección múltiple áreas */
-.areas-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
-.area-chk{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1.5px solid var(--borde);border-radius:8px;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif}
-.area-chk.checked{border-color:var(--azul);background:var(--azul-bg)}
-.area-chk-ico{font-size:14px}
-.area-chk-n{font-size:12px;font-weight:600;color:var(--txt)}
-.area-chk-box{margin-left:auto;width:16px;height:16px;border-radius:4px;border:2px solid var(--borde);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all .15s}
-.area-chk.checked .area-chk-box{background:var(--azul);border-color:var(--azul);color:#fff}
-
-/* Historial de enviadas */
-.sent-item{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start;margin-bottom:7px;border-left:4px solid var(--si,var(--ac))}
-.sent-to{font-size:10px;font-weight:600;color:var(--txt3);margin-bottom:4px;display:flex;align-items:center;gap:5px}
-.sent-txt{font-size:12px;color:var(--txt2);line-height:1.5}
-.sent-meta{display:flex;gap:5px;align-items:center;margin-top:5px;flex-wrap:wrap}
-.sent-hora{font-size:10px;color:var(--txt3)}
-.sent-estado{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;text-transform:uppercase}
-.est-leida{background:var(--verde-bg);color:var(--verde)}
-.est-pend{background:var(--ac-bg);color:var(--ac)}
-
-/* Chat GM 1:1 */
-.chat-box{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:2px 0}
-.ch-msg{display:flex;gap:7px;align-items:flex-start}
-.ch-msg.out{flex-direction:row-reverse}
-.ch-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
-.ch-bub{max-width:78%;padding:8px 11px;border-radius:12px;font-size:12px;line-height:1.55}
-.ch-msg:not(.out) .ch-bub{background:var(--gris);border-bottom-left-radius:4px;color:var(--txt)}
-.ch-msg.out .ch-bub{background:var(--ac);color:#fff;border-bottom-right-radius:4px}
-.ch-time{font-size:10px;color:var(--txt3);margin-top:2px}
-.ch-msg.out .ch-time{text-align:right}
-.chat-inp-row{display:flex;gap:7px;padding-top:9px;border-top:1px solid var(--borde);margin-top:8px}
-.ch-inp{flex:1;border:1.5px solid var(--borde);border-radius:20px;padding:8px 13px;font-size:13px;font-family:'Barlow',sans-serif;outline:none;color:var(--txt);background:var(--gris)}
-.ch-inp:focus{border-color:var(--ac);background:#fff}
-.ch-send{width:34px;height:34px;border-radius:50%;background:var(--ac);border:none;cursor:pointer;color:#fff;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-
-/* ── FORM ── */
-.form-row{margin-bottom:10px}
-.form-lbl{display:block;font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.form-inp{width:100%;border:1px solid var(--borde);border-radius:8px;padding:8px 11px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--txt);background:#fff;outline:none}
-.form-inp:focus{border-color:var(--ac)}
+/* ── PANEL EMITIR INSTRUCCIÓN ── */
+.panel-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.5);display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.panel-overlay.show{display:flex}
+.panel-sheet{background:var(--card);border-radius:18px 18px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:16px 16px calc(16px + env(safe-area-inset-bottom));animation:slideIn .25s ease}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.panel-ttl{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--negro)}
+.panel-close{width:30px;height:30px;border-radius:50%;background:var(--bg);border:1px solid var(--borde);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gris2)}
+.form-row{margin-bottom:11px}
+.form-lbl{display:block;font-size:10px;font-weight:700;color:var(--gris2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.form-inp{width:100%;border:1.5px solid var(--borde);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--negro);background:#fff;outline:none;transition:border-color .15s}
+.form-inp:focus{border-color:var(--rojo)}
+.form-sel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A90A0' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.form-ta{resize:vertical;min-height:80px;line-height:1.5}
 .form-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-btn{width:100%;padding:10px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
+.tipo-chips{display:flex;gap:6px;flex-wrap:wrap}
+.tipo-chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--borde);background:none;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;color:var(--gris2);transition:all .12s}
+.tipo-chip.sel{border-color:var(--rojo);background:var(--rojo-bg);color:var(--rojo-l)}
+.btn-primary{width:100%;padding:12px;background:var(--rojo);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;margin-top:4px;transition:background .15s}
+.btn-primary:hover{background:var(--rojo-l)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
 
+/* ── OBRAS ── */
+.obra-card{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 13px}
+.obra-hd{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.obra-nombre{font-size:13px;font-weight:600;color:var(--negro);flex:1;line-height:1.35}
+.riesgo-chip{font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.r-critico{background:var(--rojo-bg);color:var(--rojo-l);border:1px solid rgba(176,32,32,.2)}
+.r-alto{background:var(--ambar-bg);color:var(--ambar);border:1px solid rgba(158,106,6,.2)}
+.r-medio{background:var(--ambar-bg);color:var(--ambar);border:1px solid rgba(158,106,6,.15)}
+.r-bajo{background:var(--verde-bg);color:var(--verde);border:1px solid rgba(26,122,69,.15)}
+.obra-bar-track{height:6px;background:var(--bg);border-radius:3px;border:1px solid var(--borde);overflow:hidden;margin-bottom:7px}
+.obra-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.obra-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.obra-pct{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700}
+.obra-info{font-size:10px;color:var(--gris3);flex:1}
+.obra-info strong{color:var(--gris2);font-weight:600}
+.obra-fin{font-size:10px;font-weight:600;color:var(--gris2)}
+.obra-upd-row{display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--borde)}
+.obra-pct-inp{flex:1;border:1.5px solid var(--borde);border-radius:7px;padding:5px 10px;font-size:12px;font-family:'Barlow',sans-serif;color:var(--negro);outline:none}
+.obra-pct-inp:focus{border-color:var(--rojo)}
+.obra-pct-btn{padding:5px 14px;background:var(--verde);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
 
-/* ── BOTÓN VOLVER AL MENÚ (solo mobile) ── */
-.tb-back{display:none;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:var(--txt2);white-space:nowrap;flex-shrink:0}
-.tb-back:active{background:var(--gris)}
-.tb-back-ico{font-size:14px}
+/* ── PRESUPUESTO BARRAS ── */
+.pres-item{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px}
+.pres-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.pres-nombre{font-size:12px;font-weight:600;color:var(--negro)}
+.pres-pct{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700}
+.pres-bar-track{height:7px;background:var(--bg);border-radius:4px;border:1px solid var(--borde);overflow:hidden;margin-bottom:5px}
+.pres-bar-fill{height:100%;border-radius:4px;transition:width .5s}
+.pres-monto{font-size:10px;color:var(--gris3)}
+
+/* ── AGENDA ── */
+.ag-item{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:10px 13px;display:flex;gap:11px}
+.ag-hora{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--gris2);min-width:40px;line-height:1.2}
+.ag-dur{font-size:9px;font-weight:400;color:var(--gris3);display:block;margin-top:2px}
+.ag-bar{width:3px;border-radius:2px;flex-shrink:0;margin:2px 0}
+.ag-body{flex:1;min-width:0}
+.ag-ttl{font-size:12px;font-weight:600;color:var(--negro);margin-bottom:3px}
+.ag-meta{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.ag-lugar{font-size:10px;color:var(--gris3)}
+.tipo-tag{font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px;text-transform:uppercase}
+.ag-br{background:var(--verde-bg);color:var(--verde);border:1px solid rgba(26,122,69,.15);font-size:9px;font-weight:700;padding:1px 7px;border-radius:7px}
+
+/* ── SEMÁFORO NORMATIVO ── */
+.plazo-item{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:10px 13px;display:flex;align-items:center;gap:12px}
+.plazo-dias{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;min-width:50px;line-height:1}
+.plazo-d{font-size:10px;color:var(--gris3);margin-top:1px}
+.plazo-sep{width:1px;height:36px;background:var(--borde);flex-shrink:0}
+.plazo-body{flex:1;min-width:0}
+.plazo-sis{font-size:10px;font-weight:700;color:var(--azul);text-transform:uppercase;letter-spacing:.3px}
+.plazo-desc{font-size:12px;font-weight:500;color:var(--negro);margin-top:1px}
+.plazo-resp{font-size:10px;color:var(--gris3);margin-top:2px}
+
+/* ── COMUNICAR ── */
+.com-dest{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.dest-btn{padding:10px 7px;border:1.5px solid var(--borde);border-radius:10px;background:var(--card);cursor:pointer;text-align:center;font-family:'Barlow',sans-serif;transition:all .15s}
+.dest-btn:hover{border-color:var(--gris3)}
+.dest-btn.sel{border-color:var(--rojo);background:var(--rojo-bg)}
+.dest-ico{font-size:18px;display:block;margin-bottom:4px}
+.dest-n{font-size:11px;font-weight:600;color:var(--negro)}
+.dest-pend{font-size:10px;color:var(--rojo-l);font-weight:600}
+
+/* ── ACCIONES RÁPIDAS DOCK ── */
+.actions-dock{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--borde);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:7px;flex-shrink:0}
+.act-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:10px;border:1.5px solid var(--borde);background:var(--card);cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.act-btn:active{transform:scale(.95)}
+.act-btn.primary{background:var(--rojo);border-color:var(--rojo)}
+.act-btn.primary .act-ico{color:#fff}
+.act-btn.primary .act-lbl{color:rgba(255,255,255,.85)}
+.act-ico{font-size:20px}
+.act-lbl{font-size:9px;font-weight:600;color:var(--gris2);text-align:center;line-height:1.2}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--negro);color:#fff;font-size:12px;font-weight:500;padding:9px 18px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ── RESPONSIVE ── */
 @media(max-width:680px){
+  .sb{display:none}
   .tb-back{display:flex}
-  .tb-date{display:none}
+  .tb-clock{display:none}
+  .estado-grid{grid-template-columns:repeat(3,1fr)}
+  .estado-grid .e-card:nth-child(4),.estado-grid .e-card:nth-child(5){display:none}
+  .form-2{grid-template-columns:1fr}
 }
-
-@media(max-width:680px){.sb{display:none}.form-2{grid-template-columns:1fr}}
+@media(min-height:750px){.content{gap:14px}}
 </style>
 </head>
 <body>
-<div id="loading" style="height:100vh;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8A90A0">Verificando acceso...</div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-/* ══ CONFIG ══════════════════════════════════════════ */
-const SUPABASE_URL = 'TU_SUPABASE_URL';
-const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
-const CONFIGURED = !SUPABASE_URL.startsWith('TU_');
-const ROL_PAGES = {alcalde:'alcalde.html',secretaria:'secretaria.html',gerente_municipal:'gm.html',gerente_sectorial:'gerente.html'};
-let sb = null, USER = null;
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-spin"></div>
+  <div class="loader-txt">Cargando centro de mando...</div>
+</div>
 
-/* ══ MOCK DATA ═══════════════════════════════════════ */
-const ALERTAS = [
-  {ico:'🚨',ttl:'Obra Jr. Lima paralizada · 26 días',desc:'Sin avance desde el 24 oct. Riesgo de penalidad. S/480K en riesgo.',area:'Infraestructura',hace:'hace 1h',niv:'critica'},
-  {ico:'⏰',ttl:'Plazo MEF vence en 18 días',desc:'Devengado 4to trimestre: S/1.2M sin ejecutar en Planeamiento.',area:'Planeamiento',hace:'hace 3h',niv:'alerta'},
-  {ico:'⚠️',ttl:'5 compromisos vencidos sin respuesta',desc:'Rentas (2), Servicios (2), Desarrollo Social (1). El más antiguo: 22 días.',area:'GM',hace:'ayer',niv:'alerta'},
-  {ico:'📋',ttl:'3 documentos esperan tu firma',desc:'Resolución N°421, Convenio UNC, Contrato limpieza.',area:'Secretaría',hace:'hoy 08:00',niv:'info'},
-];
-const COMPROMISOS = [
-  {ttl:'Gestionar agua potable sector Los Pinos',resp:'Servicios',fec:'22 Nov',ven:true},
-  {ttl:'Instalar alumbrado plaza Las Torrecitas',resp:'Infraestructura',fec:'25 Nov',ven:true},
-  {ttl:'Responder pedido regidor Mamani',resp:'GM',fec:'28 Nov',ven:false},
-  {ttl:'Informe de cierre al concejo',resp:'Planeamiento',fec:'05 Dic',ven:false},
-];
-const PRESUPUESTO = [
-  {nombre:'Infraestructura y Obras',asig:4850000,ejec:3421000,pct:71,col:'#1A7A45'},
-  {nombre:'Desarrollo Social',asig:1200000,ejec:940000,pct:78,col:'#1A7A45'},
-  {nombre:'Rentas y Tributación',asig:380000,ejec:155000,pct:41,col:'#B02020'},
-  {nombre:'Servicios Municipales',asig:920000,ejec:512000,pct:56,col:'#C8880A'},
-  {nombre:'Secretaría General',asig:290000,ejec:198000,pct:68,col:'#1A7A45'},
-  {nombre:'Planeamiento',asig:185000,ejec:72000,pct:39,col:'#B02020'},
-];
+<!-- PANEL EMITIR INSTRUCCIÓN -->
+<div class="panel-overlay" id="panel-instr">
+  <div class="panel-sheet">
+    <div class="panel-hd">
+      <span class="panel-ttl">Emitir instrucción</span>
+      <button class="panel-close" onclick="cerrarPanel()">✕</button>
+    </div>
+    <div class="form-row">
+      <label class="form-lbl">Tipo</label>
+      <div class="tipo-chips" id="tipo-chips">
+        <button class="tipo-chip sel" data-tipo="instruccion">📌 Instrucción</button>
+        <button class="tipo-chip" data-tipo="consulta">❓ Consulta</button>
+        <button class="tipo-chip" data-tipo="alerta">⚠️ Alerta</button>
+        <button class="tipo-chip" data-tipo="difusion">📢 Difusión</button>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-lbl">Destinatario</label>
+      <select class="form-inp form-sel" id="instr-para">
+        <option value="GM" data-label="Gerente Municipal">Gerente Municipal</option>
+        <option value="INFRA" data-label="Infraestructura">Infraestructura y Obras</option>
+        <option value="RENTAS" data-label="Rentas">Rentas y Tributación</option>
+        <option value="SERVICIOS" data-label="Servicios">Servicios Municipales</option>
+        <option value="SOCIAL" data-label="Des. Social">Desarrollo Social</option>
+        <option value="SECRETARIA" data-label="Sec. General">Secretaría General</option>
+        <option value="PLANIF" data-label="Planeamiento">Planeamiento y Presupuesto</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-lbl">Mensaje</label>
+      <textarea class="form-inp form-ta" id="instr-txt" placeholder="Escribe la instrucción con claridad. Indica acción, plazo y resultado esperado..."></textarea>
+    </div>
+    <div class="form-2">
+      <div class="form-row">
+        <label class="form-lbl">Prioridad</label>
+        <select class="form-inp form-sel" id="instr-prio">
+          <option value="urgente">🔴 Urgente</option>
+          <option value="normal" selected>🟡 Normal</option>
+          <option value="baja">🟢 Baja</option>
+        </select>
+      </div>
+      <div class="form-row" style="display:flex;flex-direction:column;justify-content:flex-end">
+        <button class="btn-primary" id="btn-enviar" onclick="enviarInstruccion()">Enviar instrucción →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-const fmt = n => n>=1000000?'S/'+(n/1000000).toFixed(1)+'M':n>=1000?'S/'+(n/1000).toFixed(0)+'K':'S/'+n;
-const pctC = p => p>=70?'#1A7A45':p>=50?'#C8880A':'#B02020';
-const hoy = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
-const mk = (t,c) => { const e=document.createElement(t); if(c)e.className=c; return e; };
-let vista = 'mando';
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-/* ══ DESTINATARIOS DISPONIBLES ═══════════════════════ */
-const DESTINATARIOS = [
-  {id:'gm',      ico:'🏛', nombre:'Gte. Municipal', cargo:'Carlos Vásquez D.',   pendientes:2, color:'var(--azul)'},
-  {id:'infra',   ico:'🏗', nombre:'Infraestructura',cargo:'Ing. Ana Quispe',      pendientes:1, color:'var(--teal)'},
-  {id:'rentas',  ico:'💰', nombre:'Rentas',          cargo:'Cont. C. Herrera',    pendientes:2, color:'#185FA5'},
-  {id:'servicios',ico:'♻️',nombre:'Servicios',       cargo:'Lic. Rosa Castro',    pendientes:0, color:'#5C3E8F'},
-  {id:'social',  ico:'🤝', nombre:'Des. Social',     cargo:'Lic. Marco Torres',   pendientes:1, color:'#B5540A'},
-  {id:'secretaria',ico:'📋',nombre:'Secretaria',     cargo:'Carmen Flores R.',    pendientes:0, color:'#C8880A'},
-  {id:'todos',   ico:'📣', nombre:'Difusión general',cargo:'Todos los gerentes',  pendientes:0, color:'var(--txt3)'},
-  {id:'coord',   ico:'🔗', nombre:'Coordinación',    cargo:'Varios a elegir',     pendientes:0, color:'var(--azul)'},
-];
+<!-- APP -->
+<div class="app" id="app" style="display:none">
 
-/* Tipos de mensaje por destinatario */
-const TIPOS_MSG = {
-  gm: [
-    {id:'instruccion',ico:'📢',nombre:'Instrucción directa',desc:'El GM deberá confirmar lectura obligatoriamente. Si no responde en 3h, alerta automática.',tag:'Acuse obligatorio',tagCls:'p-r',btnCls:'sel'},
-    {id:'consulta',   ico:'❓',nombre:'Consulta directa',   desc:'Pregunta que requiere respuesta del GM. El alcalde verá la respuesta en su panel.',tag:'Espera respuesta',tagCls:'p-b',btnCls:'sel-azul'},
-    {id:'chat',       ico:'💬',nombre:'Chat privado 1:1',   desc:'Conversación libre y directa solo entre el alcalde y el Gerente Municipal.',tag:'Solo entre ambos',tagCls:'p-t',btnCls:'sel-teal'},
-  ],
-  default: [
-    {id:'instruccion',ico:'📢',nombre:'Instrucción directa',desc:'El destinatario deberá confirmar lectura. Si no responde en 3h, alerta automática.',tag:'Acuse obligatorio',tagCls:'p-r',btnCls:'sel'},
-    {id:'consulta',   ico:'❓',nombre:'Consulta directa',   desc:'Pregunta que requiere respuesta. El alcalde verá la respuesta en su panel cuando llegue.',tag:'Espera respuesta',tagCls:'p-b',btnCls:'sel-azul'},
-  ],
-  todos: [
-    {id:'difusion',ico:'📣',nombre:'Difusión general',desc:'Aviso institucional a todas las gerencias. No requiere respuesta. Solo el GM puede acusar recepción en nombre del equipo.',tag:'Sin respuesta esperada',tagCls:'p-a',btnCls:'sel-oro'},
-  ],
-  coord: [
-    {id:'coordinacion',ico:'🔗',nombre:'Coordinación multi-área',desc:'Asunto que involucra a varias gerencias. Solo los seleccionados verán el hilo. El GM también queda notificado.',tag:'Privado — solo involucrados',tagCls:'p-b',btnCls:'sel-teal'},
-  ],
-};
-
-const PLACEHOLDER = {
-  instruccion:'Ej: Necesito el informe de recaudación de octubre antes de las 3pm de hoy.',
-  consulta:   'Ej: ¿Cuál es el estado actual de la obra Jr. Lima? ¿Por qué lleva 26 días sin avance?',
-  chat:       'Escribe libremente...',
-  difusion:   'Ej: Mañana a las 9am hay visita de la Contraloría. Todos deben tener sus documentos al día.',
-  coordinacion:'Describe el asunto que requiere coordinación entre las áreas seleccionadas...',
-};
-
-const CONFIRMACION = {
-  instruccion:  txt => `✓ Instrucción enviada. El destinatario debe confirmar lectura. Si no lo hace en 3 horas recibirás una alerta automática.`,
-  consulta:     txt => `✓ Consulta enviada. Recibirás la respuesta en tu panel de instrucciones.`,
-  chat:         txt => `✓ Mensaje enviado al Gerente Municipal.`,
-  difusion:     txt => `✓ Difusión enviada a todos los gerentes. El GM acusará recepción.`,
-  coordinacion: txt => `✓ Coordinación creada. Las gerencias seleccionadas recibieron notificación. El GM también fue informado.`,
-};
-
-/* Historial mock de mensajes enviados */
-let historial = [
-  {tipo:'instruccion',a:'Gerente Municipal',txt:'Convocar urgente al contratista de Jr. Lima para mañana 9am. Si no confirma antes de las 5pm, iniciamos resolución de contrato.',hora:'09:15',leida:false,color:'var(--ac)'},
-  {tipo:'consulta',   a:'Planeamiento',     txt:'¿Cuánto saldo sin ejecutar queda en Planeamiento y qué plan hay para devengarlo antes del 15 dic?',hora:'Ayer 16:40',leida:true,color:'var(--azul)'},
-  {tipo:'difusion',   a:'Todos',            txt:'Recordatorio: el jueves hay sesión ordinaria de concejo. Todos los gerentes deben enviar sus informes de avance al GM antes del miércoles al mediodía.',hora:'Hace 2d',leida:true,color:'var(--oro)'},
-];
-
-let chatGM = [
-  {av:'GM',bg:'#185FA5',txt:'Alcalde, el contratista de Jr. Lima está citado para las 9am de mañana.',h:'09:42',out:false},
-  {av:'RS',bg:'#B02020',txt:'Sí. Necesito el expediente técnico antes de la reunión.',h:'09:51',out:true},
-  {av:'GM',bg:'#185FA5',txt:'Voy a pedírselo a Infraestructura ahora mismo.',h:'09:54',out:false},
-];
-
-/* ══ NAVEGACIÓN ══════════════════════════════════════ */
-const NAV = [
-  {sec:'Principal',items:[
-    {id:'mando',    ico:'🎯',lbl:'Sala de mando',b:3},
-    {id:'accion',   ico:'⚡',lbl:'Acción rápida',b:null},
-    {id:'compromis',ico:'🤝',lbl:'Compromisos',b:2},
-  ]},
-  {sec:'Control',items:[
-    {id:'presupuesto',ico:'💰',lbl:'Presupuesto'},
-    {id:'normativo',  ico:'⚖️',lbl:'Semáforo normativo',b:2},
-  ]},
-  {sec:'Comunicación',items:[
-    {id:'comunicar',ico:'📢',lbl:'Comunicar / Instruir',b:null},
-    {id:'historial', ico:'📥',lbl:'Mensajes enviados',b:null},
-    {id:'chat-gm',   ico:'💬',lbl:'Chat con GM',b:1},
-    {id:'reporte',   ico:'🤖',lbl:'Reporte IA'},
-  ]},
-];
-const TITULOS = {
-  mando:'Sala de mando',accion:'Acciones de mando',compromis:'Compromisos',
-  presupuesto:'Ejecución presupuestal',normativo:'Semáforo normativo',
-  comunicar:'Comunicar / Instruir',historial:'Mensajes enviados',
-  'chat-gm':'Chat con el Gerente Municipal',reporte:'Reporte IA',
-};
-
-function nav(v){ vista=v; render(); }
-
-/* ══ INIT ════════════════════════════════════════════ */
-
-/* ══ LEER CONFIGURACIÓN DE LA MUNICIPALIDAD ══════════ */
-function loadConfig() {
-  try {
-    const raw = sessionStorage.getItem('kausay_config') || localStorage.getItem('kausay_config');
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
-  return null;
-}
-function applyConfig(cfg) {
-  if (!cfg) return;
-  // Actualizar nombre municipalidad en sidebar
-  document.querySelectorAll('.sb-muni').forEach(el => { el.textContent = cfg.muni_nombre || el.textContent; });
-}
-
-/* ══ LEER PARÁMETROS DE URL (modo demo sin sessionStorage) ══ */
-(function() {
-  const p = new URLSearchParams(window.location.search);
-  const rol = p.get('rol');
-  const nombre = p.get('nombre');
-  const gerencia = p.get('gerencia');
-  if (rol)     { sessionStorage.setItem('kausay_demo_rol', rol); }
-  if (nombre)  { sessionStorage.setItem('kausay_demo_nombre', decodeURIComponent(nombre)); }
-  if (gerencia){ sessionStorage.setItem('kausay_demo_gerencia', gerencia); }
-})();
-
-async function init(){
-  const demoRol = sessionStorage.getItem('kausay_demo_rol');
-  if(demoRol && demoRol !== 'alcalde'){ window.location.href = ROL_PAGES[demoRol]; return; }
-  if(demoRol === 'alcalde'){
-    USER = {nombre: sessionStorage.getItem('kausay_demo_nombre')||'Roberto Sánchez Q.', iniciales:'RS', demo:true};
-  } else if(CONFIGURED){
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const {data:{session}} = await sb.auth.getSession();
-    if(!session){ window.location.href='login.html'; return; }
-    const {data:u} = await sb.from('usuarios').select('*').eq('id',session.user.id).single();
-    if(!u||u.rol!=='alcalde'){ window.location.href=ROL_PAGES[u?.rol]||'login.html'; return; }
-    USER = {...u, iniciales:u.nombre.split(' ').slice(0,2).map(p=>p[0]).join('')};
-  } else {
-    USER = {nombre:'Alcalde (demo)', iniciales:'AL', demo:true};
-  }
-  document.getElementById('loading').remove();
-  renderApp();
-}
-
-function logout(){
-  sessionStorage.removeItem('kausay_demo_rol'); sessionStorage.removeItem('kausay_demo_nombre');
-  if(sb) sb.auth.signOut();
-  window.location.href='login.html';
-}
-
-/* ══ RENDER APP ══════════════════════════════════════ */
-function renderApp(){
-  document.body.innerHTML='';
-  const layout = mk('div','layout');
-  const sbEl = mk('div','sb');
-  sbEl.innerHTML=`
-    <div class="sb-logo"><div class="sb-brand">Kausay<em>Alcalde</em></div><div class="sb-tag">Centro de mando</div></div>
-    <div class="sb-muni">Municipalidad Provincial de Cajamarca</div>
+  <!-- SIDEBAR -->
+  <div class="sb">
+    <div class="sb-head">
+      <img class="sb-escudo" src="escudo.png" alt="Escudo" onerror="this.style.display='none'">
+      <div class="sb-muni" id="sb-muni">Municipalidad Provincial de Cajamarca</div>
+      <div class="sb-tag">Centro de mando · Alcalde</div>
+    </div>
     <div class="sb-nav" id="sb-nav"></div>
-    <div class="sb-ft">
-      <div class="sb-av">${USER.iniciales}</div>
-      <div><div class="sb-un">${USER.nombre}</div><div class="sb-ur">Alcalde Provincial · 2023–2026</div></div>
-      <button class="sb-logout" onclick="logout()">Salir</button>
-    </div>`;
-  layout.appendChild(sbEl);
-  const main = mk('div','main');
-  main.innerHTML=`
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-av" id="sb-av">A</div>
+        <div><div class="sb-name" id="sb-name">Alcalde</div><div class="sb-rol">Alcaldía Provincial</div></div>
+        <button class="logout-btn" onclick="logout()">Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="offline-bar" id="offline-bar">📡 Sin conexión — los cambios se guardarán al recuperar señal</div>
     <div class="tb">
-      <button class="tb-back" id="tb-back" onclick="nav('mando')" style="display:none">← Menú</button><div class="tb-ttl" id="tb-ttl"></div>
-      <div class="tb-date">${hoy}</div>
-      <div class="rt" id="tb-rt"><span class="rt-dot"></span>En vivo</div>
-      <button class="tb-btn">🔔<span class="tb-dot"></span></button>
+      <button class="tb-back" id="tb-back" onclick="nav('mando')">← Menú</button>
+      <div class="tb-title" id="tb-title">Centro de mando</div>
+      <div class="tb-clock" id="tb-clock"></div>
+      <button class="tb-notif" id="tb-notif">🔔<span class="tb-dot" id="tb-dot"></span></button>
+    </div>
+    <div class="content" id="content"></div>
+    <div class="actions-dock" id="actions-dock"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="branding.js"></script>
+<script src="freshness.js"></script>
+<script src="export.js"></script>
+
+
+<script src="auth.js"></script>
+<script src="shared.js"></script>
+<script>
+/* ══ ESTADO ══════════════════════════════════════════ */
+let vista = 'mando';
+let tipoInstr = 'instruccion';
+
+const NAV = [
+  { sec:'Mando ejecutivo', items:[
+    { id:'mando',       ico:'⚡',lbl:'Sala de mando',       badge:()=>KausayDB.getResumenEjecutivo().alertas_criticas },
+    { id:'decisiones',  ico:'🎯',lbl:'Decisiones del día',  badge:()=>KausayDB.getDecisionesDelDia().length },
+    { id:'alertas',     ico:'🚨',lbl:'Alertas activas',     badge:()=>KausayDB.getAlertasActivas().length },
+  ]},
+  { sec:'Comunicación', items:[
+    { id:'instrucciones',ico:'📬',lbl:'Instrucciones emitidas', badge:()=>KausayDB.getInstrucciones().filter(i=>!i.confirmada).length },
+    { id:'comunicar',    ico:'✍️',lbl:'Emitir instrucción',     badge:()=>0 },
+  ]},
+  { sec:'Gestión', items:[
+    { id:'agenda',       ico:'🗓',lbl:'Agenda de hoy',      badge:()=>0 },
+    { id:'firmas',       ico:'📄',lbl:'Para tu firma',      badge:()=>KausayDB.getDocumentos().filter(d=>d.estado==='pendiente').length },
+    { id:'compromisos',  ico:'🤝',lbl:'Compromisos',        badge:()=>KausayDB.getCompromisos().filter(c=>c.ven||c.estado==='vencido').length },
+  ]},
+  { sec:'Municipio', items:[
+    { id:'obras',        ico:'🏗',lbl:'Obras y proyectos',  badge:()=>KausayDB.getObras().filter(o=>['critico','alto'].includes(o.riesgo)).length },
+    { id:'presupuesto',  ico:'💰',lbl:'Ejecución presupuestal', badge:()=>0 },
+    { id:'normativo',    ico:'⏰',lbl:'Semáforo normativo', badge:()=>KausayDB.getCriticos().length },
+  ]},
+];
+
+const TITULOS = {
+  mando:'Centro de mando', decisiones:'Decisiones del día', alertas:'Alertas activas',
+  instrucciones:'Instrucciones emitidas', comunicar:'Emitir instrucción',
+  agenda:'Agenda de hoy', firmas:'Para tu firma', compromisos:'Compromisos del alcalde',
+  obras:'Obras y proyectos', presupuesto:'Ejecución presupuestal', normativo:'Semáforo normativo',
+};
+
+const TIPO_COLORS = { interna:'#8A90A0', campo:'#C8880A', audiencia:'#185FA5', concejo:'#8B1A1A', admin:'#4A5060' };
+
+/* ══ NAV ═════════════════════════════════════════════ */
+function nav(v) { vista = v; render(); }
+
+function buildNav() {
+  const sb = document.getElementById('sb-nav');
+  sb.innerHTML = '';
+  NAV.forEach(sec => {
+    const s = document.createElement('div');
+    s.className = 'sb-sec'; s.textContent = sec.sec; sb.appendChild(s);
+    sec.items.forEach(it => {
+      const el = document.createElement('div');
+      el.className = 'nav-item' + (vista === it.id ? ' on' : '');
+      const b = it.badge?.() || 0;
+      el.innerHTML = `<span class="nav-ico">${it.ico}</span><span style="flex:1">${it.lbl}</span>${b > 0 ? `<span class="nav-badge${it.id==='instrucciones'?' amber':''}">${b}</span>` : ''}`;
+      el.onclick = () => { if(it.id==='comunicar') abrirPanel(); else nav(it.id); };
+      sb.appendChild(el);
+    });
+  });
+}
+
+/* ══ RELOJ ═══════════════════════════════════════════ */
+function tick() {
+  const n = new Date();
+  const h = n.getHours().toString().padStart(2,'0');
+  const m = n.getMinutes().toString().padStart(2,'0');
+  const el = document.getElementById('tb-clock');
+  if (el) el.textContent = `${h}:${m} · ${n.toLocaleDateString('es-PE',{weekday:'short',day:'numeric',month:'short'})}`;
+}
+tick(); setInterval(tick, 15000);
+
+/* ══ RENDER PRINCIPAL ════════════════════════════════ */
+function render() {
+  const c = document.getElementById('content');
+  if (!c) return;
+  c.innerHTML = '';
+
+  // Topbar
+  const ttl = document.getElementById('tb-title');
+  if (ttl) ttl.textContent = TITULOS[vista] || vista;
+  const back = document.getElementById('tb-back');
+  if (back) back.style.display = vista === 'mando' ? 'none' : 'flex';
+
+  // Nav badge dot
+  const r = KausayDB.getResumenEjecutivo();
+  const dot = document.getElementById('tb-dot');
+  if (dot) dot.style.display = r.alertas_criticas > 0 ? 'block' : 'none';
+
+  buildNav();
+  buildDock();
+
+  // Vistas
+  if (vista === 'mando')         vMando(c, r);
+  else if (vista === 'decisiones') vDecisiones(c);
+  else if (vista === 'alertas')    vAlertas(c);
+  else if (vista === 'instrucciones') vInstrucciones(c);
+  else if (vista === 'agenda')     vAgenda(c);
+  else if (vista === 'firmas')     vFirmas(c);
+  else if (vista === 'compromisos') vCompromisos(c);
+  else if (vista === 'obras')      vObras(c);
+  else if (vista === 'presupuesto') vPresupuesto(c);
+  else if (vista === 'normativo')  vNormativo(c);
+  else {
+    c.innerHTML = `<div style="background:var(--sb);border-radius:12px;padding:18px;color:rgba(255,255,255,.6);font-size:13px;text-align:center">Módulo <strong style="color:#fff">${TITULOS[vista]||vista}</strong><br>disponible en la próxima versión</div>`;
+  }
+}
+
+/* ══ VISTA: SALA DE MANDO ════════════════════════════ */
+function vMando(c, r) {
+  // KPIs rápidos
+  const kpis = [
+    { v: r.ejec_global+'%',       l:'Ejec.\npresup.',     ok: r.ejec_global>=70, critico: r.ejec_global<50 },
+    { v: r.alertas_criticas,      l:'Alertas\ncríticas',  ok: r.alertas_criticas===0, critico: r.alertas_criticas>=2 },
+    { v: r.obras_en_riesgo,       l:'Obras\nen riesgo',   ok: r.obras_en_riesgo===0, critico: r.obras_criticas>=1 },
+    { v: r.compromisos_ven,       l:'Comp.\nvencidos',    ok: r.compromisos_ven===0, critico: r.compromisos_ven>=3 },
+    { v: r.docs_pendientes,       l:'Docs\npara firma',   ok: r.docs_pendientes===0, critico: false },
+  ];
+  const estadoGrid = mk('div','estado-grid');
+  kpis.forEach(k => {
+    const card = mk('div','e-card '+(k.critico?'critico':k.ok?'ok':''));
+    const col = k.critico ? 'var(--rojo-l)' : k.ok ? 'var(--verde)' : 'var(--ambar)';
+    card.innerHTML = `<div class="e-val" style="color:${col}">${k.v}</div><div class="e-lbl">${k.l}</div>`;
+    estadoGrid.appendChild(card);
+  });
+  c.appendChild(estadoGrid);
+
+  // Decisiones del día
+  const decs = KausayDB.getDecisionesDelDia();
+  if (decs.length) {
+    const hd = secHead('Decisiones del día', 'Ver todas', ()=>nav('decisiones'));
+    c.appendChild(hd);
+    decs.slice(0,3).forEach((d,i) => {
+      const card = renderDecision(d, i);
+      c.appendChild(card);
+    });
+  }
+
+  // Alertas críticas
+  const alts = KausayDB.getAlertasActivas().filter(a => a.niv==='critico');
+  if (alts.length) {
+    const hd = secHead('Alertas críticas', 'Ver todas', ()=>nav('alertas'));
+    c.appendChild(hd);
+    alts.slice(0,2).forEach(a => c.appendChild(renderAlerta(a)));
+  }
+
+  // Instrucciones sin acuse
+  const sinAcuse = KausayDB.getInstrucciones().filter(i=>!i.confirmada);
+  if (sinAcuse.length) {
+    const hd = secHead(`${sinAcuse.length} instrucción${sinAcuse.length>1?'es':''} sin acuse`, 'Ver todas', ()=>nav('instrucciones'));
+    c.appendChild(hd);
+    sinAcuse.slice(0,1).forEach(i => c.appendChild(renderInstruccion(i)));
+  }
+
+  // Plazos críticos
+  const plazos = KausayDB.getCriticos();
+  if (plazos.length) {
+    const hd = secHead('Semáforo normativo · Crítico', 'Ver semáforo', ()=>nav('normativo'));
+    c.appendChild(hd);
+    plazos.slice(0,2).forEach(p => c.appendChild(renderPlazo(p)));
+  }
+
+  // Agenda del día (primeros 2)
+  const agenda = KausayDB.getAgenda();
+  if (agenda.length) {
+    const hd = secHead('Agenda de hoy', 'Ver completa', ()=>nav('agenda'));
+    c.appendChild(hd);
+    agenda.slice(0,2).forEach(a => c.appendChild(renderAgenda(a)));
+  }
+}
+
+/* ══ VISTA: DECISIONES ═══════════════════════════════ */
+function vDecisiones(c) {
+  const decs = KausayDB.getDecisionesDelDia();
+  if (!decs.length) {
+    c.appendChild(emptyState('🎯','Sin decisiones urgentes hoy','El municipio está al día. Revisa las alertas para anticipar situaciones.'));
+    return;
+  }
+  decs.forEach((d,i) => {
+    const card = renderDecision(d, i);
+    card.style.animationDelay = (i * .05) + 's';
+    c.appendChild(card);
+  });
+}
+
+/* ══ VISTA: ALERTAS ══════════════════════════════════ */
+function vAlertas(c) {
+  const alertas = KausayDB.getAlertas();
+  const activas = alertas.filter(a=>!a.leida);
+  const hist    = alertas.filter(a=>a.leida);
+
+  if (!activas.length && !hist.length) {
+    c.appendChild(emptyState('✅','Sin alertas activas','Todo está bajo control. Se notificará cuando surja algo que requiera tu atención.'));
+    return;
+  }
+  if (activas.length) {
+    c.appendChild(secHead(`${activas.length} activa${activas.length>1?'s':''}`, '', null));
+    activas.forEach(a => c.appendChild(renderAlerta(a)));
+  }
+  if (hist.length) {
+    c.appendChild(secHead('Resueltas', '', null));
+    hist.slice(0,5).forEach(a => c.appendChild(renderAlerta(a)));
+  }
+}
+
+/* ══ VISTA: INSTRUCCIONES ════════════════════════════ */
+function vInstrucciones(c) {
+  const all = KausayDB.getInstrucciones();
+  if (!all.length) {
+    c.appendChild(emptyState('📬','Sin instrucciones','Usa el botón "Emitir instrucción" para comunicarte con tu equipo.'));
+    return;
+  }
+  const sinAcuse = all.filter(i=>!i.confirmada);
+  const conResp  = all.filter(i=>i.respuesta&&i.respuesta.length>0);
+  const rest     = all.filter(i=>i.confirmada&&(!i.respuesta||i.respuesta.length===0));
+
+  if (sinAcuse.length) {
+    c.appendChild(secHead(`Sin acuse (${sinAcuse.length})`, '', null));
+    sinAcuse.forEach(i => c.appendChild(renderInstruccion(i)));
+  }
+  if (conResp.length) {
+    c.appendChild(secHead('Con respuesta', '', null));
+    conResp.forEach(i => c.appendChild(renderInstruccion(i)));
+  }
+  if (rest.length) {
+    c.appendChild(secHead('Confirmadas', '', null));
+    rest.slice(0,5).forEach(i => c.appendChild(renderInstruccion(i)));
+  }
+}
+
+/* ══ VISTA: AGENDA ═══════════════════════════════════ */
+function vAgenda(c) {
+  const agenda = KausayDB.getAgenda();
+  if (!agenda.length) {
+    c.appendChild(emptyState('🗓','Agenda vacía','No hay eventos programados para hoy.'));
+    return;
+  }
+  c.appendChild(secHead('Eventos de hoy', '', null));
+  agenda.forEach(a => c.appendChild(renderAgenda(a)));
+}
+
+/* ══ VISTA: FIRMAS ═══════════════════════════════════ */
+function vFirmas(c) {
+  const docs = KausayDB.getDocumentos();
+  const pend = docs.filter(d=>d.estado==='pendiente');
+  const hist = docs.filter(d=>d.estado!=='pendiente');
+
+  if (!pend.length && !hist.length) {
+    c.appendChild(emptyState('✍️','Sin documentos pendientes','No hay documentos en cola de firma.'));
+    return;
+  }
+  if (pend.length) {
+    c.appendChild(secHead(`Pendientes de firma (${pend.length})`, '', null));
+    pend.forEach((d,i) => c.appendChild(renderDoc(d,i)));
+  }
+  if (hist.length) {
+    c.appendChild(secHead('Procesados', '', null));
+    hist.forEach((d,i) => c.appendChild(renderDoc(d,i)));
+  }
+}
+
+/* ══ VISTA: COMPROMISOS ══════════════════════════════ */
+function vCompromisos(c) {
+  const comps = KausayDB.getCompromisos();
+  const ven   = comps.filter(x=>x.ven||x.estado==='vencido');
+  const pend  = comps.filter(x=>x.estado==='pendiente'&&!x.ven);
+  const proc  = comps.filter(x=>x.estado==='en_proceso');
+
+  if (ven.length) {
+    c.appendChild(secHead(`Vencidos (${ven.length})`, '', null));
+    ven.forEach(x => c.appendChild(renderCompromiso(x)));
+  }
+  if (proc.length) {
+    c.appendChild(secHead('En proceso', '', null));
+    proc.forEach(x => c.appendChild(renderCompromiso(x)));
+  }
+  if (pend.length) {
+    c.appendChild(secHead('Pendientes', '', null));
+    pend.forEach(x => c.appendChild(renderCompromiso(x)));
+  }
+  if (!comps.length) c.appendChild(emptyState('🤝','Sin compromisos registrados','Registra compromisos desde el campo o el concejo.'));
+}
+
+/* ══ VISTA: OBRAS ════════════════════════════════════ */
+function vObras(c) {
+  const obras = KausayDB.getObras();
+  const groups = [
+    { label:'Críticas', items:obras.filter(o=>o.riesgo==='critico'), open:true },
+    { label:'En riesgo alto', items:obras.filter(o=>o.riesgo==='alto') },
+    { label:'En ejecución normal', items:obras.filter(o=>['medio','bajo'].includes(o.riesgo)&&o.estado==='ejecucion') },
+    { label:'Otras', items:obras.filter(o=>!['ejecucion','paralizada'].includes(o.estado)) },
+  ];
+  groups.filter(g=>g.items.length).forEach(g => {
+    c.appendChild(secHead(g.label + ` (${g.items.length})`, '', null));
+    g.items.forEach(o => c.appendChild(renderObra(o)));
+  });
+}
+
+/* ══ VISTA: PRESUPUESTO ══════════════════════════════ */
+function vPresupuesto(c) {
+  const pres = KausayDB.getPresupuesto();
+  // Totalizador
+  const totCard = mk('div','e-card');
+  totCard.style.cssText='border-radius:10px;padding:14px 16px;background:var(--card);border:1px solid var(--borde);display:flex;align-items:center;gap:16px;margin-bottom:8px';
+  totCard.innerHTML = `<div style="flex:1"><div style="font-size:12px;color:var(--gris3);margin-bottom:3px">Ejecución global ${new Date().getFullYear()}</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:${KausayDB.pctColor(pres.pct_global)}">${pres.pct_global}%</div><div style="font-size:11px;color:var(--gris3);margin-top:2px">${KausayDB.fmt(pres.ejecutado)} de ${KausayDB.fmt(pres.total)}</div></div><div style="font-size:11px;color:var(--gris3);text-align:right"><div style="font-weight:600;color:var(--gris2)">${KausayDB.pctLabel(pres.pct_global)}</div></div>`;
+  c.appendChild(totCard);
+  // Barra global
+  const barGlobal = mk('div','pres-bar-track');
+  barGlobal.style.height='10px';barGlobal.style.marginBottom='14px';
+  const bg = mk('div','pres-bar-fill');
+  bg.style.cssText=`width:${pres.pct_global}%;background:${KausayDB.pctColor(pres.pct_global)}`;
+  barGlobal.appendChild(bg);c.appendChild(barGlobal);
+
+  c.appendChild(secHead('Ejecución por área', '', null));
+  pres.por_area.forEach(p => c.appendChild(renderPres(p)));
+}
+
+/* ══ VISTA: NORMATIVO ════════════════════════════════ */
+function vNormativo(c) {
+  const plazos = KausayDB.getPlazos();
+  const criticos = plazos.filter(p=>p.niv==='critico');
+  const alertas  = plazos.filter(p=>p.niv==='alerta');
+  const info     = plazos.filter(p=>p.niv==='info');
+
+  if (criticos.length) {
+    c.appendChild(secHead(`Crítico — acción inmediata (${criticos.length})`, '', null));
+    criticos.forEach(p => c.appendChild(renderPlazo(p)));
+  }
+  if (alertas.length) {
+    c.appendChild(secHead(`En alerta (${alertas.length})`, '', null));
+    alertas.forEach(p => c.appendChild(renderPlazo(p)));
+  }
+  if (info.length) {
+    c.appendChild(secHead(`Seguimiento (${info.length})`, '', null));
+    info.forEach(p => c.appendChild(renderPlazo(p)));
+  }
+}
+
+/* ══ RENDERERS ═══════════════════════════════════════ */
+function renderDecision(d, i) {
+  const card = mk('div','dec-card');
+  card.style.cssText=`--c:${d.color};animation-delay:${i*.05}s`;
+  const tagCls = d.color.includes('1A1A')||d.color.includes('8B1A') ? 't-r' : d.color.includes('9E6A')||d.color.includes('C88') ? 't-a' : 't-b';
+  card.innerHTML = `<span class="dec-ico">${d.ico}</span>
+    <div class="dec-body">
+      <div class="dec-ttl">${d.ttl}</div>
+      <div class="dec-desc">${d.desc}</div>
+    </div>
+    <div class="dec-right">
+      <span class="dec-tag ${tagCls}">${d.tag}</span>
+      ${d.accion?`<button class="dec-btn" onclick="handleDecAcion('${d.tipo}','${d.ref||''}',event)">${d.accion}</button>`:''}
     </div>`;
-  const c = mk('div','content'); c.id='content';
-  main.appendChild(c); layout.appendChild(main);
-  document.body.appendChild(layout);
+  return card;
+}
+
+function renderAlerta(a) {
+  const nivCol = { critico:'var(--rojo-l)', alerta:'var(--ambar)', info:'var(--azul)' }[a.niv] || 'var(--gris3)';
+  const card = mk('div','alerta-item'+(a.leida?' leida':''));
+  card.style.cssText=`--ac:${nivCol}`;
+  card.innerHTML=`<span class="al-ico">${a.ico}</span>
+    <div class="al-body">
+      <div class="al-ttl">${a.titulo}</div>
+      <div class="al-desc">${a.desc}</div>
+      <div class="al-foot">
+        <span class="al-area">${a.area}</span>
+        <span class="al-ts">${KausayDB.relativeTime(a.ts)}</span>
+        ${!a.leida?`<button class="al-mark" onclick="marcarAlerta('${a.id}')">✓ Marcar resuelta</button>`:''}
+      </div>
+    </div>`;
+  return card;
+}
+
+function renderInstruccion(ins) {
+  const card = mk('div','instr-card');
+  const tipoCls = 'tipo-'+ins.tipo;
+  const tipoLabel = {instruccion:'Instrucción',consulta:'Consulta',alerta:'Alerta',difusion:'Difusión',chat:'Chat',coordinacion:'Coordinación'}[ins.tipo]||ins.tipo;
+  card.innerHTML=`
+    <div class="instr-hd">
+      <span class="instr-tipo ${tipoCls}">${tipoLabel}</span>
+      <span class="instr-para">→ ${ins.paraLabel||ins.para}</span>
+      <span class="instr-hora">${ins.hora}</span>
+      <span class="instr-estado ${ins.confirmada?'estado-ok':'estado-pend'}">${ins.confirmada?'✓ Leída':'⏳ Sin acuse'}</span>
+    </div>
+    <div class="instr-txt">${ins.contenido}</div>
+    ${ins.respuesta?`<div class="instr-resp"><strong>Respuesta:</strong> ${ins.respuesta}</div>`:''}
+    ${ins.prioridad==='urgente'?'<div class="instr-prioridad">⚡ Urgente</div>':''}`;
+  return card;
+}
+
+function renderAgenda(a) {
+  const card = mk('div','ag-item');
+  const col = TIPO_COLORS[a.tipo] || '#8A90A0';
+  card.innerHTML=`
+    <div class="ag-hora">${a.hora}<span class="ag-dur">${a.dur}</span></div>
+    <div class="ag-bar" style="background:${col}"></div>
+    <div class="ag-body">
+      <div class="ag-ttl">${a.titulo}</div>
+      <div class="ag-meta">
+        <span class="ag-lugar">📍 ${a.lugar}</span>
+        <span class="tipo-tag" style="background:${col}20;color:${col};border:1px solid ${col}30">${a.tipo}</span>
+        ${a.br_listo?'<span class="ag-br">✓ Briefing IA</span>':''}
+      </div>
+    </div>`;
+  return card;
+}
+
+function renderDoc(d, i) {
+  const card = mk('div','instr-card');
+  const estadoCol = {pendiente:'var(--ambar)',aprobado:'var(--verde)',devuelto:'var(--rojo-l)'}[d.estado]||'var(--gris3)';
+  card.style.cssText='animation:fadeUp .3s ease both;animation-delay:'+i*.05+'s';
+  card.innerHTML=`
+    <div class="instr-hd">
+      <span class="instr-tipo" style="background:#F5F6F8;color:var(--gris2);border:1px solid var(--borde)">${d.tipo}</span>
+      <span style="font-size:9px;font-weight:700;color:${estadoCol};margin-left:auto">${d.estado.toUpperCase()}</span>
+    </div>
+    <div class="instr-txt" style="font-weight:600">${d.titulo}</div>
+    <div style="font-size:11px;color:var(--gris3);margin-bottom:6px">${d.sub}</div>
+    ${d.estado==='pendiente'?`<div style="display:flex;gap:7px;margin-top:4px">
+      <button onclick="firmarDoc('${d.id}','aprobado')" style="flex:1;padding:7px;background:var(--verde);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif">✓ Aprobar</button>
+      <button onclick="firmarDoc('${d.id}','devuelto')" style="flex:1;padding:7px;background:var(--bg);border:1px solid var(--borde);color:var(--gris2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif">Devolver</button>
+    </div>`:''}`;
+  return card;
+}
+
+function renderCompromiso(comp) {
+  const card = mk('div','instr-card');
+  const col = comp.ven||comp.estado==='vencido' ? 'var(--rojo-l)' : comp.estado==='en_proceso' ? 'var(--azul)' : 'var(--ambar)';
+  card.innerHTML=`
+    <div class="instr-hd">
+      <span class="instr-tipo" style="background:${col}15;color:${col};border:1px solid ${col}30">${comp.origen}</span>
+      <span style="font-size:10px;font-weight:600;color:${col};margin-left:auto">${comp.ven||comp.estado==='vencido'?'VENCIDO':comp.estado.replace('_',' ').toUpperCase()}</span>
+    </div>
+    <div class="instr-txt">${comp.desc}</div>
+    <div style="font-size:11px;color:var(--gris3)">Responsable: <strong style="color:var(--gris2)">${comp.resp}</strong> · Fecha: <strong style="color:${col}">${comp.fec}</strong></div>`;
+  return card;
+}
+
+function renderObra(o) {
+  const card = mk('div','obra-card');
+  const col = KausayDB.pctColor(o.pct);
+  const rCls = 'r-'+o.riesgo;
+  card.innerHTML=`
+    <div class="obra-hd">
+      <div class="obra-nombre">${o.nombre}</div>
+      <span class="riesgo-chip ${rCls}">${o.riesgo}</span>
+    </div>
+    <div class="obra-bar-track"><div class="obra-bar-fill" style="width:${o.pct}%;background:${col}"></div></div>
+    <div class="obra-meta">
+      <span class="obra-pct" style="color:${col}">${o.pct}%</span>
+      <div class="obra-info">
+        ${o.estado==='paralizada'?`<strong style="color:var(--rojo-l)">Paralizada ${o.dias_sin_av} días</strong>`:`${o.dias_sin_av>0?`Sin avance: ${o.dias_sin_av}d`:'Al día'}`}
+        · ${KausayDB.fmt(o.presup)}
+      </div>
+      <span class="obra-fin">🗓 ${o.fin}</span>
+    </div>
+    ${['gerente_sectorial','gerente_municipal'].includes(getRol())?`
+    <div class="obra-upd-row">
+      <input class="obra-pct-inp" type="number" min="0" max="100" value="${o.pct}" id="pct-${o.id}" placeholder="% avance">
+      <button class="obra-pct-btn" onclick="actualizarAvance('${o.id}')">Actualizar</button>
+    </div>`:''}`;
+  return card;
+}
+
+function renderPres(p) {
+  const card = mk('div','pres-item');
+  const col = KausayDB.pctColor(p.pct);
+  card.innerHTML=`
+    <div class="pres-hd">
+      <span class="pres-nombre">${p.nombre}</span>
+      <span class="pres-pct" style="color:${col}">${p.pct}%</span>
+    </div>
+    <div class="pres-bar-track"><div class="pres-bar-fill" style="width:${p.pct}%;background:${col}"></div></div>
+    <div class="pres-monto">${KausayDB.fmt(p.ejec)} ejecutado de ${KausayDB.fmt(p.asig)} asignados</div>`;
+  return card;
+}
+
+function renderPlazo(p) {
+  const col = {critico:'var(--rojo-l)',alerta:'var(--ambar)',info:'var(--azul)'}[p.niv]||'var(--gris3)';
+  const card = mk('div','plazo-item');
+  card.style.borderLeftColor=col;card.style.borderLeftWidth='3px';
+  card.innerHTML=`
+    <div style="text-align:center">
+      <div class="plazo-dias" style="color:${col}">${p.dias}</div>
+      <div class="plazo-d">días</div>
+    </div>
+    <div class="plazo-sep"></div>
+    <div class="plazo-body">
+      <div class="plazo-sis">${p.sistema}</div>
+      <div class="plazo-desc">${p.desc}</div>
+      <div class="plazo-resp">Responsable: <strong>${p.resp}</strong></div>
+    </div>`;
+  return card;
+}
+
+/* ══ DOCK DE ACCIONES RÁPIDAS ════════════════════════ */
+function buildDock() {
+  const dock = document.getElementById('actions-dock');
+  if (!dock) return;
+  const accs = [
+    { ico:'✍️', lbl:'Emitir\ninstrucción', fn:abrirPanel, primary:true },
+    { ico:'📄', lbl:'Firmas\npendientes', fn:()=>nav('firmas') },
+    { ico:'🚨', lbl:'Alertas', fn:()=>nav('alertas') },
+    { ico:'🗓', lbl:'Agenda', fn:()=>nav('agenda') },
+    { ico:'🏗', lbl:'Obras', fn:()=>nav('obras') },
+  ];
+  dock.innerHTML = '';
+  accs.forEach(a => {
+    const btn = mk('button','act-btn'+(a.primary?' primary':''));
+    btn.innerHTML=`<span class="act-ico">${a.ico}</span><span class="act-lbl">${a.lbl}</span>`;
+    btn.onclick = a.fn;
+    dock.appendChild(btn);
+  });
+}
+
+/* ══ HELPERS UI ══════════════════════════════════════ */
+function mk(tag, cls) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  return el;
+}
+function secHead(ttl, lnkTxt, lnkFn) {
+  const hd = mk('div','sec-hd');
+  hd.innerHTML = `<span class="sec-ttl">${ttl}</span>`;
+  if (lnkTxt && lnkFn) {
+    const btn = mk('button','sec-lnk');
+    btn.textContent = lnkTxt;
+    btn.onclick = lnkFn;
+    hd.appendChild(btn);
+  }
+  return hd;
+}
+function emptyState(ico, ttl, desc) {
+  const el = mk('div','');
+  el.style.cssText='text-align:center;padding:40px 20px;color:var(--gris3)';
+  el.innerHTML=`<div style="font-size:40px;margin-bottom:12px">${ico}</div><div style="font-size:15px;font-weight:600;color:var(--gris2);margin-bottom:6px">${ttl}</div><div style="font-size:12px;line-height:1.6">${desc}</div>`;
+  return el;
+}
+function toast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+function getRol() { return sessionStorage.getItem('kausay_demo_rol')||'alcalde'; }
+
+/* ══ ACCIONES ════════════════════════════════════════ */
+function marcarAlerta(id) {
+  KausayDB.marcarAlertaLeida(id);
+  toast('✓ Alerta marcada como resuelta');
   render();
 }
 
-function render(){
-  const nav2 = document.getElementById('sb-nav');
-  if(nav2){
-    nav2.innerHTML='';
-    NAV.forEach(sec=>{
-      const sl=mk('div','sb-sec'); sl.textContent=sec.sec; nav2.appendChild(sl);
-      sec.items.forEach(it=>{
-        const item=mk('div','sb-it'+(vista===it.id?' on':''));
-        if(vista===it.id) item.style.borderLeftColor='var(--ac)';
-        item.innerHTML=`<span class="sb-ico">${it.ico}</span><span style="flex:1">${it.lbl}</span>${it.b?`<span class="sb-badge">${it.b}</span>`:''}`;
-        item.onclick=()=>nav(it.id); nav2.appendChild(item);
-      });
-    });
-  }
-  const ttl=document.getElementById('tb-ttl'); if(ttl) ttl.textContent=TITULOS[vista]||vista;
-  const tbBack=document.getElementById('tb-back');
-  if(tbBack) tbBack.style.display = (vista!=='mando') ? 'flex' : 'none';
-  const c=document.getElementById('content'); if(!c) return; c.innerHTML='';
+function firmarDoc(id, estado) {
+  KausayAuth.reauth('Aprobar o devolver documento').then(ok => { if(!ok) return;
+  KausayDB.updateDocumento(id, estado);
+  toast(estado==='aprobado' ? '✓ Documento aprobado' : '↩ Documento devuelto');
+  render();
+}
 
-  const views = {
-    mando:vMando, accion:vAccion, compromis:vCompromisos,
-    presupuesto:vPresupuesto, normativo:vNormativo,
-    comunicar:vComunicar, historial:vHistorial, 'chat-gm':vChatGM, reporte:vReporte,
+function actualizarAvance(obraId) {
+  const inp = document.getElementById('pct-'+obraId);
+  if (!inp) return;
+  const pct = parseInt(inp.value);
+  if (isNaN(pct)||pct<0||pct>100) { toast('⚠ Ingresa un porcentaje válido (0-100)'); return; }
+  KausayDB.updateAvanceObra(obraId, pct);
+  toast('✓ Avance actualizado a ' + pct + '%');
+  render();
+}
+
+function handleDecAcion(tipo, ref, e) {
+  e.stopPropagation();
+  if (tipo==='obra_critica')       nav('obras');
+  else if (tipo==='plazo_critico') nav('normativo');
+  else if (tipo==='concejo')       nav('agenda');
+  else if (tipo==='compromisos_vencidos') nav('compromisos');
+  else if (tipo==='firma_urgente') nav('firmas');
+}
+
+/* ══ PANEL INSTRUCCIÓN ═══════════════════════════════ */
+function abrirPanel() {
+  document.getElementById('panel-instr').classList.add('show');
+  KausayDB.Telemetry.firstAction();
+}
+function cerrarPanel() {
+  document.getElementById('panel-instr').classList.remove('show');
+}
+
+// Chips de tipo
+document.querySelectorAll('.tipo-chip').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tipo-chip').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+    tipoInstr = btn.dataset.tipo;
   };
-  if(views[vista]) views[vista](c);
+});
+
+function enviarInstruccion() {
+  const txt = document.getElementById('instr-txt').value.trim();
+  const sel = document.getElementById('instr-para');
+  const para = sel.value;
+  const paraLabel = sel.options[sel.selectedIndex].dataset.label;
+  const prio = document.getElementById('instr-prio').value;
+
+  if (!txt) { toast('⚠ Escribe el contenido de la instrucción'); return; }
+
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+
+  const _critica = prio === 'urgente';
+  const _doSend = () => { KausayDB.addInstruccion({ tipo:tipoInstr, para, paraLabel, contenido:txt, prioridad:prio });
+  setTimeout(()=>{
+    btn.disabled=false; btn.textContent='Enviar instrucción →';
+    document.getElementById('instr-txt').value='';
+    cerrarPanel();
+    toast('✓ Instrucción enviada a ' + paraLabel);
+    nav('instrucciones');
+  }, 400);
 }
 
-/* ══ SALA DE MANDO ═══════════════════════════════════ */
-function vMando(c){
-  // KPIs
-  const kpis=[
-    {l:'Ejecución presupuestal',v:'67',u:'%',d:'▲ +4.2% vs mes anterior',t:'up',kc:'#1A7A45',i:'💰'},
-    {l:'Obras en ejecución',v:'18',u:'',d:'3 con riesgo de retraso',t:'wn',kc:'var(--oro)',i:'🏗'},
-    {l:'Compromisos vencidos',v:'5',u:'',d:'2 sin respuesta +15d',t:'dn',kc:'var(--ac)',i:'⚠️'},
-    {l:'Días al plazo MEF',v:'18',u:'',d:'Devengado 4to trimestre',t:'dn',kc:'var(--ac)',i:'📅'},
-  ];
-  const kSec=mk('div','');
-  kSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Estado del municipio</span><span class="rt"><span class="rt-dot"></span>Tiempo real</span></div>';
-  const grid=mk('div','kpi-grid');
-  kpis.forEach(k=>{
-    const kpi=mk('div','kpi'); kpi.style.setProperty('--kc',k.kc);
-    kpi.innerHTML=`<div class="kpi-l">${k.l}</div><div class="kpi-v">${k.v}<small>${k.u}</small></div><div class="kpi-d ${k.t}">${k.d}</div><span class="kpi-ico">${k.i}</span>`;
-    grid.appendChild(kpi);
-  });
-  kSec.appendChild(grid); c.appendChild(kSec);
-
-  // Briefing IA
-  const brSec=mk('div','');
-  brSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Briefing de hoy · IA</span><span class="sec-sub">Generado 06:00 am</span></div>';
-  const br=mk('div','briefing');
-  br.innerHTML=`<div class="br-hd"><div class="br-ico">🤖</div><div><div class="br-ttl">Análisis ejecutivo · ${hoy}</div><div class="br-sub">Claude · Municipalidad Provincial de Cajamarca</div></div></div>
-  <div class="br-body">Tienes <span class="br-hl">3 asuntos críticos</span> hoy. Primero: reunión con el contratista de <span class="br-hl">Jr. Lima</span> donde debes decidir si continúa o inicias resolución. Segundo: el plazo del <span class="br-hl">MEF vence en 18 días</span> con S/1.2M sin devengar en Planeamiento. Tercero: la <span class="br-hl">sesión de concejo a las 3pm</span> — el regidor Mamani preguntará por vías.</div>
-  <div class="br-acts">
-    <button class="br-btn br-p" onclick="nav('normativo')">Ver semáforo normativo</button>
-    <button class="br-btn br-s" onclick="nav('comunicar')">Emitir instrucción</button>
-    <button class="br-btn br-s">Descargar PDF</button>
-  </div>`;
-  brSec.appendChild(br); c.appendChild(brSec);
-
-  // Acciones de mando rápidas
-  const acSec=mk('div','');
-  acSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Acciones de mando</span></div>';
-  const cmdGrid=mk('div','cmd-grid');
-  [
-    {ico:'📢',lbl:'Emitir instrucción',fn:'comunicar'},
-    {ico:'🤝',lbl:'Registrar compromiso',fn:'compromis'},
-    {ico:'✅',lbl:'Aprobar documentos',fn:null},
-    {ico:'⚡',lbl:'Responder alerta',fn:null},
-    {ico:'💬',lbl:'Chat con GM',fn:'chat-gm'},
-    {ico:'🤖',lbl:'Reporte IA',fn:'reporte'},
-  ].forEach(b=>{
-    const btn=mk('div','cmd');
-    btn.innerHTML=`<span class="cmd-ico">${b.ico}</span><span class="cmd-lbl">${b.lbl}</span>`;
-    btn.onclick=()=>{if(b.fn)nav(b.fn);}; cmdGrid.appendChild(btn);
-  });
-  acSec.appendChild(cmdGrid); c.appendChild(acSec);
-
-  // Alertas
-  const alSec=mk('div','');
-  alSec.innerHTML='<div class="sec-hd"><span class="sec-ttl">Alertas activas</span><span class="sec-sub">Ver todas →</span></div>';
-  ALERTAS.forEach(a=>{
-    const cols={critica:'var(--ac)',alerta:'var(--oro)',info:'var(--azul)'};
-    const el=mk('div','alerta'); el.style.setProperty('--al',cols[a.niv]);
-    el.innerHTML=`<span class="al-ico">${a.ico}</span><div class="al-bd"><div class="al-ttl">${a.ttl}</div><div class="al-desc">${a.desc}</div><div class="al-meta"><span class="pill ${a.niv==='critica'?'p-r':a.niv==='alerta'?'p-a':'p-b'}">${a.niv==='critica'?'Crítica':a.niv==='alerta'?'Alerta':'Info'}</span><span>${a.area}</span><span>· ${a.hace}</span></div></div>`;
-    alSec.appendChild(el);
-  });
-  c.appendChild(alSec);
+/* ══ OFFLINE ═════════════════════════════════════════ */
+function updateOnlineStatus() {
+  const bar = document.getElementById('offline-bar');
+  if (bar) bar.classList.toggle('show', !navigator.onLine);
 }
+window.addEventListener('online',  ()=>{ updateOnlineStatus(); toast('✓ Conexión restaurada'); });
+window.addEventListener('offline', updateOnlineStatus);
 
-/* ══ ACCIÓN RÁPIDA ═══════════════════════════════════ */
-function vAccion(c){
-  c.innerHTML='<div class="sec-hd"><span class="sec-ttl">Acciones de mando</span></div>';
-  const cmdGrid=mk('div','cmd-grid');
-  [
-    {ico:'📢',lbl:'Emitir instrucción',fn:'comunicar'},
-    {ico:'🤝',lbl:'Registrar compromiso',fn:'compromis'},
-    {ico:'✅',lbl:'Aprobar documentos',fn:null},
-    {ico:'🎙️',lbl:'Nota de voz',fn:null},
-    {ico:'⚡',lbl:'Responder alerta',fn:null},
-    {ico:'💬',lbl:'Chat con GM',fn:'chat-gm'},
-  ].forEach(b=>{
-    const btn=mk('div','cmd');
-    btn.innerHTML=`<span class="cmd-ico">${b.ico}</span><span class="cmd-lbl">${b.lbl}</span>`;
-    btn.onclick=()=>{if(b.fn)nav(b.fn);}; cmdGrid.appendChild(btn);
+/* ══ REALTIME VIA EVENTBUS — movido dentro de load ══ */
+
+/* ══ INIT ════════════════════════════════════════════ */
+function logout() { window.location.href='index.html'; }
+
+window.addEventListener('load', () => {
+  KausayAuth.requireAuth(['alcalde', 'asesor_despacho']);
+  const _sess = KausayAuth.getSession();
+  // Aplicar config municipalidad
+  KausayBranding.apply({ rol: _sess?.rol || 'alcalde' });
+  const muni = KausayDB.getMuni();
+  const nombre = sessionStorage.getItem('kausay_demo_nombre') || muni.alcalde || 'Alcalde';
+  const iniciales = nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+
+  document.getElementById('sb-muni').textContent = muni.nombre || 'Municipalidad';
+  document.getElementById('sb-av').textContent = iniciales;
+  document.getElementById('sb-name').textContent = nombre;
+
+  updateOnlineStatus();
+
+  // Ocultar loader y mostrar app
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('app').style.display = 'flex';
+
+  // EventBus — dentro de load, shared.js ya inicializó
+  KausayDB.EventBus.on('instruccion:confirmada',        ()=>render());
+  KausayDB.EventBus.on('instruccion:respondida',        ()=>render());
+  KausayDB.EventBus.on('alerta:nueva',                  ()=>render());
+  KausayDB.EventBus.on('obra:avance',                   ()=>render());
+  KausayDB.EventBus.on('wq:conflict',                   ()=>render());
+  KausayDB.EventBus.on('remote:instruccion:confirmada', ()=>render());
+
+  render();
+
+  // Service Worker
+
+  // ── REALTIME SUPABASE (Etapa 4) ──────────────────────────
+  // Con USE_SUPABASE=true estos canales se activan automáticamente.
+  // Con USE_SUPABASE=false subscribeRealtime() retorna null y no hace nada.
+  KausayDB.subscribeRealtime('instrucciones', payload => {
+    KausayDB.Cache.invalidate('instrucciones');
+    if (payload.eventType === 'INSERT') KausayDB.EventBus.emit('instruccion:nueva', payload.new);
+    if (payload.eventType === 'UPDATE') KausayDB.EventBus.emit('instruccion:confirmada', { id: payload.new.id });
+    render();
   });
-  c.appendChild(cmdGrid);
-}
-
-/* ══ ★ MÓDULO COMUNICAR — NUEVO ★ ════════════════════ */
-function vComunicar(c){
-  // Estado interno del módulo
-  let destActivo = null;
-  let tipoActivo = null;
-  let areasCoord = new Set(['gm']); // GM siempre en coord
-
-  /* ── PASO 1: Destinatario ── */
-  const paso1 = mk('div','');
-  paso1.innerHTML='<div class="sec-hd"><span class="sec-ttl">1 · ¿A quién va dirigido?</span></div>';
-  const destGrid = mk('div','dest-grid');
-  DESTINATARIOS.forEach(dest=>{
-    const card = mk('div','dest-card');
-    card.innerHTML=`<span class="dest-ico">${dest.ico}</span><div class="dest-nombre">${dest.nombre}</div><div class="dest-cargo">${dest.cargo}</div>${dest.pendientes?`<div class="dest-pend">⚠ ${dest.pendientes} pendiente${dest.pendientes>1?'s':''}</div>`:''}`;
-    card.onclick=()=>{
-      destActivo = dest.id;
-      destGrid.querySelectorAll('.dest-card').forEach(x=>x.className='dest-card');
-      card.classList.add(dest.id==='todos'||dest.id==='coord'?'sel-azul':'sel');
-      tipoActivo = null;
-      renderPaso2();
-      paso3.style.display='none';
-      sent.classList.remove('show');
-    };
-    destGrid.appendChild(card);
+  KausayDB.subscribeRealtime('alertas', payload => {
+    KausayDB.Cache.invalidate('alertas');
+    if (payload.eventType === 'INSERT') KausayDB.EventBus.emit('alerta:nueva', payload.new);
+    render();
   });
-  paso1.appendChild(destGrid); c.appendChild(paso1);
-
-  /* ── PASO 2: Tipo de mensaje ── */
-  const paso2 = mk('div',''); paso2.style.display='none';
-  paso2.innerHTML='<div class="sec-hd" style="margin-top:4px"><span class="sec-ttl">2 · ¿Qué tipo de mensaje?</span></div>';
-  const tipoGrid = mk('div','tipo-grid'); paso2.appendChild(tipoGrid);
-  c.appendChild(paso2);
-
-  function renderPaso2(){
-    const tipos = TIPOS_MSG[destActivo] || TIPOS_MSG.default;
-    tipoGrid.innerHTML='';
-    tipos.forEach(tipo=>{
-      const btn = mk('button','tipo-btn');
-      btn.innerHTML=`<span class="tipo-ico">${tipo.ico}</span><div class="tipo-info"><div class="tipo-nombre">${tipo.nombre}</div><div class="tipo-desc">${tipo.desc}</div><span class="tipo-tag ${tipo.tagCls}">${tipo.tag}</span></div>`;
-      btn.onclick=()=>{
-        tipoActivo = tipo.id;
-        tipoGrid.querySelectorAll('.tipo-btn').forEach(x=>x.className='tipo-btn');
-        btn.classList.add(tipo.btnCls);
-        renderPaso3();
-      };
-      tipoGrid.appendChild(btn);
-    });
-    paso2.style.display='block';
-    paso2.scrollIntoView({behavior:'smooth',block:'nearest'});
+  KausayDB.subscribeRealtime('documentos_firma', payload => {
+    KausayDB.Cache.invalidate('documentos');
+    KausayDB.EventBus.emit('documento:updated', { id: payload.new?.id, estado: payload.new?.estado });
+    render();
+  });
+  KausayDB.subscribeRealtime('obras', payload => {
+    KausayDB.Cache.invalidate('obras');
+    KausayDB.EventBus.emit('obra:avance', { id: payload.new?.id, pct: payload.new?.porcentaje_avance });
+    render();
+  });
+  // Cargar datos frescos si viene de Supabase (post-login)
+  if (KausayDB.CONFIG.USE_SUPABASE) {
+    KausayDB.loadInitialData().then(() => render());
   }
-
-  /* ── PASO 3: Composición ── */
-  const paso3 = mk('div','comp-panel'); paso3.style.display='none';
-  paso3.innerHTML='<div class="sec-hd" style="margin-top:4px"><span class="sec-ttl">3 · Escribe el mensaje</span></div>';
-  const msgContent = mk('div',''); paso3.appendChild(msgContent);
-  c.appendChild(paso3);
-
-  /* Confirmación de envío */
-  const sent = mk('div','msg-sent');
-  sent.innerHTML='<span class="msg-sent-ico">✓</span><span id="sent-txt"></span>';
-  c.appendChild(sent);
-
-  function renderPaso3(){
-    msgContent.innerHTML='';
-    const dest = DESTINATARIOS.find(d=>d.id===destActivo);
-    const tipo = (TIPOS_MSG[destActivo]||TIPOS_MSG.default).find(t=>t.id===tipoActivo);
-
-    // Header contextual
-    const header = mk('div','msg-header');
-    header.innerHTML=`<span class="msg-header-ico">${tipo?.ico||'📢'}</span><div><div class="msg-header-ttl">${tipo?.nombre||''}</div><div class="msg-header-sub">${tipo?.desc||''}</div></div>`;
-    msgContent.appendChild(header);
-
-    // Para: (con selección múltiple si es coordinación)
-    if(tipoActivo === 'coordinacion'){
-      const cLbl = mk('div','form-lbl'); cLbl.textContent='Áreas involucradas (el GM siempre queda incluido):';
-      cLbl.style.marginBottom='6px'; msgContent.appendChild(cLbl);
-      const aGrid = mk('div','areas-grid');
-      DESTINATARIOS.filter(d=>!['todos','coord','secretaria'].includes(d.id)).forEach(d=>{
-        const isGM = d.id==='gm';
-        const chk = mk('div','area-chk'+(areasCoord.has(d.id)?' checked':''));
-        chk.innerHTML=`<span class="area-chk-ico">${d.ico}</span><span class="area-chk-n">${d.nombre}</span><span class="area-chk-box">${areasCoord.has(d.id)?'✓':''}</span>`;
-        if(!isGM){
-          chk.onclick=()=>{
-            if(areasCoord.has(d.id)) areasCoord.delete(d.id);
-            else areasCoord.add(d.id);
-            chk.classList.toggle('checked', areasCoord.has(d.id));
-            chk.querySelector('.area-chk-box').textContent = areasCoord.has(d.id)?'✓':'';
-          };
-        } else {
-          chk.style.opacity='.6'; chk.style.cursor='default';
-        }
-        aGrid.appendChild(chk);
-      });
-      msgContent.appendChild(aGrid);
-    } else {
-      const toDiv = mk('div','msg-to');
-      toDiv.innerHTML=`<span>${dest?.ico||'👤'}</span><span>Para: <strong>${dest?.nombre||''}</strong> — ${dest?.cargo||''}</span>`;
-      msgContent.appendChild(toDiv);
-    }
-
-    // Textarea
-    const ta = mk('textarea','msg-ta'); ta.rows=4;
-    ta.placeholder = PLACEHOLDER[tipoActivo] || 'Escribe tu mensaje...';
-    msgContent.appendChild(ta);
-
-    // Acuse chip
-    if(tipoActivo==='instruccion'){
-      const chip=mk('div','');
-      chip.style.cssText='font-size:11px;color:var(--ac);font-weight:600;margin-top:6px;display:flex;align-items:center;gap:5px';
-      chip.innerHTML='🔒 El destinatario deberá confirmar lectura. Alerta si no responde en 3h.';
-      msgContent.appendChild(chip);
-    }
-
-    // Botones
-    const sendRow = mk('div','msg-send-row');
-    const sendBtn = mk('button','msg-send');
-    sendBtn.innerHTML=`<span>${tipoActivo==='instruccion'?'📢':tipoActivo==='consulta'?'❓':tipoActivo==='difusion'?'📣':tipoActivo==='coordinacion'?'🔗':'💬'}</span><span>${tipoActivo==='instruccion'?'Enviar instrucción con acuse':tipoActivo==='consulta'?'Enviar consulta':tipoActivo==='difusion'?'Enviar difusión general':tipoActivo==='coordinacion'?'Crear coordinación':'Enviar mensaje'}</span>`;
-    const backBtn = mk('button','msg-back'); backBtn.textContent='← Cambiar';
-    backBtn.onclick=()=>{ tipoActivo=null; paso3.style.display='none'; sent.classList.remove('show'); };
-
-    sendBtn.onclick=()=>{
-      if(!ta.value.trim()) return;
-      const destInfo = DESTINATARIOS.find(d=>d.id===destActivo);
-      historial.unshift({
-        tipo:tipoActivo,
-        a: tipoActivo==='coordinacion'?'Coordinación multi-área':tipoActivo==='difusion'?'Todos':destInfo?.nombre||'',
-        txt:ta.value, hora:'Ahora', leida:false,
-        color:tipoActivo==='instruccion'?'var(--ac)':tipoActivo==='consulta'?'var(--azul)':tipoActivo==='difusion'?'var(--oro)':'var(--teal)',
-      });
-      document.getElementById('sent-txt').textContent = CONFIRMACION[tipoActivo]?.(ta.value) || '✓ Enviado.';
-      sent.classList.add('show'); ta.value='';
-      paso3.style.display='none'; paso2.style.display='none';
-      destGrid.querySelectorAll('.dest-card').forEach(x=>x.className='dest-card');
-      destActivo=null; tipoActivo=null; areasCoord=new Set(['gm']);
-      setTimeout(()=>sent.classList.remove('show'), 5000);
-    };
-
-    sendRow.appendChild(backBtn); sendRow.appendChild(sendBtn);
-    msgContent.appendChild(sendRow);
-    paso3.style.display='block';
-    ta.focus();
-    paso3.scrollIntoView({behavior:'smooth',block:'nearest'});
-  }
-}
-
-/* ══ HISTORIAL DE MENSAJES ENVIADOS ══════════════════ */
-function vHistorial(c){
-  const hd=mk('div','sec-hd');
-  hd.innerHTML=`<span class="sec-ttl">Mensajes enviados</span><span class="sec-sub">${historial.length} total</span>`;
-  c.appendChild(hd);
-
-  if(!historial.length){
-    const e=mk('div',''); e.style.cssText='text-align:center;padding:32px;color:var(--txt3);font-size:13px';
-    e.textContent='No has enviado mensajes aún.'; c.appendChild(e); return;
-  }
-
-  const tipoCols={instruccion:'var(--ac)',consulta:'var(--azul)',difusion:'var(--oro)',coordinacion:'var(--teal)',chat:'var(--azul)'};
-  const tipoLbl={instruccion:'📢 Instrucción',consulta:'❓ Consulta',difusion:'📣 Difusión',coordinacion:'🔗 Coordinación',chat:'💬 Chat'};
-  const tipoPill={instruccion:'p-r',consulta:'p-b',difusion:'p-a',coordinacion:'p-t',chat:'p-b'};
-
-  historial.forEach(msg=>{
-    const item=mk('div','sent-item');
-    item.style.setProperty('--si', tipoCols[msg.tipo]||'var(--ac)');
-    const toLine=mk('div','sent-to');
-    toLine.innerHTML=`<span class="pill ${tipoPill[msg.tipo]}">${tipoLbl[msg.tipo]||msg.tipo}</span><span>Para: ${msg.a}</span>`;
-    const txt=mk('div','sent-txt'); txt.textContent=msg.txt;
-    const meta=mk('div','sent-meta');
-    const hora=mk('span','sent-hora'); hora.textContent=msg.hora;
-    const est=mk('span','sent-estado '+(msg.leida?'est-leida':'est-pend'));
-    est.textContent=msg.leida?'✓ Leído':'⏳ Sin leer';
-    meta.appendChild(hora); meta.appendChild(est);
-    item.appendChild(toLine); item.appendChild(txt); item.appendChild(meta);
-    c.appendChild(item);
-  });
-}
-
-/* ══ CHAT PRIVADO GM–ALCALDE ═════════════════════════ */
-function vChatGM(c){
-  const hd=mk('div','sec-hd');
-  hd.innerHTML='<span class="sec-ttl">Chat con el Gerente Municipal</span>';
-  const rt=mk('div','rt'); rt.innerHTML='<span class="rt-dot"></span>Carlos Vásquez · en línea';
-  hd.appendChild(rt); c.appendChild(hd);
-
-  const nota=mk('div','');
-  nota.style.cssText='font-size:11px;color:var(--txt3);background:var(--gris);border-radius:8px;padding:8px 11px;margin-bottom:10px;line-height:1.5';
-  nota.textContent='Este canal es privado y solo entre tú y el Gerente Municipal. Para comunicarte con las otras gerencias usa "Comunicar / Instruir".';
-  c.appendChild(nota);
-
-  const card=mk('div','card cp');
-  const chatBox=mk('div','chat-box');
-  const scrollBottom=()=>chatBox.scrollTop=chatBox.scrollHeight;
-
-  function buildChat(){
-    chatBox.innerHTML='';
-    chatGM.forEach(m=>{
-      const msg=mk('div','ch-msg'+(m.out?' out':''));
-      const av=mk('div','ch-av'); av.textContent=m.av; av.style.background=m.bg;
-      const inner=mk('div','');inner.style.maxWidth='78%';
-      const bub=mk('div','ch-bub'); bub.textContent=m.txt;
-      const time=mk('div','ch-time'); time.textContent=m.h;
-      inner.appendChild(bub); inner.appendChild(time);
-      msg.appendChild(av); msg.appendChild(inner);
-      chatBox.appendChild(msg);
-    });
-    scrollBottom();
-  }
-  buildChat();
-
-  const row=mk('div','chat-inp-row');
-  const inp=mk('input','ch-inp'); inp.placeholder='Escribe al Gerente Municipal...';
-  inp.onkeydown=e=>{if(e.key==='Enter'&&inp.value.trim()) send();};
-  function send(){
-    if(!inp.value.trim()) return;
-    chatGM.push({av:USER.iniciales||'AL',bg:'var(--ac)',txt:inp.value,h:new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'}),out:true});
-    inp.value=''; buildChat();
-  }
-  const snd=mk('div','ch-send'); snd.textContent='➤'; snd.onclick=send;
-  row.appendChild(inp); row.appendChild(snd);
-  card.appendChild(chatBox); card.appendChild(row);
-  c.appendChild(card);
-}
-
-/* ══ COMPROMISOS ════════════════════════════════════ */
-function vCompromisos(c){
-  const listHd=mk('div','sec-hd');
-  listHd.innerHTML=`<span class="sec-ttl">Compromisos del alcalde</span><span class="pill p-r">${COMPROMISOS.filter(x=>x.ven).length} vencidos</span>`;
-  c.appendChild(listHd);
-  COMPROMISOS.forEach(comp=>{
-    const col=comp.ven?'var(--ac)':'var(--verde)';
-    const item=mk('div','comp');
-    item.innerHTML=`<span class="comp-dot" style="background:${col}"></span><div class="comp-bd"><div class="comp-ttl">${comp.ttl}</div><div class="comp-meta"><span class="comp-resp">${comp.resp}</span>${comp.ven?'<span class="pill p-r">Vencido</span>':''}</div></div><span class="comp-fec" style="color:${col}">${comp.fec}</span>`;
-    c.appendChild(item);
-  });
-  const fHd=mk('div','sec-hd'); fHd.style.marginTop='4px';
-  fHd.innerHTML='<span class="sec-ttl">Registrar nuevo compromiso</span>';
-  c.appendChild(fHd);
-  const card=mk('div','card cp');
-  card.innerHTML=`
-    <div class="form-row"><label class="form-lbl">¿Qué prometiste?</label><input class="form-inp" id="c-desc" placeholder="Describe con precisión el compromiso asumido..."></div>
-    <div class="form-2">
-      <div class="form-row"><label class="form-lbl">Responsable</label><select class="form-inp" id="c-resp">${DESTINATARIOS.filter(d=>!['todos','coord'].includes(d.id)).map(d=>`<option value="${d.id}">${d.nombre}</option>`).join('')}</select></div>
-      <div class="form-row"><label class="form-lbl">Fecha límite</label><input type="date" class="form-inp" id="c-fec"></div>
-    </div>
-    <div class="form-row"><label class="form-lbl">Lugar / contexto</label><input class="form-inp" id="c-lugar" placeholder="Barrio, comunidad, reunión..."></div>
-    <button class="form-btn" id="c-send">Registrar y notificar gerencia</button>
-    <div id="c-ok" style="font-size:12px;color:var(--verde);font-weight:600;margin-top:8px;display:none">✓ Compromiso registrado. La gerencia responsable fue notificada.</div>`;
-  card.querySelector('#c-send').onclick=()=>{
-    const desc=card.querySelector('#c-desc').value.trim(); if(!desc) return;
-    COMPROMISOS.unshift({ttl:desc,resp:card.querySelector('#c-resp').value,fec:card.querySelector('#c-fec').value||'Por definir',ven:false});
-    card.querySelector('#c-ok').style.display='block';
-    card.querySelector('#c-desc').value=''; card.querySelector('#c-fec').value='';
-    setTimeout(()=>{ card.querySelector('#c-ok').style.display='none'; nav('compromis'); },1500);
-  };
-  c.appendChild(card);
-}
-
-/* ══ PRESUPUESTO ═════════════════════════════════════ */
-function vPresupuesto(c){
-  const hd=mk('div','sec-hd');
-  hd.innerHTML='<span class="sec-ttl">Ejecución presupuestal</span><span class="sec-sub">Año 2024</span>';
-  c.appendChild(hd);
-  const card=mk('div','card');
-  const th=mk('div',''); th.style.cssText='padding:10px 14px;background:var(--gris);border-bottom:1px solid var(--borde);display:flex;justify-content:space-between;align-items:center';
-  th.innerHTML='<span style="font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.4px">Por gerencia</span><span style="font-size:11px;color:var(--txt3)">Total asignado: <strong style="color:var(--txt2)">S/7.83M</strong></span>';
-  card.appendChild(th);
-  PRESUPUESTO.forEach(p=>{
-    const row=mk('div','pres-row');
-    row.innerHTML=`<div class="pres-top"><span class="pres-nombre">${p.nombre}</span><span class="pres-pct" style="color:${p.col}">${p.pct}%</span></div>
-    <div class="pbar"><div class="pbar-f" style="width:${p.pct}%;background:${p.col}"></div></div>
-    <div class="pres-montos"><span>Ejecutado: <strong>${fmt(p.ejec)}</strong></span><span>Asignado: <strong>${fmt(p.asig)}</strong></span></div>`;
-    card.appendChild(row);
-  });
-  c.appendChild(card);
-}
-
-/* ══ SEMÁFORO NORMATIVO ══════════════════════════════ */
-function vNormativo(c){
-  c.innerHTML='<div class="sec-hd"><span class="sec-ttl">Plazos normativos críticos</span></div>';
-  [{ico:'💰',ttl:'Devengado 4to trimestre · SIAF/MEF',desc:'Saldo sin devengar: S/1.2M en Planeamiento. Riesgo de devolución al MEF si no se devengue antes del 15 dic.',dias:18,sis:'MEF/SIAF',resp:'Planeamiento',niv:'critica'},
-   {ico:'📋',ttl:'Actualización Invierte.pe · 3 proyectos',desc:'PMI-2024-001, 003 y 007 requieren actualización de avance físico antes de fin de mes.',dias:11,sis:'Invierte.pe',resp:'Infraestructura',niv:'critica'},
-   {ico:'🔍',ttl:'Subsanación hallazgos CGR · 4 pendientes',desc:'4 hallazgos sin subsanar del último informe de auditoría. Responsabilidad personal del alcalde.',dias:24,sis:'Contraloría',resp:'GM',niv:'alerta'},
-   {ico:'🛒',ttl:'Renovación contratos SEACE · fin de año',desc:'3 contratos de servicios vencen a fin de año. Servicios debe iniciar proceso ya.',dias:35,sis:'SEACE',resp:'Servicios',niv:'info'},
-  ].forEach(p=>{
-    const cols={critica:'var(--ac)',alerta:'var(--oro)',info:'var(--azul)'};
-    const el=mk('div','plazo'); el.style.setProperty('--pl',cols[p.niv]);
-    el.innerHTML=`<span class="al-ico">${p.ico}</span><div class="al-bd"><div class="al-ttl">${p.ttl}</div><div class="al-desc">${p.desc}</div><div class="al-meta"><span class="pill ${p.niv==='critica'?'p-r':p.niv==='alerta'?'p-a':'p-b'}">${p.dias} días</span><span>${p.sis}</span><span>· Resp: ${p.resp}</span></div></div>`;
-    c.appendChild(el);
-  });
-}
-
-/* ══ REPORTE IA ══════════════════════════════════════ */
-function vReporte(c){
-  const br=mk('div','briefing');
-  br.innerHTML=`<div class="br-hd"><div class="br-ico">🤖</div><div><div class="br-ttl">Análisis ejecutivo · semana 47</div><div class="br-sub">Claude · Municipalidad Provincial de Cajamarca · 19 Nov 2024</div></div></div>
-  <div class="br-body">La ejecución presupuestal acumulada es de <span class="br-hl">67%</span>, aceptable pero con riesgo en Planeamiento y Rentas. La <span class="br-hl">obra más crítica</span> es la pavimentación de Jr. Lima: paralizada 26 días, con impacto político alto dado que es una vía comercial principal. Se recomienda convocar reunión de emergencia con el contratista esta semana. Las áreas con mejor desempeño son Desarrollo Social (78%) e Infraestructura (71%). El <span class="br-hl">saldo por ejecutar antes del cierre</span> es de S/2.5M concentrado en Planeamiento y Rentas — acción urgente requerida.</div>
-  <div class="br-acts"><button class="br-btn br-p">Descargar PDF</button><button class="br-btn br-s" onclick="nav('comunicar')">Emitir instrucción basada en este análisis</button></div>`;
-  c.appendChild(br);
-}
-
-init();
-</script>
-<script src="shared.js"></script>
-<script>
-  if('serviceWorker' in navigator){
+  if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(()=>{});
   }
+
+  KausayFreshness.autoMount();
+  KausayExport.renderExportBtn('kk-fresh-wrap', ["instrucciones", "compromisos", "obras", "alertas", "presupuesto", "auditoria"]);
+  setTimeout(()=>document.getElementById('loader').remove(), 500);
+});
 </script>
 </body>
 </html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#1A1D23">
+<link rel="stylesheet" href="ui-kit.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Importar datos · Kausay Municipal</title>
+<style>
+:root { --ac:#3A5A8C; --ac-bg:#EEF2FA; --ac-brd:rgba(58,90,140,.2); }
+.import-card { background:var(--c-card); border:1px solid var(--c-borde); border-radius:var(--r-lg); overflow:hidden; margin-bottom:0; }
+.import-card__hd { padding:var(--sp-md) var(--sp-lg); border-bottom:1px solid var(--c-borde); display:flex; align-items:center; gap:var(--sp-sm); background:var(--c-bg); }
+.import-card__ico { font-size:18px; }
+.import-card__ttl { font-family:var(--f-cond); font-size:14px; font-weight:700; color:var(--c-negro); flex:1; }
+.import-card__badge { font-size:10px; font-weight:700; padding:2px 9px; border-radius:9px; }
+.import-card__body { padding:var(--sp-md) var(--sp-lg); display:flex; flex-direction:column; gap:11px; }
+/* Drop zone */
+.dropzone { border:2px dashed var(--c-borde); border-radius:var(--r-md); padding:28px 20px; text-align:center; cursor:pointer; transition:all .15s; background:var(--c-bg); }
+.dropzone.over { border-color:var(--ac); background:var(--ac-bg); }
+.dropzone__ico  { font-size:36px; display:block; margin-bottom:8px; }
+.dropzone__ttl  { font-size:13px; font-weight:600; color:var(--c-gris2); margin-bottom:4px; }
+.dropzone__sub  { font-size:11px; color:var(--c-gris3); line-height:1.5; }
+/* Preview table */
+.preview-wrap { max-height:220px; overflow-y:auto; border-radius:var(--r-sm); border:1px solid var(--c-borde); }
+.preview-table { width:100%; border-collapse:collapse; font-size:11px; }
+.preview-table th { background:var(--c-bg); padding:6px 10px; text-align:left; font-weight:700; color:var(--c-gris2); border-bottom:1px solid var(--c-borde); position:sticky; top:0; }
+.preview-table td { padding:5px 10px; border-bottom:1px solid var(--c-borde); color:var(--c-gris2); }
+.preview-table tr:last-child td { border-bottom:none; }
+.preview-table td.ok  { color:var(--c-ok); }
+.preview-table td.err { color:var(--c-critico); }
+/* Conciliación */
+.concil-row { display:flex; gap:8px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--c-borde); }
+.concil-row:last-child { border-bottom:none; }
+.concil-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:7px; white-space:nowrap; flex-shrink:0; margin-top:2px; }
+.concil-body  { flex:1; min-width:0; }
+.concil-ttl   { font-size:12px; font-weight:600; color:var(--c-negro); }
+.concil-sub   { font-size:11px; color:var(--c-gris3); line-height:1.4; }
+/* Step indicator */
+.steps { display:flex; gap:0; margin-bottom:16px; }
+.step  { flex:1; text-align:center; padding:8px 4px; font-size:10px; font-weight:700; color:var(--c-gris3); border-bottom:2px solid var(--c-borde); transition:all .15s; }
+.step.on { color:var(--ac); border-color:var(--ac); }
+.step.done { color:var(--c-ok); border-color:var(--c-ok); }
+/* Status summary */
+.sync-status { display:flex; gap:8px; flex-wrap:wrap; }
+.sync-chip { display:flex; align-items:center; gap:5px; padding:5px 10px; border-radius:9px; font-size:11px; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="kk-loader" id="loader"><div class="kk-loader__spin"></div><div class="kk-loader__txt">Cargando importador...</div></div>
+<div class="kk-toast" id="toast"></div>
+
+<div class="kk-app" id="app" style="display:none">
+  <div class="kk-sb">
+    <div class="kk-sb__head">
+      <img class="kk-sb__escudo" src="escudo.png" alt="" onerror="this.style.display='none'">
+      <div class="kk-sb__muni" id="sb-muni">Municipalidad</div>
+      <div class="kk-sb__tag">Importar datos</div>
+    </div>
+    <div class="kk-sb__nav">
+      <div class="kk-sb__sec">Módulos</div>
+      <div class="kk-nav-item" onclick="setTab('presupuesto')"><span class="kk-nav-item__ico">💰</span><span class="kk-nav-item__lbl">Presupuesto SIAF</span></div>
+      <div class="kk-nav-item" onclick="setTab('obras')"><span class="kk-nav-item__ico">🏗</span><span class="kk-nav-item__lbl">Obras Invierte.pe</span></div>
+      <div class="kk-nav-item" onclick="setTab('compromisos')"><span class="kk-nav-item__ico">🤝</span><span class="kk-nav-item__lbl">Compromisos</span></div>
+      <div class="kk-nav-item" onclick="setTab('estado')"><span class="kk-nav-item__ico">📊</span><span class="kk-nav-item__lbl">Estado de fuentes</span></div>
+    </div>
+    <div class="kk-sb__foot">
+      <div class="kk-sb__user">
+        <div class="kk-sb__av" id="sb-av">A</div>
+        <div><div class="kk-sb__name" id="sb-name">Administrador</div><div class="kk-sb__rol" id="sb-rol">Importación</div></div>
+        <button class="kk-sb__logout" onclick="window.location.href='config.html'">← Config</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="kk-main">
+    <div class="kk-tb">
+      <div class="kk-tb__title" id="tb-title">Importar datos</div>
+      <div class="kk-tb__clock" id="tb-clock"></div>
+    </div>
+    <div class="kk-content" id="content"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="branding.js"></script>
+<script src="shared.js"></script>
+<script src="freshness.js"></script>
+<script>
+/* ══ ESTADO ══════════════════════════════════════════ */
+let activeTab     = 'presupuesto';
+let parsedData    = null;
+let parseErrors   = [];
+
+/* ══ DEFINICIÓN DE FORMATOS ══════════════════════════ */
+const FORMATS = {
+  presupuesto: {
+    nombre: 'Presupuesto SIAF',
+    ico: '💰',
+    fuente: 'SIAF_GL',
+    sistema: 'SIAF_GL',
+    color: '#185FA5',
+    desc: 'Archivo CSV o Excel exportado del módulo SIAF GL del MEF. Incluye PIM, devengado y girado por genérica de gasto.',
+    cols_required: ['gerencia', 'asignado', 'ejecutado'],
+    cols_optional: ['comprometido', 'devengado', 'anio'],
+    ejemplo: `gerencia,asignado,ejecutado,comprometido\nINFRA,4850000,3421000,3800000\nSERVICIOS,920000,512000,600000\nSOCIAL,1200000,940000,980000\nRENTAS,380000,155000,200000\nPLANIF,185000,72000,100000\nSECRETARIA,290000,198000,220000`,
+    fuente_real: 'https://www.mef.gob.pe/SIAF-SP/siafsp.htm',
+    instruccion: 'Exportar desde SIAF GL → Consultas → Ejecución del Gasto → Exportar CSV. El archivo tendrá filas por genérica — el importador las agrupa por gerencia según el código de unidad ejecutora.',
+    parser: _parsePresupuesto,
+    importer: _importPresupuesto,
+  },
+  obras: {
+    nombre: 'Obras Invierte.pe',
+    ico: '🏗',
+    fuente: 'INVIERTE_PE',
+    sistema: 'INVIERTE_PE',
+    color: '#0F6E56',
+    desc: 'CSV de seguimiento de obras del banco de inversiones Invierte.pe. Incluye avance físico y financiero por proyecto.',
+    cols_required: ['nombre', 'codigo_invierte', 'pct_avance', 'monto'],
+    cols_optional: ['estado', 'fecha_fin', 'contratista'],
+    ejemplo: `nombre,codigo_invierte,pct_avance,monto,estado,fecha_fin,contratista\nPavimentación Jr. Lima,2024-001,34,480000,ejecucion,2024-12-15,Constructora Lima SAC\nMercado La Colmena,2024-002,68,1200000,ejecucion,2025-02-28,Edificaciones Norte SRL\nRed agua potable norte,2024-003,51,680000,ejecucion,2025-03-31,Hidráulica Andina EIRL`,
+    fuente_real: 'https://ofi5.mef.gob.pe/invierte/consulta/tipoprioridad',
+    instruccion: 'Buscar por Unidad Ejecutora en el banco de inversiones Invierte.pe → Consultar → Exportar. También se puede ingresar manualmente por proyecto.',
+    parser: _parseObras,
+    importer: _importObras,
+  },
+  compromisos: {
+    nombre: 'Compromisos de gestión',
+    ico: '🤝',
+    fuente: 'MANUAL',
+    sistema: 'MANUAL',
+    color: '#B5540A',
+    desc: 'Registro manual de compromisos adquiridos en campo, concejo o reuniones. No tiene fuente externa — es un registro institucional propio.',
+    cols_required: ['descripcion', 'responsable', 'fecha_limite'],
+    cols_optional: ['origen', 'prioridad', 'estado'],
+    ejemplo: `descripcion,responsable,fecha_limite,origen,prioridad\nGestionar agua potable sector Los Pinos,SERVICIOS,2024-11-22,campo,alta\nInstalar alumbrado plaza Las Torrecitas,INFRA,2024-11-25,campo,alta\nInfome recaudación octubre,RENTAS,2024-11-30,instruccion,media`,
+    fuente_real: null,
+    instruccion: 'Completar la plantilla CSV con los compromisos del período. Cada fila es un compromiso. El campo "responsable" debe ser el código de gerencia (INFRA, RENTAS, etc.).',
+    parser: _parseCompromisos,
+    importer: _importCompromisos,
+  },
+};
+
+/* ══ PARSERS ═════════════════════════════════════════ */
+function _parseCSV(text) {
+  const lines = text.trim().split('\n').filter(l=>l.trim());
+  if (!lines.length) return { headers:[], rows:[] };
+  const headers = lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/[^a-z_]/g,'_'));
+  const rows = lines.slice(1).map(line => {
+    const vals = line.split(',').map(v=>v.trim().replace(/^["']|["']$/g,''));
+    const obj = {};
+    headers.forEach((h,i) => { obj[h] = vals[i] || ''; });
+    return obj;
+  });
+  return { headers, rows };
+}
+
+function _parsePresupuesto(text) {
+  const { headers, rows } = _parseCSV(text);
+  const errors = [];
+  const valid  = rows.map((r,i) => {
+    const ger  = (r.gerencia||r.area||r.unidad||'').toUpperCase().trim();
+    const asig = parseFloat((r.asignado||r.pim||'0').replace(/[^0-9.]/g,''));
+    const ejec = parseFloat((r.ejecutado||r.devengado||r.girado||'0').replace(/[^0-9.]/g,''));
+    if (!ger)  errors.push(`Fila ${i+2}: código de gerencia vacío`);
+    if (isNaN(asig)) errors.push(`Fila ${i+2}: monto asignado inválido`);
+    return { gerencia_cod:ger, asignado:asig||0, ejecutado:ejec||0,
+             comprometido:parseFloat(r.comprometido||'0')||0,
+             anio: parseInt(r.anio)||new Date().getFullYear(), _ok:!errors.find(e=>e.includes(`Fila ${i+2}`)) };
+  }).filter(r=>r.gerencia_cod);
+  return { data:valid, errors, count:valid.length };
+}
+
+function _parseObras(text) {
+  const { headers, rows } = _parseCSV(text);
+  const errors = [];
+  const valid  = rows.map((r,i) => {
+    const pct = parseFloat(r.pct_avance||r.avance||'0');
+    const mon = parseFloat((r.monto||r.presupuesto||'0').replace(/[^0-9.]/g,''));
+    if (!r.nombre) errors.push(`Fila ${i+2}: nombre de obra vacío`);
+    return { nombre:r.nombre||'', codigo_invierte:r.codigo_invierte||r.codigo||'',
+             porcentaje_avance:pct, presupuesto:mon||0,
+             estado:r.estado||'ejecucion', fecha_fin:r.fecha_fin||'',
+             contratista:r.contratista||'', _ok:!errors.find(e=>e.includes(`Fila ${i+2}`)) };
+  }).filter(r=>r.nombre);
+  return { data:valid, errors, count:valid.length };
+}
+
+function _parseCompromisos(text) {
+  const { headers, rows } = _parseCSV(text);
+  const errors = [];
+  const valid  = rows.map((r,i) => {
+    if (!r.descripcion) errors.push(`Fila ${i+2}: descripción vacía`);
+    return { desc:r.descripcion||'', resp:(r.responsable||'').toUpperCase(),
+             fec:r.fecha_limite||'', origen:r.origen||'otro',
+             prioridad:r.prioridad||'media', estado:r.estado||'pendiente',
+             _ok:!errors.find(e=>e.includes(`Fila ${i+2}`)) };
+  }).filter(r=>r.desc);
+  return { data:valid, errors, count:valid.length };
+}
+
+/* ══ IMPORTERS ═══════════════════════════════════════ */
+function _importPresupuesto(data) {
+  const db = JSON.parse(localStorage.getItem('kausay_db_v2')||'{}');
+  if (!db.presupuesto) db.presupuesto = { total:0, ejecutado:0, pct_global:0, por_area:[] };
+  // Upsert por área
+  data.forEach(row => {
+    const idx = db.presupuesto.por_area.findIndex(p=>p.cod===row.gerencia_cod);
+    const entry = { cod:row.gerencia_cod, nombre:row.gerencia_cod,
+                    asig:row.asignado, ejec:row.ejecutado,
+                    pct:Math.round(row.ejecutado/Math.max(row.asignado,1)*100) };
+    if (idx>=0) db.presupuesto.por_area[idx]=entry;
+    else db.presupuesto.por_area.push(entry);
+  });
+  // Recalcular global
+  const tot=db.presupuesto.por_area.reduce((s,p)=>s+p.asig,0);
+  const eje=db.presupuesto.por_area.reduce((s,p)=>s+p.ejec,0);
+  db.presupuesto.total=tot; db.presupuesto.ejecutado=eje;
+  db.presupuesto.pct_global=Math.round(eje/Math.max(tot,1)*100);
+  localStorage.setItem('kausay_db_v2',JSON.stringify(db));
+  return data.length;
+}
+
+function _importObras(data) {
+  const db = JSON.parse(localStorage.getItem('kausay_db_v2')||'{}');
+  if (!db.obras) db.obras=[];
+  let updated=0, created=0;
+  data.forEach(row => {
+    const idx = db.obras.findIndex(o=>o.nombre===row.nombre||o.id===row.codigo_invierte);
+    const entry = { id:row.codigo_invierte||'obra-'+Date.now(),
+                    nombre:row.nombre, estado:row.estado, pct:row.porcentaje_avance,
+                    presup:row.presupuesto, fin:row.fecha_fin, contratista:row.contratista,
+                    riesgo:'bajo', dias_sin_av:0, ger:'INFRA' };
+    if (idx>=0) { db.obras[idx]={...db.obras[idx],...entry}; updated++; }
+    else { db.obras.push(entry); created++; }
+  });
+  localStorage.setItem('kausay_db_v2',JSON.stringify(db));
+  return { updated, created };
+}
+
+function _importCompromisos(data) {
+  const db = JSON.parse(localStorage.getItem('kausay_db_v2')||'{}');
+  if (!db.compromisos) db.compromisos=[];
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  let created=0;
+  data.forEach(row => {
+    const fec = row.fec ? new Date(row.fec) : null;
+    const ven = fec && fec < hoy && row.estado!=='cumplido';
+    db.compromisos.push({ id:'com-'+Date.now()+Math.random().toString(36).slice(2,5),
+                          desc:row.desc, resp:row.resp, fec:row.fec, ven,
+                          estado:ven?'vencido':row.estado, prioridad:row.prioridad,
+                          origen:row.origen, origen_ref:'Importado CSV' });
+    created++;
+  });
+  localStorage.setItem('kausay_db_v2',JSON.stringify(db));
+  return created;
+}
+
+/* ══ TABS ════════════════════════════════════════════ */
+function setTab(tab) {
+  activeTab=tab; parsedData=null; parseErrors=[];
+  document.querySelectorAll('.kk-nav-item').forEach((el,i)=>{
+    const tabs=['presupuesto','obras','compromisos','estado'];
+    el.classList.toggle('on',tabs[i]===tab);
+  });
+  render();
+}
+
+/* ══ RENDER ══════════════════════════════════════════ */
+function render() {
+  const c=document.getElementById('content'); if(!c) return;
+  c.innerHTML='';
+  document.getElementById('tb-title').textContent = FORMATS[activeTab]?.nombre || 'Estado de fuentes';
+
+  if (activeTab==='estado') { vEstado(c); return; }
+
+  const fmt = FORMATS[activeTab];
+  if (!fmt) return;
+
+  // Header
+  const hd=mk('div','import-card');
+  hd.innerHTML=`
+    <div class="import-card__hd">
+      <span class="import-card__ico">${fmt.ico}</span>
+      <div><div class="import-card__ttl">${fmt.nombre}</div>
+           <div style="font-size:10px;color:var(--c-gris3)">${fmt.fuente_real?'Fuente: <a href="'+fmt.fuente_real+'" target="_blank" style="color:var(--ac)">'+fmt.fuente_real.split('/')[2]+'</a>':'Registro interno'}</div>
+      </div>
+      <span class="import-card__badge kk-chip kk-chip--info">${fmt.fuente}</span>
+    </div>
+    <div class="import-card__body">
+      <div style="font-size:12px;color:var(--c-gris2);line-height:1.55">${fmt.desc}</div>
+      <div style="background:var(--c-bg);border-radius:var(--r-sm);padding:10px 12px;font-size:11px;color:var(--c-gris2);line-height:1.6">
+        <strong>Instrucción:</strong> ${fmt.instruccion}
+      </div>
+    </div>`;
+  c.appendChild(hd);
+
+  // Conciliación
+  c.appendChild(buildConciliacion(fmt));
+
+  // Dropzone
+  const drop = buildDropzone(fmt);
+  c.appendChild(drop);
+
+  // Vista previa + errores
+  if (parsedData) c.appendChild(buildPreview(parsedData, parseErrors));
+}
+
+function buildDropzone(fmt) {
+  const wrap=mk('div','import-card');
+  const body=mk('div','import-card__body');
+  // Dropzone
+  const dz=mk('div','dropzone');
+  dz.id='dropzone-'+activeTab;
+  dz.innerHTML=`
+    <span class="dropzone__ico">📂</span>
+    <div class="dropzone__ttl">Arrastra tu archivo CSV aquí o haz clic para seleccionar</div>
+    <div class="dropzone__sub">Formato: CSV separado por comas (.csv)<br>Columnas requeridas: <code>${fmt.cols_required.join(', ')}</code></div>`;
+  dz.onclick=()=>document.getElementById('file-input-'+activeTab).click();
+  dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('over');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const f=e.dataTransfer.files[0];if(f)processFile(f);});
+
+  // Encoding selector (SIAF exporta ISO-8859-1 en versiones antiguas)
+  const encSel=mk('select'); encSel.id='enc-sel'; encSel.style.cssText='font-size:10px;border-radius:6px;border:1px solid var(--c-borde);padding:3px 6px;margin-bottom:6px;color:var(--c-gris2)';
+  encSel.innerHTML='<option value="UTF-8">UTF-8 (default)</option><option value="ISO-8859-1">ISO-8859-1 (SIAF antiguo)</option>';
+  body.appendChild(encSel);
+  const fileInput=mk('input');
+  fileInput.type='file'; fileInput.id='file-input-'+activeTab;
+  fileInput.accept='.csv,.txt'; fileInput.style.display='none';
+  fileInput.onchange=e=>{ if(e.target.files[0]) processFile(e.target.files[0]); };
+  body.appendChild(dz); body.appendChild(fileInput);
+
+  // Botón plantilla
+  const btnPlant=mk('button','kk-btn kk-btn--ghost');
+  btnPlant.style='font-size:12px;padding:8px 14px';
+  btnPlant.textContent='⬇ Descargar plantilla CSV';
+  btnPlant.onclick=()=>descargarPlantilla(fmt);
+  body.appendChild(btnPlant);
+
+  // Botón importar (solo si hay datos parseados)
+  if (parsedData?.data?.length) {
+    const btnImp=mk('button','kk-btn kk-btn--primary');
+    btnImp.style='font-size:13px;padding:11px';
+    btnImp.textContent=`✓ Confirmar e importar ${parsedData.count} registros →`;
+    btnImp.onclick=()=>doImport(fmt);
+    body.appendChild(btnImp);
+  }
+
+  wrap.appendChild(mk('div','import-card__hd',(h=>{h.innerHTML='<span class="import-card__ico">📥</span><div class="import-card__ttl">Cargar archivo</div>';})));
+  wrap.appendChild(body);
+  return wrap;
+}
+
+function buildPreview(parsed, errors) {
+  const wrap=mk('div','import-card');
+  const body=mk('div','import-card__body');
+  // Errores
+  if (errors.length) {
+    const errBox=mk('div');
+    errBox.style.cssText='background:var(--c-critico-bg);border:1px solid var(--c-critico-brd);border-radius:var(--r-sm);padding:9px 12px;font-size:11px;color:var(--c-gris2)';
+    errBox.innerHTML=`<strong style="color:var(--c-critico)">⚠ ${errors.length} advertencia${errors.length>1?'s':''}:</strong><br>${errors.slice(0,5).join('<br>')}`;
+    body.appendChild(errBox);
+  }
+  // Table
+  if (parsed.data?.length) {
+    const stat=mk('div');
+    stat.style.cssText='font-size:12px;font-weight:600;color:var(--c-negro);margin-bottom:8px';
+    stat.textContent=`✓ ${parsed.count} registros listos para importar${errors.length?` (${errors.length} filas con advertencias ignoradas)`:''}`;
+    body.appendChild(stat);
+    const prevWrap=mk('div','preview-wrap');
+    const cols=Object.keys(parsed.data[0]).filter(k=>k!=='_ok');
+    const table=mk('table','preview-table');
+    table.innerHTML=`<thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+      <tbody>${parsed.data.slice(0,8).map(r=>`<tr>${cols.map(c=>`<td class="${r._ok?'ok':''}">${r[c]??''}</td>`).join('')}</tr>`).join('')}
+      ${parsed.data.length>8?`<tr><td colspan="${cols.length}" style="text-align:center;color:var(--c-gris3);padding:7px">...y ${parsed.data.length-8} más</td></tr>`:''}</tbody>`;
+    prevWrap.appendChild(table); body.appendChild(prevWrap);
+  }
+  wrap.innerHTML='<div class="import-card__hd"><span class="import-card__ico">👁</span><div class="import-card__ttl">Vista previa</div></div>';
+  wrap.appendChild(body); return wrap;
+}
+
+function buildConciliacion(fmt) {
+  const wrap=mk('div','import-card');
+  wrap.innerHTML=`
+    <div class="import-card__hd"><span class="import-card__ico">⚖️</span><div class="import-card__ttl">Conciliación de datos</div></div>
+    <div class="import-card__body">
+      <div class="concil-row">
+        <span class="concil-badge kk-chip kk-chip--ok">Manda el CSV</span>
+        <div class="concil-body">
+          <div class="concil-ttl">Datos de ejecución (montos, avances, fechas)</div>
+          <div class="concil-sub">Los valores numéricos del archivo CSV sobreescriben los datos manuales existentes. La fuente externa tiene prioridad sobre la entrada manual.</div>
+        </div>
+      </div>
+      <div class="concil-row">
+        <span class="concil-badge kk-chip kk-chip--alerta">Manda el sistema</span>
+        <div class="concil-body">
+          <div class="concil-ttl">Metadatos institucionales (alertas, instrucciones, compromisos politicos)</div>
+          <div class="concil-sub">Lo que el alcalde o el asesor escriben en el sistema no se sobreescribe con la importación. Son datos de gestión, no de ejecución.</div>
+        </div>
+      </div>
+      <div class="concil-row">
+        <span class="concil-badge kk-chip kk-chip--neutral">Auditado</span>
+        <div class="concil-body">
+          <div class="concil-ttl">Toda importación queda registrada en el audit log</div>
+          <div class="concil-sub">Queda registrado: quién importó, cuándo, cuántos registros, y qué fuente. El audit log es inmutable.</div>
+        </div>
+      </div>
+    </div>`;
+  return wrap;
+}
+
+function vEstado(c) {
+  const integ = KausayDB.getIntegraciones();
+  const st    = KausayFreshness.getStatus();
+  const LABELS = {
+    SIAF_GL:     { ico:'💰', nombre:'SIAF GL (MEF)',        desc:'Presupuesto, devengado, girado',      tipo:'CSV asistido' },
+    INVIERTE_PE: { ico:'🏗', nombre:'Invierte.pe',          desc:'Obras, avances físicos y financieros',tipo:'CSV asistido' },
+    SEACE:       { ico:'📋', nombre:'SEACE',                desc:'Procesos de contratación y adjudic.', tipo:'No implementado' },
+    MANUAL:      { ico:'✍', nombre:'Registro manual',       desc:'Compromisos, alertas de gestión',     tipo:'Manual directo' },
+  };
+
+  // Summary
+  const sum=mk('div','import-card');
+  sum.innerHTML=`
+    <div class="import-card__hd"><span class="import-card__ico">📊</span><div class="import-card__ttl">Estado global de fuentes de datos</div></div>
+    <div class="import-card__body">
+      <div class="sync-status">
+        ${[
+          {v:st.score+'%',l:'Frescura global',c:KausayDB.pctColor(st.score)},
+          {v:integ.filter(i=>i.estado==='activo').length,l:'Activas',c:'var(--c-ok)'},
+          {v:integ.filter(i=>i.estado==='degradado').length,l:'Degradadas',c:'var(--c-alerta)'},
+          {v:integ.filter(i=>i.estado==='desconectado').length,l:'Sin conexión',c:'var(--c-critico)'},
+        ].map(k=>`<div class="sync-chip kk-chip kk-chip--neutral" style="flex:1;justify-content:center">
+          <div><div style="font-size:18px;font-weight:700;color:${k.c};font-family:var(--f-cond);line-height:1">${k.v}</div><div style="font-size:9px;color:var(--c-gris3)">${k.l}</div></div>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--c-gris3);line-height:1.6;background:var(--c-bg);padding:9px 12px;border-radius:var(--r-sm)">
+        <strong>Última actualización exitosa:</strong> ${KausayDB.relativeTime(st.ultima_sync)}<br>
+        <strong>Fuente primaria:</strong> CSV manual asistido (Etapas 1-4). En Etapa 5: API directa MEF.
+      </div>
+    </div>`;
+  c.appendChild(sum);
+
+  // Detalle por sistema
+  const det=mk('div','import-card');
+  const detBody=mk('div','import-card__body');
+  det.innerHTML='<div class="import-card__hd"><span class="import-card__ico">🔗</span><div class="import-card__ttl">Detalle por sistema</div></div>';
+  ([...integ, {sistema:'MANUAL',estado:'activo',freshness:100,ultima_sync:Date.now()-1000,error:null}]).forEach(i => {
+    const meta=LABELS[i.sistema]||{ico:'🔗',nombre:i.sistema,desc:'',tipo:'—'};
+    const col=i.estado==='activo'?'var(--c-ok)':i.estado==='degradado'?'var(--c-alerta)':'var(--c-critico)';
+    const row=mk('div','concil-row');
+    row.innerHTML=`
+      <span style="font-size:20px;flex-shrink:0">${meta.ico}</span>
+      <div class="concil-body">
+        <div class="concil-ttl">${meta.nombre}</div>
+        <div class="concil-sub">${meta.desc}</div>
+        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap">
+          <span class="kk-chip kk-chip--neutral">${meta.tipo}</span>
+          <span style="font-size:10px;color:var(--c-gris3)">🕐 ${KausayDB.relativeTime(i.ultima_sync||0)}</span>
+          ${i.error?`<span style="font-size:10px;color:var(--c-critico)">⚠ ${i.error}</span>`:''}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:18px;font-weight:700;color:${col};font-family:var(--f-cond)">${i.freshness}%</div>
+        <div style="font-size:9px;color:var(--c-gris3)">frescura</div>
+        <div class="kk-chip ${i.estado==='activo'?'kk-chip--ok':i.estado==='degradado'?'kk-chip--alerta':'kk-chip--critico'}" style="font-size:9px;margin-top:3px">${i.estado}</div>
+      </div>`;
+    detBody.appendChild(row);
+  });
+  det.appendChild(detBody); c.appendChild(det);
+}
+
+/* ══ ACCIONES ════════════════════════════════════════ */
+function processFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const fmt  = FORMATS[activeTab];
+    if (!fmt) return;
+    const result = fmt.parser(text);
+    parsedData  = result;
+    parseErrors = result.errors || [];
+    render();
+  };
+  const enc=document.querySelector('#enc-sel')?.value||'UTF-8'; reader.readAsText(file, enc);
+}
+
+async function doImport(fmt) {
+  if (!parsedData?.data?.length) return;
+  const ok = await KausayAuth.reauth('Importar datos institucionales');
+  if (!ok) { toast('⚠ Verificación cancelada'); return; }
+  const result = fmt.importer(parsedData.data);
+  await KausayFreshness.recordManualSync(fmt.sistema, parsedData.data);
+  const msg = typeof result === 'object'
+    ? `✓ Importado: ${result.created} nuevos, ${result.updated} actualizados`
+    : `✓ ${result} registros importados correctamente`;
+  toast(msg, 4000);
+  parsedData=null; parseErrors=[];
+  render();
+}
+
+function descargarPlantilla(fmt) {
+  const csv = fmt.ejemplo;
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download=`plantilla_${activeTab}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  toast('⬇ Plantilla descargada');
+}
+
+/* ══ HELPERS ═════════════════════════════════════════ */
+function mk(tag,cls,fn) {
+  const el=document.createElement(tag);
+  if(cls) el.className=cls;
+  if(fn) fn(el);
+  return el;
+}
+function toast(msg,dur=2800) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+function tick() {
+  const n=new Date(),el=document.getElementById('tb-clock');
+  if(el)el.textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`;
+}
+tick(); setInterval(tick,15000);
+
+/* ══ INIT ════════════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  KausayAuth.requireAuth(['alcalde','soporte_kausay']);
+  const _sess=KausayAuth.getSession();
+  KausayBranding.apply({rol:_sess?.rol||'alcalde'});
+  const muni=KausayDB.getMuni();
+  document.getElementById('sb-muni').textContent=muni.nombre||'Municipalidad';
+  const nombre=sessionStorage.getItem('kausay_demo_nombre')||'Administrador';
+  document.getElementById('sb-av').textContent=nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+  document.getElementById('sb-name').textContent=nombre;
+  document.getElementById('sb-rol').textContent=_sess?.rol==='soporte_kausay'?'Soporte técnico':'Alcalde';
+  setTab('presupuesto');
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('app').style.display='flex';
+  setTimeout(()=>document.getElementById('loader').remove(),500);
+});
+</script>
+</body>
+</html>

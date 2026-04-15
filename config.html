@@ -3,460 +3,921 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#0F0F12">
-<title>Kausay — Configuración inicial</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#1A1D23">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="ui-kit.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Configuración institucional · Kausay Municipal</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--ac:#B02020;--ac-bg:#FDEAEA;--verde:#1A7A45;--verde-bg:#E8F5EE;--oro:#C8880A;--oro-bg:#FFF4DC;--azul:#185FA5;--gris:#F0F2F5;--card:#fff;--txt:#1A1D23;--txt2:#4A5060;--txt3:#8A90A0;--borde:#E2E6ED;--sb:#0F0F12}
-html,body{min-height:100%;font-family:'Barlow',sans-serif;color:var(--txt);background:#0F0F12}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* ── ACENTO CONFIG (gris ejecutivo) ── */
+:root {
+  --ac:     #3A5A8C;
+  --ac-bg:  #EEF2FA;
+  --ac-brd: rgba(58,90,140,.2);
+}
 
-/* ── PAGE ── */
-.page{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 20px 48px;position:relative}
-.bg{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(176,32,32,.13) 0%,transparent 55%),radial-gradient(ellipse at 85% 100%,rgba(24,95,165,.09) 0%,transparent 55%);pointer-events:none}
+/* ── SECCIONES DE FORMULARIO ── */
+.cfg-section {
+  background: var(--c-card);
+  border: 1px solid var(--c-borde);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.cfg-section__hd {
+  padding: var(--sp-md) var(--sp-lg);
+  border-bottom: 1px solid var(--c-borde);
+  display: flex; align-items: center; gap: var(--sp-sm);
+  background: var(--c-bg);
+}
+.cfg-section__ico  { font-size: 16px; flex-shrink: 0; }
+.cfg-section__ttl  {
+  font-family: var(--f-cond); font-size: 14px; font-weight: 700;
+  color: var(--c-negro); flex: 1;
+}
+.cfg-section__sub  { font-size: 10px; color: var(--c-gris3); }
+.cfg-section__body { padding: var(--sp-md) var(--sp-lg); display: flex; flex-direction: column; gap: 11px; }
 
-/* ── HEADER ── */
-.logo{text-align:center;margin-bottom:28px;animation:fadeUp .5s ease both}
-.logo-brand{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:#fff}
-.logo-brand em{color:#F07070;font-style:normal}
-.logo-tag{font-size:10px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:1.8px;margin-top:4px}
+/* ── FILA DE FORMULARIO ── */
+.cfg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-/* ── PROGRESS ── */
-.steps{display:flex;gap:0;margin-bottom:28px;background:rgba(255,255,255,.06);border-radius:10px;padding:4px;animation:fadeUp .5s .1s ease both;opacity:0;animation-fill-mode:forwards}
-.step{flex:1;padding:8px 10px;border-radius:7px;text-align:center;cursor:pointer;transition:all .18s}
-.step.on{background:var(--ac);color:#fff}
-.step:not(.on){color:rgba(255,255,255,.4)}
-.step-n{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:block}
-.step-lbl{font-size:11px;font-weight:600;display:block;margin-top:2px}
+/* ── COLOR PICKER ── */
+.color-row { display: flex; gap: 10px; align-items: flex-end; }
+.color-preview {
+  width: 38px; height: 38px; border-radius: 8px;
+  border: 2px solid var(--c-borde); flex-shrink: 0;
+  cursor: pointer; transition: transform .1s;
+}
+.color-preview:active { transform: scale(.93); }
+.color-inp-native {
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
 
-/* ── PANEL ── */
-.panel{width:100%;max-width:560px;animation:fadeUp .5s .15s ease both;opacity:0;animation-fill-mode:forwards}
-.section-card{background:var(--card);border-radius:14px;padding:20px 22px;margin-bottom:16px}
-.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--borde)}
-.section-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.section-ttl{font-size:14px;font-weight:600;color:var(--txt)}
-.section-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+/* ── GERENCIA CARD (editable) ── */
+.ger-cfg-card {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-radius: var(--r-md); padding: 10px var(--sp-md);
+  display: flex; align-items: center; gap: var(--sp-sm);
+  transition: var(--transition);
+}
+.ger-cfg-dot   { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.ger-cfg-body  { flex: 1; min-width: 0; }
+.ger-cfg-nombre{ font-size: 13px; font-weight: 600; color: var(--c-negro); }
+.ger-cfg-cod   { font-size: 10px; color: var(--c-gris3); }
+.ger-cfg-right { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.ger-cfg-badge {
+  font-size: 9px; font-weight: 700; padding: 2px 8px;
+  border-radius: 8px; text-transform: uppercase;
+}
+.ger-cfg-badge--ok   { background: var(--c-ok-bg);      color: var(--c-ok);     border: 1px solid var(--c-ok-brd); }
+.ger-cfg-badge--off  { background: var(--c-bg);          color: var(--c-gris3);  border: 1px solid var(--c-borde);  }
 
-/* ── FIELDS ── */
-.field{margin-bottom:13px}
-.field:last-child{margin-bottom:0}
-.field-lbl{font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:5px}
-.field-req{color:var(--ac);font-size:11px}
-.field-inp{width:100%;border:1.5px solid var(--borde);border-radius:9px;padding:9px 12px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--txt);background:#fff;outline:none;transition:border-color .15s}
-.field-inp:focus{border-color:var(--ac)}
-.field-inp.ok{border-color:var(--verde)}
-.field-inp::placeholder{color:var(--txt3)}
-.field-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field-hint{font-size:11px;color:var(--txt3);margin-top:4px}
+/* ── USUARIO CARD ── */
+.usr-cfg-card {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-radius: var(--r-md); padding: 10px var(--sp-md);
+  display: flex; align-items: center; gap: var(--sp-sm);
+}
+.usr-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.usr-body    { flex: 1; min-width: 0; }
+.usr-nombre  { font-size: 12px; font-weight: 600; color: var(--c-negro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.usr-email   { font-size: 10px; color: var(--c-gris3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.usr-right   { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
-/* ── GERENCIA ROWS ── */
-.ger-row{background:var(--gris);border-radius:10px;padding:12px 14px;margin-bottom:9px}
-.ger-row:last-child{margin-bottom:0}
-.ger-hd{display:flex;align-items:center;gap:8px;margin-bottom:9px}
-.ger-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.ger-nombre-fijo{font-size:12px;font-weight:700;color:var(--txt)}
-.ger-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* ── VISTA PREVIA / IMPACTO ── */
+.preview-card {
+  background: var(--c-sb); border-radius: var(--r-lg);
+  padding: var(--sp-md); display: flex; align-items: center; gap: var(--sp-md);
+}
+.preview-escudo { width: 36px; height: auto; filter: drop-shadow(0 1px 4px rgba(0,0,0,.5)); flex-shrink: 0; }
+.preview-body   { flex: 1; min-width: 0; }
+.preview-nombre { font-family: var(--f-cond); font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+.preview-tipo   { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 2px; }
+.preview-dash   { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+.preview-dot    { width: 20px; height: 6px; border-radius: 3px; }
 
-/* ── MUNI TYPE ── */
-.tipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0}
-.tipo-btn{padding:10px 8px;border:1.5px solid var(--borde);border-radius:9px;background:#fff;cursor:pointer;text-align:center;font-family:'Barlow',sans-serif;transition:all .15s}
-.tipo-btn:hover{border-color:var(--txt3)}
-.tipo-btn.sel{border-color:var(--ac);background:var(--ac-bg)}
-.tipo-ico{font-size:20px;display:block;margin-bottom:5px}
-.tipo-lbl{font-size:12px;font-weight:600;color:var(--txt);display:block}
-.tipo-desc{font-size:10px;color:var(--txt3);margin-top:2px;display:block}
+/* ── SEGURIDAD BANNER ── */
+.security-banner {
+  background: var(--c-alerta-bg); border: 1px solid var(--c-alerta-brd);
+  border-radius: var(--r-md); padding: 10px var(--sp-md);
+  display: flex; align-items: flex-start; gap: var(--sp-sm);
+  font-size: 11px; color: var(--c-gris2); line-height: 1.5;
+}
+.security-banner__ico { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 
-/* ── NAVIGATION ── */
-.nav-row{display:flex;gap:10px;margin-top:4px}
-.btn-next{flex:1;padding:13px;border-radius:10px;border:none;background:var(--ac);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .15s}
-.btn-next:hover{background:#8C1818}
-.btn-next:disabled{opacity:.5;cursor:not-allowed}
-.btn-back{padding:13px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif}
-.btn-back:hover{background:rgba(255,255,255,.07);color:#fff}
+/* ── AUDIT TRAIL ── */
+.audit-item {
+  background: var(--c-bg); border-radius: var(--r-sm);
+  padding: 7px 10px; display: flex; gap: 8px; align-items: flex-start;
+}
+.audit-item__time { font-size: 10px; color: var(--c-gris3); white-space: nowrap; flex-shrink: 0; font-family: 'Courier New',monospace; }
+.audit-item__txt  { font-size: 11px; color: var(--c-gris2); line-height: 1.4; flex: 1; }
 
-/* ── PREVIEW ── */
-.preview-card{border-radius:12px;padding:15px 16px;margin-bottom:12px;border:1px solid var(--borde);background:var(--card)}
-.preview-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt3);margin-bottom:10px}
-.preview-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--borde);font-size:13px}
-.preview-row:last-child{border-bottom:none}
-.preview-key{color:var(--txt3)}
-.preview-val{font-weight:600;color:var(--txt);text-align:right;max-width:200px;word-break:break-word}
+/* ── SAVE FOOTER ── */
+.save-footer {
+  position: sticky; bottom: 0;
+  background: var(--c-card); border-top: 1px solid var(--c-borde);
+  padding: 10px var(--sp-lg) calc(10px + env(safe-area-inset-bottom));
+  display: flex; gap: 9px; align-items: center; flex-shrink: 0;
+}
+.save-footer__changes {
+  flex: 1; font-size: 11px; color: var(--c-gris3);
+}
+.save-footer__changes.dirty { color: var(--c-alerta); font-weight: 600; }
 
-/* ── SUCCESS ── */
-.success{display:none;text-align:center;animation:fadeUp .4s ease both}
-.success-ico{font-size:52px;margin-bottom:16px;display:block}
-.success-ttl{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:8px}
-.success-sub{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:28px}
-.dashboards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:400px;margin:0 auto}
-.dash-btn{border-radius:12px;padding:16px 14px;text-align:center;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:all .18s}
-.dash-btn:hover{transform:translateY(-2px);opacity:.9}
-.dash-ico{font-size:24px;display:block;margin-bottom:6px}
-.dash-lbl{font-size:12px;font-weight:700;color:#fff;display:block}
-.dash-cargo{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px;display:block}
+/* ── MODAL EDITAR GERENCIA ── */
+.modal-ger-color {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.ger-color-opt {
+  width: 28px; height: 28px; border-radius: 6px;
+  cursor: pointer; border: 2px solid transparent; transition: transform .1s;
+}
+.ger-color-opt.sel { border-color: var(--c-negro); transform: scale(1.15); }
+.ger-color-opt:active { transform: scale(.9); }
 
-@media(max-width:480px){.field-2,.ger-fields{grid-template-columns:1fr}.tipo-grid{grid-template-columns:1fr}.dashboards-grid{grid-template-columns:1fr}}
+@media(max-width:680px) {
+  .cfg-row        { grid-template-columns: 1fr; }
+  .kk-sb          { display: none; }
+  .kk-tb__back    { display: flex; }
+  .kk-tb__clock   { display: none; }
+}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="bg"></div>
 
-  <div class="logo">
-    <div class="logo-brand">Kausay<em>Alcalde</em></div>
-    <div class="logo-tag">Configuración inicial · Municipalidad</div>
-  </div>
+<!-- LOADER -->
+<div class="kk-loader" id="loader">
+  <div class="kk-loader__spin"></div>
+  <div class="kk-loader__txt">Cargando configuración...</div>
+</div>
 
-  <div class="steps" id="steps">
-    <div class="step on" onclick="irPaso(1)"><span class="step-n">Paso 1</span><span class="step-lbl">Municipalidad</span></div>
-    <div class="step"    onclick="irPaso(2)"><span class="step-n">Paso 2</span><span class="step-lbl">Autoridades</span></div>
-    <div class="step"    onclick="irPaso(3)"><span class="step-n">Paso 3</span><span class="step-lbl">Gerencias</span></div>
-    <div class="step"    onclick="irPaso(4)"><span class="step-n">Paso 4</span><span class="step-lbl">Confirmar</span></div>
-  </div>
-
-  <div class="panel" id="panel"></div>
-  <div class="success" id="success">
-    <span class="success-ico">✅</span>
-    <div class="success-ttl">¡Configuración completada!</div>
-    <div class="success-sub">Los nombres están guardados.<br>Cada dashboard mostrará los datos de tu municipalidad.</div>
-    <div class="dashboards-grid" id="dash-grid"></div>
+<!-- MODAL: EDITAR GERENCIA -->
+<div class="kk-modal-bg" id="modal-ger">
+  <div class="kk-modal">
+    <div class="kk-modal__hd">
+      <span class="kk-modal__ttl" id="modal-ger-ttl">Editar gerencia</span>
+      <button class="kk-modal__close" onclick="cerrarModal('modal-ger')">✕</button>
+    </div>
+    <input type="hidden" id="ger-edit-cod">
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Nombre completo</label>
+      <input class="kk-form-inp" id="ger-edit-nombre" placeholder="Gerencia de Infraestructura y Obras">
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Jefe de gerencia</label>
+      <input class="kk-form-inp" id="ger-edit-jefe" placeholder="Nombre y cargo del gerente">
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Color de identificación</label>
+      <div class="modal-ger-color" id="ger-color-opts"></div>
+    </div>
+    <div class="kk-form-row" style="display:flex;align-items:center;gap:10px">
+      <label class="kk-form-lbl" style="margin-bottom:0">Gerencia activa</label>
+      <input type="checkbox" id="ger-edit-activa" style="accent-color:var(--ac);width:16px;height:16px;cursor:pointer">
+    </div>
+    <button class="kk-btn kk-btn--primary" onclick="guardarGerencia()">Guardar gerencia →</button>
   </div>
 </div>
 
+<!-- MODAL: EDITAR USUARIO BASE -->
+<div class="kk-modal-bg" id="modal-usr">
+  <div class="kk-modal">
+    <div class="kk-modal__hd">
+      <span class="kk-modal__ttl" id="modal-usr-ttl">Editar usuario</span>
+      <button class="kk-modal__close" onclick="cerrarModal('modal-usr')">✕</button>
+    </div>
+    <input type="hidden" id="usr-edit-idx">
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Nombre completo</label>
+      <input class="kk-form-inp" id="usr-edit-nombre" placeholder="Nombre completo del funcionario">
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Correo institucional</label>
+      <input class="kk-form-inp" type="email" id="usr-edit-email" placeholder="usuario@municipalidad.gob.pe">
+    </div>
+    <div class="cfg-row">
+      <div class="kk-form-row">
+        <label class="kk-form-lbl">Rol</label>
+        <select class="kk-form-inp kk-form-sel" id="usr-edit-rol">
+          <option value="alcalde">Alcalde</option>
+          <option value="secretaria">Secretaria</option>
+          <option value="gerente_municipal">Gerente Municipal</option>
+          <option value="gerente_sectorial">Gerente Sectorial</option>
+          <option value="asesor_despacho">Asesor Despacho</option>
+          <option value="oci_lectura">OCI Lectura</option>
+        </select>
+      </div>
+      <div class="kk-form-row" id="usr-ger-row">
+        <label class="kk-form-lbl">Gerencia</label>
+        <select class="kk-form-inp kk-form-sel" id="usr-edit-ger"></select>
+      </div>
+    </div>
+    <div class="kk-form-row" style="display:flex;align-items:center;gap:10px">
+      <label class="kk-form-lbl" style="margin-bottom:0">Usuario activo</label>
+      <input type="checkbox" id="usr-edit-activo" checked style="accent-color:var(--ac);width:16px;height:16px;cursor:pointer">
+    </div>
+    <div class="security-banner" style="margin-top:4px">
+      <span class="security-banner__ico">🔐</span>
+      <span>Las contraseñas se gestionan en Supabase Auth. Este panel solo administra nombre, correo, rol y gerencia asociada.</span>
+    </div>
+    <button class="kk-btn kk-btn--primary" onclick="guardarUsuario()">Guardar usuario →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="kk-toast" id="toast"></div>
+
+<!-- APP -->
+<div class="kk-app" id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <div class="kk-sb">
+    <div class="kk-sb__head">
+      <img class="kk-sb__escudo" src="escudo.png" alt="" onerror="this.style.display='none'">
+      <div class="kk-sb__muni" id="sb-muni">Configuración institucional</div>
+      <div class="kk-sb__tag">Panel de administración</div>
+    </div>
+    <div class="kk-sb__nav" id="sb-nav"></div>
+    <div class="kk-sb__foot">
+      <div class="kk-sb__user">
+        <div class="kk-sb__av" id="sb-av">A</div>
+        <div>
+          <div class="kk-sb__name" id="sb-name">Administrador</div>
+          <div class="kk-sb__rol" id="sb-rol">Configuración</div>
+        </div>
+        <button class="kk-sb__logout" onclick="logout()">Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="kk-main">
+    <div class="kk-offline-bar" id="offline-bar">📡 Sin conexión — los cambios se guardarán localmente</div>
+    <div class="kk-tb">
+      <button class="kk-tb__back" id="tb-back" onclick="nav('identidad')">← Menú</button>
+      <div class="kk-tb__title" id="tb-title">Configuración institucional</div>
+      <div class="kk-tb__clock" id="tb-clock"></div>
+    </div>
+    <div class="kk-content" id="content"></div>
+    <div class="save-footer" id="save-footer">
+      <div class="save-footer__changes" id="save-changes-lbl">Sin cambios pendientes</div>
+      <button class="kk-btn kk-btn--ghost" style="padding:8px 14px;font-size:12px" onclick="descartarCambios()">Descartar</button>
+      <button class="kk-btn kk-btn--primary" id="btn-save" style="padding:8px 18px;font-size:12px" onclick="guardarTodo()" disabled>Guardar</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="branding.js"></script>
+<script src="auth.js"></script>
+<script src="shared.js"></script>
 <script>
 /* ══ ESTADO ══════════════════════════════════════════ */
-const CFG = {
-  // Paso 1
-  muni_nombre: '',
-  muni_ubigeo: '',
-  muni_tipo: 'provincial',
-  muni_departamento: '',
-  muni_provincia: '',
-  muni_distrito: '',
-  // Paso 2
-  alcalde_nombre: '',
-  alcalde_cargo: 'Alcalde Provincial',
-  secretaria_nombre: '',
-  gm_nombre: '',
-  gm_cargo: 'Gerente Municipal',
-  // Paso 3
-  gerencias: [
-    {cod:'INFRA',    nombre:'Infraestructura y Obras',   color:'#0F6E56', jefe:''},
-    {cod:'RENTAS',   nombre:'Rentas y Tributación',       color:'#185FA5', jefe:''},
-    {cod:'SERVICIOS',nombre:'Servicios Municipales',      color:'#5C3E8F', jefe:''},
-    {cod:'SOCIAL',   nombre:'Desarrollo Social',          color:'#B5540A', jefe:''},
-    {cod:'SECRETARIA',nombre:'Secretaría General',        color:'#4A4A70', jefe:''},
-    {cod:'PLANIF',   nombre:'Planeamiento y Presupuesto', color:'#2E6B5E', jefe:''},
-  ],
+let vista      = 'identidad';
+let dirty      = false;        // ¿hay cambios sin guardar?
+let formState  = {};           // estado del formulario en edición
+let gerUsers   = [];           // usuarios base en memoria (no en shared.js)
+
+const GER_COLORS = ['#0F6E56','#185FA5','#5C3E8F','#B5540A','#4A4A70','#2E6B5E','#8B1A1A','#9E6A06','#1A4A7A','#3D6E40'];
+
+const NAV_DEF = [
+  { sec:'Configuración', items:[
+    { id:'identidad',   ico:'🏛', lbl:'Identidad institucional' },
+    { id:'gerencias',   ico:'🏢', lbl:'Gerencias y estructura'  },
+    { id:'usuarios',    ico:'👥', lbl:'Usuarios base'            },
+    { id:'preview',     ico:'👁', lbl:'Vista previa'             },
+    { id:'seguridad',   ico:'🔐', lbl:'Seguridad y auditoría'   },
+  ]},
+  { sec:'Sistema', items:[
+    { id:'supabase',    ico:'🗄', lbl:'Conexión Supabase'        },
+  ]},
+];
+
+const TITULOS = {
+  identidad:'Identidad institucional', gerencias:'Gerencias y estructura',
+  usuarios:'Usuarios base', preview:'Vista previa del sistema',
+  seguridad:'Seguridad y auditoría', supabase:'Conexión Supabase',
 };
 
-let paso = 1;
+const ROL_COLORS = {
+  alcalde:'#8B1A1A', secretaria:'#9E6A06', gerente_municipal:'#185FA5',
+  gerente_sectorial:'#0F6E56', asesor_despacho:'#4A4A70', oci_lectura:'#3D6E40',
+};
 
-/* ══ NAVEGACIÓN ══════════════════════════════════════ */
-function irPaso(n) {
-  if(n > paso) return; // solo navegar hacia atrás o al paso actual
-  paso = n;
-  renderPaso();
+/* ══ FORM STATE ══════════════════════════════════════ */
+function initFormState() {
+  const muni = KausayDB.getMuni();
+  formState = {
+    nombre:          muni.nombre          || '',
+    nombre_corto:    muni.nombre_corto    || '',
+    tipo:            muni.tipo            || 'provincial',
+    ubigeo:          muni.ubigeo          || '',
+    departamento:    muni.departamento    || '',
+    provincia:       muni.provincia       || '',
+    distrito:        muni.distrito        || '',
+    escudo_url:      muni.escudo_url      || 'escudo.png',
+    color_primario:  muni.color_primario  || '#8B1A1A',
+    color_secundario:muni.color_secundario|| '#1A1D23',
+    alcalde:         muni.alcalde         || '',
+    secretaria:      muni.secretaria      || '',
+    gm:              muni.gm              || '',
+  };
 }
 
-function siguiente() {
-  if(!validarPaso()) return;
-  guardarPaso();
-  if(paso < 4) { paso++; renderPaso(); window.scrollTo(0,0); }
-  else { guardarTodo(); mostrarExito(); }
+function markDirty() {
+  dirty = true;
+  const lbl = document.getElementById('save-changes-lbl');
+  const btn = document.getElementById('btn-save');
+  if (lbl) { lbl.textContent = 'Cambios pendientes de guardar'; lbl.className='save-footer__changes dirty'; }
+  if (btn) btn.disabled = false;
 }
 
-function anterior() {
-  if(paso > 1) { paso--; renderPaso(); window.scrollTo(0,0); }
+function markClean() {
+  dirty = false;
+  const lbl = document.getElementById('save-changes-lbl');
+  const btn = document.getElementById('btn-save');
+  if (lbl) { lbl.textContent = 'Sin cambios pendientes'; lbl.className='save-footer__changes'; }
+  if (btn) btn.disabled = true;
 }
+
+/* ══ NAV ═════════════════════════════════════════════ */
+function nav(v) { vista=v; render(); }
+function buildNav() {
+  const sb=document.getElementById('sb-nav'); if(!sb) return;
+  sb.innerHTML='';
+  NAV_DEF.forEach(sec=>{
+    const s=mk('div','kk-sb__sec'); s.textContent=sec.sec; sb.appendChild(s);
+    sec.items.forEach(it=>{
+      const el=mk('div','kk-nav-item'+(vista===it.id?' on':''));
+      el.innerHTML=`<span class="kk-nav-item__ico">${it.ico}</span><span class="kk-nav-item__lbl">${it.lbl}</span>`;
+      el.onclick=()=>nav(it.id); sb.appendChild(el);
+    });
+  });
+}
+
+/* ══ RELOJ ═══════════════════════════════════════════ */
+function tick() {
+  const n=new Date(), el=document.getElementById('tb-clock');
+  if(el) el.textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`;
+}
+tick(); setInterval(tick,15000);
 
 /* ══ RENDER ══════════════════════════════════════════ */
-function renderPaso() {
-  // Actualizar steps
-  document.querySelectorAll('.step').forEach((s,i) => {
-    s.classList.toggle('on', i+1 === paso);
-  });
-  const panel = document.getElementById('panel');
-  if(paso === 1) renderPaso1(panel);
-  else if(paso === 2) renderPaso2(panel);
-  else if(paso === 3) renderPaso3(panel);
-  else if(paso === 4) renderPaso4(panel);
+function render() {
+  const c=document.getElementById('content'); if(!c) return;
+  c.innerHTML='';
+  const ttl=document.getElementById('tb-title');
+  if(ttl) ttl.textContent=TITULOS[vista]||vista;
+  const back=document.getElementById('tb-back');
+  if(back) back.style.display=vista==='identidad'?'none':'flex';
+  buildNav();
+
+  if(vista==='identidad')  vIdentidad(c);
+  else if(vista==='gerencias') vGerencias(c);
+  else if(vista==='usuarios')  vUsuarios(c);
+  else if(vista==='preview')   vPreview(c);
+  else if(vista==='seguridad') vSeguridad(c);
+  else if(vista==='supabase')  vSupabase(c);
 }
 
-/* ── PASO 1: Datos de la municipalidad ── */
-function renderPaso1(panel) {
-  panel.innerHTML = `
-  <div class="section-card">
-    <div class="section-hd">
-      <div class="section-ico" style="background:#1A1D23">🏛</div>
-      <div><div class="section-ttl">Datos de la municipalidad</div><div class="section-sub">Esta información aparecerá en todos los dashboards y documentos exportados</div></div>
+/* ══ V1: IDENTIDAD INSTITUCIONAL ═════════════════════ */
+function vIdentidad(c) {
+  // Banner de seguridad
+  const banner = mk('div','security-banner');
+  banner.innerHTML=`<span class="security-banner__ico">⚠️</span>
+    <span>Los cambios aquí modifican la identidad visible del sistema en todos los dashboards. Se requiere reautenticación al guardar.</span>`;
+  c.appendChild(banner);
+
+  // Vista previa en vivo
+  c.appendChild(buildPreviewCard());
+
+  // Datos principales
+  const sec1 = mk('div','cfg-section');
+  sec1.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">🏛</span>
+      <div><div class="cfg-section__ttl">Datos oficiales de la municipalidad</div><div class="cfg-section__sub">Información legal e institucional</div></div>
     </div>
-    <div class="field">
-      <div class="field-lbl">Nombre oficial <span class="field-req">*</span></div>
-      <input class="field-inp" id="muni_nombre" placeholder="Ej: Municipalidad Provincial de Cajamarca" value="${CFG.muni_nombre}">
+    <div class="cfg-section__body">
+      <div class="kk-form-row"><label class="kk-form-lbl">Nombre oficial completo <span style="color:var(--c-critico)">*</span></label>
+        <input class="kk-form-inp" id="f-nombre" value="${esc(formState.nombre)}" placeholder="Municipalidad Provincial de Cajamarca" oninput="formState.nombre=this.value;markDirty();actualizarPreview()"></div>
+      <div class="cfg-row">
+        <div class="kk-form-row"><label class="kk-form-lbl">Nombre corto</label>
+          <input class="kk-form-inp" id="f-nombre-corto" value="${esc(formState.nombre_corto)}" placeholder="MPC Cajamarca" oninput="formState.nombre_corto=this.value;markDirty()"></div>
+        <div class="kk-form-row"><label class="kk-form-lbl">Tipo</label>
+          <select class="kk-form-inp kk-form-sel" id="f-tipo" onchange="formState.tipo=this.value;markDirty()">
+            ${['distrital','provincial','metropolitana'].map(t=>`<option value="${t}" ${formState.tipo===t?'selected':''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}
+          </select></div>
+      </div>
+      <div class="cfg-row">
+        <div class="kk-form-row"><label class="kk-form-lbl">Ubigeo</label>
+          <input class="kk-form-inp" id="f-ubigeo" value="${esc(formState.ubigeo)}" placeholder="060101" oninput="formState.ubigeo=this.value;markDirty()"></div>
+        <div class="kk-form-row"><label class="kk-form-lbl">Departamento</label>
+          <input class="kk-form-inp" id="f-depto" value="${esc(formState.departamento)}" placeholder="Cajamarca" oninput="formState.departamento=this.value;markDirty()"></div>
+      </div>
+      <div class="cfg-row">
+        <div class="kk-form-row"><label class="kk-form-lbl">Provincia</label>
+          <input class="kk-form-inp" id="f-prov" value="${esc(formState.provincia)}" placeholder="Cajamarca" oninput="formState.provincia=this.value;markDirty()"></div>
+        <div class="kk-form-row"><label class="kk-form-lbl">Distrito</label>
+          <input class="kk-form-inp" id="f-dist" value="${esc(formState.distrito)}" placeholder="Cajamarca" oninput="formState.distrito=this.value;markDirty()"></div>
+      </div>
+    </div>`;
+  c.appendChild(sec1);
+
+  // Identidades de personas clave
+  const sec2 = mk('div','cfg-section');
+  sec2.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">👤</span>
+      <div><div class="cfg-section__ttl">Autoridades principales</div><div class="cfg-section__sub">Nombres que aparecen en el sistema</div></div>
     </div>
-    <div class="field-2">
-      <div class="field">
-        <div class="field-lbl">Ubigeo</div>
-        <input class="field-inp" id="muni_ubigeo" placeholder="Ej: 060101" value="${CFG.muni_ubigeo}" maxlength="6">
+    <div class="cfg-section__body">
+      <div class="kk-form-row"><label class="kk-form-lbl">Alcalde</label>
+        <input class="kk-form-inp" id="f-alcalde" value="${esc(formState.alcalde)}" placeholder="Nombre completo del alcalde" oninput="formState.alcalde=this.value;markDirty()"></div>
+      <div class="cfg-row">
+        <div class="kk-form-row"><label class="kk-form-lbl">Secretaria del despacho</label>
+          <input class="kk-form-inp" id="f-secretaria" value="${esc(formState.secretaria)}" placeholder="Nombre completo" oninput="formState.secretaria=this.value;markDirty()"></div>
+        <div class="kk-form-row"><label class="kk-form-lbl">Gerente Municipal</label>
+          <input class="kk-form-inp" id="f-gm" value="${esc(formState.gm)}" placeholder="Nombre y título" oninput="formState.gm=this.value;markDirty()"></div>
       </div>
-      <div class="field">
-        <div class="field-lbl">Departamento <span class="field-req">*</span></div>
-        <input class="field-inp" id="muni_departamento" placeholder="Ej: Cajamarca" value="${CFG.muni_departamento}">
-      </div>
+    </div>`;
+  c.appendChild(sec2);
+
+  // Branding visual
+  const sec3 = mk('div','cfg-section');
+  sec3.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">🎨</span>
+      <div><div class="cfg-section__ttl">Identidad visual</div><div class="cfg-section__sub">Colores que se propagan a todos los dashboards</div></div>
     </div>
-    <div class="field-2">
-      <div class="field">
-        <div class="field-lbl">Provincia</div>
-        <input class="field-inp" id="muni_provincia" placeholder="Ej: Cajamarca" value="${CFG.muni_provincia}">
+    <div class="cfg-section__body">
+      <div class="kk-form-row"><label class="kk-form-lbl">URL del escudo</label>
+        <input class="kk-form-inp" id="f-escudo" value="${esc(formState.escudo_url)}" placeholder="escudo.png" oninput="formState.escudo_url=this.value;markDirty();actualizarPreview()"></div>
+      <div class="cfg-row">
+        <div class="kk-form-row"><label class="kk-form-lbl">Color primario</label>
+          <div class="color-row">
+            <input type="color" class="color-inp-native" id="color-primario-native" value="${formState.color_primario}" oninput="formState.color_primario=this.value;document.getElementById('color-primario-prev').style.background=this.value;markDirty();actualizarPreview()">
+            <div class="color-preview" id="color-primario-prev" style="background:${formState.color_primario}" onclick="document.getElementById('color-primario-native').click()"></div>
+            <input class="kk-form-inp" style="flex:1" id="f-color-pri" value="${formState.color_primario}" placeholder="#8B1A1A"
+              oninput="if(/^#[0-9A-Fa-f]{6}$/.test(this.value)){formState.color_primario=this.value;document.getElementById('color-primario-prev').style.background=this.value;document.getElementById('color-primario-native').value=this.value;actualizarPreview();}markDirty()">
+          </div></div>
+        <div class="kk-form-row"><label class="kk-form-lbl">Color secundario</label>
+          <div class="color-row">
+            <input type="color" class="color-inp-native" id="color-sec-native" value="${formState.color_secundario}" oninput="formState.color_secundario=this.value;document.getElementById('color-sec-prev').style.background=this.value;markDirty()">
+            <div class="color-preview" id="color-sec-prev" style="background:${formState.color_secundario}" onclick="document.getElementById('color-sec-native').click()"></div>
+            <input class="kk-form-inp" style="flex:1" id="f-color-sec" value="${formState.color_secundario}" placeholder="#1A1D23"
+              oninput="if(/^#[0-9A-Fa-f]{6}$/.test(this.value)){formState.color_secundario=this.value;document.getElementById('color-sec-prev').style.background=this.value;}markDirty()">
+          </div></div>
       </div>
-      <div class="field">
-        <div class="field-lbl">Distrito</div>
-        <input class="field-inp" id="muni_distrito" placeholder="Ej: Cajamarca" value="${CFG.muni_distrito}">
+      <div style="font-size:11px;color:var(--c-gris3);background:var(--c-bg);padding:8px 10px;border-radius:7px">
+        💡 El color primario se aplica al acento del rol "Alcalde" y al header del sistema. Los cambios se verán en todos los dashboards al recargar.
       </div>
-    </div>
-    <div class="field" style="margin-top:4px">
-      <div class="field-lbl">Tipo de municipalidad <span class="field-req">*</span></div>
-      <div class="tipo-grid">
-        <div class="tipo-btn${CFG.muni_tipo==='distrital'?' sel':''}" onclick="selTipo('distrital',this)">
-          <span class="tipo-ico">🏘</span><span class="tipo-lbl">Distrital</span><span class="tipo-desc">Hasta S/5M presup.</span>
-        </div>
-        <div class="tipo-btn${CFG.muni_tipo==='provincial'?' sel':''}" onclick="selTipo('provincial',this)">
-          <span class="tipo-ico">🏙</span><span class="tipo-lbl">Provincial</span><span class="tipo-desc">S/5M – S/50M presup.</span>
-        </div>
-        <div class="tipo-btn${CFG.muni_tipo==='metropolitana'?' sel':''}" onclick="selTipo('metropolitana',this)">
-          <span class="tipo-ico">🌆</span><span class="tipo-lbl">Metropolitana</span><span class="tipo-desc">+S/50M presup.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="nav-row">
-    <button class="btn-next" onclick="siguiente()">Siguiente → Autoridades</button>
-  </div>`;
+    </div>`;
+  c.appendChild(sec3);
 }
 
-window.selTipo = function(tipo, el) {
-  CFG.muni_tipo = tipo;
-  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel');
-};
-
-/* ── PASO 2: Autoridades principales ── */
-function renderPaso2(panel) {
-  const tipoCargo = {distrital:'Alcalde Distrital', provincial:'Alcalde Provincial', metropolitana:'Alcalde Metropolitano'};
-  CFG.alcalde_cargo = tipoCargo[CFG.muni_tipo] || 'Alcalde';
-  panel.innerHTML = `
-  <div class="section-card">
-    <div class="section-hd">
-      <div class="section-ico" style="background:#B02020">👤</div>
-      <div><div class="section-ttl">Alcalde</div><div class="section-sub">${CFG.alcalde_cargo}</div></div>
-    </div>
-    <div class="field-2">
-      <div class="field">
-        <div class="field-lbl">Nombres y apellidos <span class="field-req">*</span></div>
-        <input class="field-inp" id="alcalde_nombre" placeholder="Ej: Roberto Sánchez Quiroz" value="${CFG.alcalde_nombre}">
+/* ══ V2: GERENCIAS ═══════════════════════════════════ */
+function vGerencias(c) {
+  const gers = KausayDB.getGerencias();
+  const sec  = mk('div','cfg-section');
+  const tbody = gers.map((g,i) => `
+    <div class="ger-cfg-card" style="animation:fadeUp .3s ${i*.04}s ease both;opacity:0">
+      <span class="ger-cfg-dot" style="background:${g.color}"></span>
+      <div class="ger-cfg-body">
+        <div class="ger-cfg-nombre">${g.nombre}</div>
+        <div class="ger-cfg-cod">Código: ${g.cod} · ${g.jefe}</div>
       </div>
-      <div class="field">
-        <div class="field-lbl">Cargo</div>
-        <input class="field-inp" id="alcalde_cargo" value="${CFG.alcalde_cargo}" placeholder="${CFG.alcalde_cargo}">
-      </div>
-    </div>
-  </div>
-
-  <div class="section-card">
-    <div class="section-hd">
-      <div class="section-ico" style="background:#C8880A">📋</div>
-      <div><div class="section-ttl">Secretaria del Despacho</div><div class="section-sub">Gestiona agenda, firma y compromisos del alcalde</div></div>
-    </div>
-    <div class="field">
-      <div class="field-lbl">Nombres y apellidos <span class="field-req">*</span></div>
-      <input class="field-inp" id="secretaria_nombre" placeholder="Ej: Carmen Flores Ríos" value="${CFG.secretaria_nombre}">
-    </div>
-  </div>
-
-  <div class="section-card">
-    <div class="section-hd">
-      <div class="section-ico" style="background:#185FA5">🏛</div>
-      <div><div class="section-ttl">Gerente Municipal</div><div class="section-sub">Coordinación general de todas las gerencias</div></div>
-    </div>
-    <div class="field-2">
-      <div class="field">
-        <div class="field-lbl">Nombres y apellidos <span class="field-req">*</span></div>
-        <input class="field-inp" id="gm_nombre" placeholder="Ej: Carlos Vásquez Díaz" value="${CFG.gm_nombre}">
-      </div>
-      <div class="field">
-        <div class="field-lbl">Título profesional</div>
-        <input class="field-inp" id="gm_cargo" placeholder="Ej: Mg., Ing., Lic., Abg." value="${CFG.gm_cargo}">
-        <div class="field-hint">Se mostrará antes del nombre: "Mg. Carlos Vásquez"</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="nav-row">
-    <button class="btn-back" onclick="anterior()">← Atrás</button>
-    <button class="btn-next" onclick="siguiente()">Siguiente → Gerencias</button>
-  </div>`;
-}
-
-/* ── PASO 3: Gerentes sectoriales ── */
-function renderPaso3(panel) {
-  let gerHtml = CFG.gerencias.map((g, i) => `
-    <div class="ger-row">
-      <div class="ger-hd">
-        <span class="ger-dot" style="background:${g.color}"></span>
-        <span class="ger-nombre-fijo">${g.nombre}</span>
-      </div>
-      <div class="ger-fields">
-        <div class="field" style="margin-bottom:0">
-          <div class="field-lbl">Nombre del gerente</div>
-          <input class="field-inp" id="ger_jefe_${i}" placeholder="Ej: Ing. Ana Quispe H." value="${g.jefe}"
-            style="border-color:${g.jefe?'var(--verde)':'var(--borde)'}">
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <div class="field-lbl">Nombre del área (opcional)</div>
-          <input class="field-inp" id="ger_nombre_${i}" placeholder="${g.nombre}" value="${g.nombre}">
-        </div>
+      <div class="ger-cfg-right">
+        <span class="ger-cfg-badge ${g.activa?'ger-cfg-badge--ok':'ger-cfg-badge--off'}">${g.activa?'Activa':'Inactiva'}</span>
+        <button class="kk-btn kk-btn--ghost" style="font-size:10px;padding:4px 10px" onclick="abrirEditarGer('${g.cod}')">Editar</button>
       </div>
     </div>`).join('');
-
-  panel.innerHTML = `
-  <div class="section-card">
-    <div class="section-hd">
-      <div class="section-ico" style="background:#0F0F12">⚙️</div>
-      <div><div class="section-ttl">Gerencias sectoriales</div><div class="section-sub">Puedes dejar en blanco las áreas que no existen en tu municipalidad</div></div>
+  sec.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">🏢</span>
+      <div><div class="cfg-section__ttl">Gerencias registradas (${gers.length})</div>
+        <div class="cfg-section__sub">Edita nombre, jefe, color y estado activo</div></div>
     </div>
-    ${gerHtml}
-  </div>
-  <div class="nav-row">
-    <button class="btn-back" onclick="anterior()">← Atrás</button>
-    <button class="btn-next" onclick="siguiente()">Siguiente → Confirmar</button>
-  </div>`;
+    <div class="cfg-section__body">${tbody}</div>`;
+  c.appendChild(sec);
+
+  // Info de integridad
+  const info=mk('div','');
+  info.style.cssText='background:var(--c-info-bg);border:1px solid var(--c-info-brd);border-radius:var(--r-md);padding:10px 12px;font-size:11px;color:var(--c-gris2);line-height:1.5';
+  info.innerHTML=`<strong>Nota de integridad:</strong> Los códigos de gerencia (INFRA, RENTAS, etc.) no se pueden modificar desde este panel porque son las llaves que usan los dashboards para filtrar obras, compromisos e instrucciones. Para agregar una nueva gerencia o cambiar un código contacta a soporte técnico.`;
+  c.appendChild(info);
 }
 
-/* ── PASO 4: Confirmar ── */
-function renderPaso4(panel) {
-  const gerActivas = CFG.gerencias.filter(g => g.jefe.trim());
-  panel.innerHTML = `
-  <div class="preview-card">
-    <div class="preview-hd">Municipalidad</div>
-    <div class="preview-row"><span class="preview-key">Nombre</span><span class="preview-val">${CFG.muni_nombre}</span></div>
-    <div class="preview-row"><span class="preview-key">Tipo</span><span class="preview-val">${CFG.muni_tipo}</span></div>
-    <div class="preview-row"><span class="preview-key">Departamento</span><span class="preview-val">${CFG.muni_departamento}</span></div>
-    ${CFG.muni_ubigeo?`<div class="preview-row"><span class="preview-key">Ubigeo</span><span class="preview-val">${CFG.muni_ubigeo}</span></div>`:''}
-  </div>
+/* ══ V3: USUARIOS BASE ═══════════════════════════════ */
+function vUsuarios(c) {
+  const sec=mk('div','cfg-section');
+  const tbody = gerUsers.map((u,i)=>`
+    <div class="usr-cfg-card" style="animation:fadeUp .3s ${i*.04}s ease both;opacity:0">
+      <div class="usr-av" style="background:${ROL_COLORS[u.rol]||'#4A5060'}">${u.nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase()}</div>
+      <div class="usr-body">
+        <div class="usr-nombre">${u.nombre}</div>
+        <div class="usr-email">${u.email}${u.gerencia_cod?' · '+u.gerencia_cod:''}</div>
+      </div>
+      <div class="usr-right">
+        <span class="kk-chip ${u.activo?'kk-chip--ok':'kk-chip--neutral'}">${u.rol.replace('_',' ')}</span>
+        <button class="kk-btn kk-btn--ghost" style="font-size:10px;padding:4px 10px" onclick="abrirEditarUsr(${i})">Editar</button>
+      </div>
+    </div>`).join('');
+  sec.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">👥</span>
+      <div><div class="cfg-section__ttl">Usuarios base del sistema (${gerUsers.length})</div>
+        <div class="cfg-section__sub">Nombres, correos y roles institucionales</div></div>
+    </div>
+    <div class="cfg-section__body">${tbody}</div>`;
+  c.appendChild(sec);
 
-  <div class="preview-card">
-    <div class="preview-hd">Autoridades</div>
-    <div class="preview-row"><span class="preview-key">${CFG.alcalde_cargo}</span><span class="preview-val">${CFG.alcalde_nombre}</span></div>
-    <div class="preview-row"><span class="preview-key">Secretaria del Despacho</span><span class="preview-val">${CFG.secretaria_nombre}</span></div>
-    <div class="preview-row"><span class="preview-key">Gerente Municipal</span><span class="preview-val">${CFG.gm_nombre}</span></div>
-  </div>
-
-  <div class="preview-card">
-    <div class="preview-hd">Gerencias configuradas (${gerActivas.length} de ${CFG.gerencias.length})</div>
-    ${CFG.gerencias.map(g=>`
-      <div class="preview-row">
-        <span class="preview-key" style="display:flex;align-items:center;gap:6px">
-          <span style="width:7px;height:7px;border-radius:50%;background:${g.color};flex-shrink:0;display:inline-block"></span>
-          ${g.nombre}
-        </span>
-        <span class="preview-val" style="color:${g.jefe?'var(--txt)':'var(--txt3)'}">${g.jefe||'—'}</span>
-      </div>`).join('')}
-  </div>
-
-  <div class="nav-row">
-    <button class="btn-back" onclick="anterior()">← Atrás</button>
-    <button class="btn-next" onclick="siguiente()">✓ Guardar configuración</button>
-  </div>`;
+  const banner=mk('div','security-banner');
+  banner.innerHTML=`<span class="security-banner__ico">🔐</span>
+    <span><strong>Contraseñas gestionadas en Supabase Auth.</strong> Este panel configura los datos de usuario (nombre, correo, rol, gerencia). Las contraseñas y la autenticación se administran en el panel de Supabase cuando <code>USE_SUPABASE=true</code>.</span>`;
+  c.appendChild(banner);
 }
 
-/* ══ VALIDACIÓN Y GUARDADO ═══════════════════════════ */
-function validarPaso() {
-  if(paso === 1) {
-    if(!document.getElementById('muni_nombre')?.value.trim()) {
-      alert('El nombre de la municipalidad es obligatorio.'); return false;
-    }
-    if(!document.getElementById('muni_departamento')?.value.trim()) {
-      alert('El departamento es obligatorio.'); return false;
-    }
-  }
-  if(paso === 2) {
-    if(!document.getElementById('alcalde_nombre')?.value.trim()) {
-      alert('El nombre del alcalde es obligatorio.'); return false;
-    }
-    if(!document.getElementById('secretaria_nombre')?.value.trim()) {
-      alert('El nombre de la secretaria es obligatorio.'); return false;
-    }
-    if(!document.getElementById('gm_nombre')?.value.trim()) {
-      alert('El nombre del Gerente Municipal es obligatorio.'); return false;
-    }
-  }
-  return true;
+/* ══ V4: VISTA PREVIA ════════════════════════════════ */
+function vPreview(c) {
+  const impacto=mk('div','cfg-section');
+  impacto.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">👁</span>
+      <div><div class="cfg-section__ttl">Vista previa del branding institucional</div>
+        <div class="cfg-section__sub">Así se verá el sistema con la configuración actual</div></div>
+    </div>
+    <div class="cfg-section__body" id="preview-body"></div>`;
+  c.appendChild(impacto);
+  renderPreviewDetallada(document.getElementById('preview-body'));
+
+  const impactoList=mk('div','cfg-section');
+  const gers=KausayDB.getGerencias();
+  impactoList.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">📡</span>
+      <div><div class="cfg-section__ttl">Impacto de los cambios</div>
+        <div class="cfg-section__sub">Qué se actualiza al guardar</div></div>
+    </div>
+    <div class="cfg-section__body">
+      ${[
+        ['index.html','Header institucional, nombre, escudo, color primario, semáforo de gerencias'],
+        ['alcalde.html','Nombre del alcalde, escudo en sidebar, color de acento'],
+        ['secretaria.html','Nombre de la secretaria, escudo, color del rol'],
+        ['gm.html','Nombre del GM, escudo, color del rol'],
+        ['gerente.html','Jefe de gerencia por gerencia_cod, color del área'],
+        ['login.html','Nombre y tipo de municipalidad, escudo'],
+      ].map(([file,desc])=>`
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--c-borde)">
+          <code style="font-size:10px;color:var(--c-info);background:var(--c-info-bg);padding:2px 6px;border-radius:5px;flex-shrink:0">${file}</code>
+          <span style="font-size:11px;color:var(--c-gris3)">${desc}</span>
+        </div>`).join('')}
+      <div style="font-size:11px;color:var(--c-gris3);padding-top:8px">Los cambios se reflejan al recargar cada dashboard. Con Supabase Realtime (Etapa 4), la propagación será instantánea.</div>
+    </div>`;
+  c.appendChild(impactoList);
 }
 
-function guardarPaso() {
-  if(paso === 1) {
-    CFG.muni_nombre       = document.getElementById('muni_nombre')?.value.trim() || CFG.muni_nombre;
-    CFG.muni_ubigeo       = document.getElementById('muni_ubigeo')?.value.trim() || '';
-    CFG.muni_departamento = document.getElementById('muni_departamento')?.value.trim() || '';
-    CFG.muni_provincia    = document.getElementById('muni_provincia')?.value.trim() || '';
-    CFG.muni_distrito     = document.getElementById('muni_distrito')?.value.trim() || '';
-  }
-  if(paso === 2) {
-    CFG.alcalde_nombre    = document.getElementById('alcalde_nombre')?.value.trim() || '';
-    CFG.alcalde_cargo     = document.getElementById('alcalde_cargo')?.value.trim() || CFG.alcalde_cargo;
-    CFG.secretaria_nombre = document.getElementById('secretaria_nombre')?.value.trim() || '';
-    CFG.gm_nombre         = document.getElementById('gm_nombre')?.value.trim() || '';
-    CFG.gm_cargo          = document.getElementById('gm_cargo')?.value.trim() || '';
-  }
-  if(paso === 3) {
-    CFG.gerencias.forEach((g, i) => {
-      g.jefe   = document.getElementById(`ger_jefe_${i}`)?.value.trim() || '';
-      g.nombre = document.getElementById(`ger_nombre_${i}`)?.value.trim() || g.nombre;
-    });
-  }
+/* ══ V5: SEGURIDAD Y AUDITORÍA ═══════════════════════ */
+function vSeguridad(c) {
+  const sess = KausayAuth.getSession();
+
+  // Info de sesión activa
+  const secSess=mk('div','cfg-section');
+  secSess.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">🔐</span>
+      <div><div class="cfg-section__ttl">Sesión activa</div></div>
+    </div>
+    <div class="cfg-section__body">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="kk-sb__av" style="background:${ROL_COLORS[sess?.rol]||'#4A5060'};flex-shrink:0">${(sess?.nombre||'?').split(' ').slice(0,2).map(p=>p[0]).join('')}</div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--c-negro)">${sess?.nombre||'Desconocido'}</div>
+          <div style="font-size:11px;color:var(--c-gris3)">${sess?.email||''} · ${sess?.rol||''}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px">
+        <div style="background:var(--c-bg);border-radius:8px;padding:8px 10px">
+          <div style="font-size:9px;color:var(--c-gris3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Dispositivo</div>
+          <div style="font-size:11px;font-weight:600;color:var(--c-gris2)">${sess?.device?.type||'—'} · ${sess?.device?.hash||'—'}</div>
+        </div>
+        <div style="background:var(--c-bg);border-radius:8px;padding:8px 10px">
+          <div style="font-size:9px;color:var(--c-gris3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Expira</div>
+          <div style="font-size:11px;font-weight:600;color:var(--c-gris2)">${sess?.expires_at?new Date(sess.expires_at).toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'}):'—'}</div>
+        </div>
+      </div>
+      <button class="kk-btn kk-btn--danger kk-btn--full" style="font-size:12px" onclick="revocarSesion()">🔴 Revocar sesión y cerrar</button>
+    </div>`;
+  c.appendChild(secSess);
+
+  // Log de auditoría de acceso
+  const authLog = KausayAuth.getAuditLog().slice(-10).reverse();
+  const cfgLog  = KausayDB.exportarAuditLog().filter(e=>e.entidad_tipo==='configuracion').slice(-8).reverse();
+  const allLog  = [...authLog, ...cfgLog].sort((a,b)=>new Date(b.timestamp||b.created_at)-new Date(a.timestamp||a.created_at)).slice(0,12);
+
+  const secAudit=mk('div','cfg-section');
+  secAudit.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">📋</span>
+      <div><div class="cfg-section__ttl">Log de auditoría reciente</div>
+        <div class="cfg-section__sub">Últimas ${allLog.length} entradas de acceso y configuración</div></div>
+    </div>
+    <div class="cfg-section__body">
+      ${allLog.length ? allLog.map(e=>`
+        <div class="audit-item">
+          <span class="audit-item__time">${formatAuditTs(e.timestamp||e.created_at)}</span>
+          <span class="audit-item__txt"><strong>${e.accion||'?'}</strong> · ${e.email||e.usuario_rol||'sistema'}${e.motivo?' · '+e.motivo:''}</span>
+        </div>`).join('')
+      : '<div style="font-size:12px;color:var(--c-gris3);text-align:center;padding:12px">Sin eventos recientes</div>'}
+    </div>`;
+  c.appendChild(secAudit);
 }
 
-function guardarTodo() {
-  // Guardar en localStorage (sin Supabase conectado)
-  localStorage.setItem('kausay_config', JSON.stringify(CFG));
-  // También guardar en sessionStorage para que los dashboards lo lean inmediatamente
-  sessionStorage.setItem('kausay_config', JSON.stringify(CFG));
+/* ══ V6: SUPABASE ════════════════════════════════════ */
+function vSupabase(c) {
+  const sec=mk('div','cfg-section');
+  sec.innerHTML=`
+    <div class="cfg-section__hd">
+      <span class="cfg-section__ico">🗄</span>
+      <div><div class="cfg-section__ttl">Conexión con Supabase</div>
+        <div class="cfg-section__sub">Configuración de backend para Etapa 4</div></div>
+    </div>
+    <div class="cfg-section__body">
+      <div class="security-banner">
+        <span class="security-banner__ico">⚙️</span>
+        <span>Actualmente en modo local (LocalAdapter). Los datos se guardan en localStorage. Para migrar a Supabase cambia <code>USE_SUPABASE = true</code> en <code>shared.js</code> y <code>auth.js</code>.</span>
+      </div>
+      <div class="kk-form-row"><label class="kk-form-lbl">Supabase URL</label>
+        <input class="kk-form-inp" id="sb-url" value="TU_SUPABASE_URL" placeholder="https://xxx.supabase.co"
+          oninput="markDirty()"></div>
+      <div class="kk-form-row"><label class="kk-form-lbl">Supabase Anon Key</label>
+        <input class="kk-form-inp" id="sb-key" type="password" value="" placeholder="eyJhbGci..."
+          oninput="markDirty()"></div>
+      <div style="background:var(--c-critico-bg);border:1px solid var(--c-critico-brd);border-radius:var(--r-md);padding:10px 12px;font-size:11px;color:var(--c-gris2);line-height:1.6">
+        <strong>🔴 Lista de tareas para activar Supabase:</strong><br>
+        1. Ejecutar <code>supabase-setup.sql</code> en el proyecto de Supabase<br>
+        2. Configurar el hook JWT para inyectar <code>rol</code>, <code>gerencia_id</code>, <code>municipalidad_id</code><br>
+        3. Crear usuarios en Supabase Auth (panel de Supabase)<br>
+        4. Habilitar MFA TOTP para roles alcalde y gerente_municipal<br>
+        5. Cambiar <code>USE_SUPABASE = true</code> en <code>shared.js</code> y <code>auth.js</code><br>
+        6. Verificar RLS en todas las tablas con <code>get_municipalidad_id()</code>
+      </div>
+    </div>`;
+  c.appendChild(sec);
 }
 
-function mostrarExito() {
-  document.getElementById('panel').style.display = 'none';
-  document.getElementById('steps').style.display = 'none';
-  const s = document.getElementById('success');
-  s.style.display = 'block';
+/* ══ PREVIEW ═════════════════════════════════════════ */
+function buildPreviewCard() {
+  const wrap=mk('div','');
+  const gers=KausayDB.getGerencias();
+  wrap.innerHTML=`
+    <div class="preview-card" id="preview-card-live">
+      <img class="preview-escudo" id="preview-escudo-live" src="${formState.escudo_url}" alt="" onerror="this.style.display='none'">
+      <div class="preview-body">
+        <div class="preview-nombre" id="preview-nombre-live">${esc(formState.nombre||'Municipalidad')}</div>
+        <div class="preview-tipo">${esc(formState.tipo||'provincial')}</div>
+        <div class="preview-dash">
+          ${gers.map(g=>`<div class="preview-dot" style="background:${g.color}" title="${g.nombre}"></div>`).join('')}
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="width:30px;height:30px;border-radius:8px;border:3px solid rgba(255,255,255,.2);background:${formState.color_primario}" id="preview-color-live"></div>
+        <div style="font-size:9px;color:rgba(255,255,255,.35);margin-top:3px">Primario</div>
+      </div>
+    </div>`;
+  return wrap;
+}
 
-  const grid = document.getElementById('dash-grid');
-  const ini = nombre => nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
-  [
-    {lbl:'Alcalde',   cargo:CFG.alcalde_cargo,     url:'alcalde.html',    color:'#B02020', ini:ini(CFG.alcalde_nombre)},
-    {lbl:'Secretaria',cargo:'Despacho',             url:'secretaria.html', color:'#C8880A', ini:ini(CFG.secretaria_nombre)},
-    {lbl:'Gte. Municipal',cargo:'Panel completo',   url:'gm.html',         color:'#185FA5', ini:ini(CFG.gm_nombre)},
-    {lbl:'Gerencias', cargo:'Panel sectorial',      url:'gerente.html',    color:'#0F6E56', ini:'G'},
-  ].forEach(d => {
-    const btn = document.createElement('button');
-    btn.className = 'dash-btn';
-    btn.style.background = d.color;
-    btn.innerHTML = `<span class="dash-ico">${d.ini}</span><span class="dash-lbl">${d.lbl}</span><span class="dash-cargo">${d.cargo}</span>`;
-    btn.onclick = () => window.location.href = d.url;
-    grid.appendChild(btn);
+function renderPreviewDetallada(container) {
+  const gers=KausayDB.getGerencias();
+  container.innerHTML=`
+    ${buildPreviewCard().innerHTML}
+    <div style="margin-top:4px">
+      <div style="font-size:10px;font-weight:700;color:var(--c-gris3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Dashboards y sus acentos</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        ${[
+          {nom:'Alcalde',     col:formState.color_primario, ico:'👤'},
+          {nom:'Secretaria',  col:'#9E6A06',               ico:'📋'},
+          {nom:'Gte. Municipal',col:'#185FA5',              ico:'🏛'},
+          ...gers.slice(0,3).map(g=>({nom:g.nombre.split(' ')[0], col:g.color, ico:'🏢'})),
+        ].map(d=>`
+          <div style="background:${d.col}18;border:1px solid ${d.col}30;border-left:3px solid ${d.col};border-radius:8px;padding:7px 10px;display:flex;gap:6px;align-items:center">
+            <span>${d.ico}</span>
+            <div>
+              <div style="font-size:11px;font-weight:600;color:var(--c-negro)">${d.nom}</div>
+              <div style="font-size:9px;color:${d.col};font-weight:700">${d.col}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function actualizarPreview() {
+  const nombre  = document.getElementById('preview-nombre-live');
+  const color   = document.getElementById('preview-color-live');
+  if (nombre) nombre.textContent = formState.nombre || 'Municipalidad';
+  if (color)  color.style.background = formState.color_primario;
+}
+
+/* ══ ACCIONES GERENCIAS ══════════════════════════════ */
+function abrirEditarGer(cod) {
+  const g = KausayDB.getGerencia(cod);
+  if (!g) return;
+  document.getElementById('modal-ger-ttl').textContent = `Editar: ${g.nombre}`;
+  document.getElementById('ger-edit-cod').value    = cod;
+  document.getElementById('ger-edit-nombre').value = g.nombre;
+  document.getElementById('ger-edit-jefe').value   = g.jefe;
+  document.getElementById('ger-edit-activa').checked = g.activa !== false;
+
+  // Color options
+  const opts=document.getElementById('ger-color-opts');
+  opts.innerHTML=GER_COLORS.map(col=>`
+    <div class="ger-color-opt${g.color===col?' sel':''}" style="background:${col}"
+      onclick="selGerColor('${col}',this)"></div>`).join('');
+  abrirModal('modal-ger');
+}
+
+function selGerColor(col, el) {
+  document.querySelectorAll('#ger-color-opts .ger-color-opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function guardarGerencia() {
+  const cod    = document.getElementById('ger-edit-cod').value;
+  const nombre = document.getElementById('ger-edit-nombre').value.trim();
+  const jefe   = document.getElementById('ger-edit-jefe').value.trim();
+  const activa = document.getElementById('ger-edit-activa').checked;
+  const selCol = document.querySelector('#ger-color-opts .ger-color-opt.sel');
+  const color  = selCol ? selCol.style.background : null;
+  if (!nombre) { toast('⚠ El nombre es requerido'); return; }
+  KausayDB.updateGerencia(cod, { nombre, jefe, activa, ...(color?{color}:{}) });
+  cerrarModal('modal-ger');
+  toast(`✓ Gerencia ${cod} actualizada`);
+  markDirty();
+  render();
+}
+
+/* ══ ACCIONES USUARIOS ═══════════════════════════════ */
+function abrirEditarUsr(idx) {
+  const u = gerUsers[idx];
+  document.getElementById('modal-usr-ttl').textContent = `Editar: ${u.nombre.split(' ')[0]}`;
+  document.getElementById('usr-edit-idx').value       = idx;
+  document.getElementById('usr-edit-nombre').value    = u.nombre;
+  document.getElementById('usr-edit-email').value     = u.email;
+  document.getElementById('usr-edit-rol').value       = u.rol;
+  document.getElementById('usr-edit-activo').checked  = u.activo !== false;
+
+  // Selector de gerencia
+  const gerSel=document.getElementById('usr-edit-ger');
+  gerSel.innerHTML='<option value="">— No aplica —</option>'+KausayDB.getGerencias().map(g=>`<option value="${g.cod}" ${u.gerencia_cod===g.cod?'selected':''}>${g.nombre}</option>`).join('');
+  document.getElementById('usr-ger-row').style.display = u.rol==='gerente_sectorial'?'':'none';
+
+  document.getElementById('usr-edit-rol').onchange = function(){
+    document.getElementById('usr-ger-row').style.display = this.value==='gerente_sectorial'?'':'none';
+  };
+  abrirModal('modal-usr');
+}
+
+function guardarUsuario() {
+  const idx   = parseInt(document.getElementById('usr-edit-idx').value);
+  const nombre= document.getElementById('usr-edit-nombre').value.trim();
+  const email = document.getElementById('usr-edit-email').value.trim();
+  const rol   = document.getElementById('usr-edit-rol').value;
+  const ger   = document.getElementById('usr-edit-ger').value;
+  const activo= document.getElementById('usr-edit-activo').checked;
+  if (!nombre||!email){toast('⚠ Nombre y correo son requeridos');return;}
+  gerUsers[idx] = { ...gerUsers[idx], nombre, email, rol, gerencia_cod:ger||null, activo };
+  // Propagar nombre de autoridad a shared.js si corresponde
+  if (rol==='alcalde') KausayDB.setMuni({ alcalde:nombre });
+  if (rol==='secretaria') KausayDB.setMuni({ secretaria:nombre });
+  if (rol==='gerente_municipal') KausayDB.setMuni({ gm:nombre });
+  cerrarModal('modal-usr');
+  toast(`✓ Usuario ${nombre.split(' ')[0]} actualizado`);
+  markDirty();
+  render();
+}
+
+/* ══ GUARDAR TODO (con reauth) ═══════════════════════ */
+async function guardarTodo() {
+  const ok = await KausayAuth.reauth('Cambiar configuración institucional');
+  if (!ok) { toast('⚠ Verificación cancelada — no se guardaron los cambios'); return; }
+
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+
+  // Propagar identidad a shared.js via KausayDB.setMuni()
+  KausayDB.setMuni({
+    nombre:          formState.nombre,
+    nombre_corto:    formState.nombre_corto,
+    tipo:            formState.tipo,
+    ubigeo:          formState.ubigeo,
+    departamento:    formState.departamento,
+    provincia:       formState.provincia,
+    distrito:        formState.distrito,
+    escudo_url:      formState.escudo_url,
+    color_primario:  formState.color_primario,
+    color_secundario:formState.color_secundario,
+    alcalde:         formState.alcalde,
+    secretaria:      formState.secretaria,
+    gm:              formState.gm,
   });
+
+  // Telemetría
+  KausayDB.Telemetry.track('config_guardada', {
+    campos: Object.keys(formState).length,
+    tiene_color_custom: formState.color_primario !== '#8B1A1A',
+  });
+
+  // Emitir evento para otros tabs
+  KausayDB.EventBus.emit('muni:updated', KausayDB.getMuni());
+
+  await new Promise(r=>setTimeout(r,500));
+  btn.textContent='Guardar'; markClean();
+  toast('✓ Configuración institucional guardada. Los dashboards reflejarán los cambios al recargar.');
 }
 
-/* ══ CARGAR CONFIG GUARDADA ══════════════════════════ */
+function descartarCambios() {
+  if (!dirty) return;
+  initFormState();
+  markClean();
+  render();
+  toast('↩ Cambios descartados');
+}
+
+async function revocarSesion() {
+  const ok = await KausayAuth.reauth('Revocar sesión activa');
+  if (!ok) return;
+  await KausayAuth.revokeSession();
+  window.location.href = 'login.html';
+}
+
+/* ══ HELPERS ═════════════════════════════════════════ */
+function abrirModal(id){ document.getElementById(id)?.classList.add('show'); }
+function cerrarModal(id){ document.getElementById(id)?.classList.remove('show'); }
+function mk(tag,cls){ const el=document.createElement(tag); if(cls) el.className=cls; return el; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function toast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+function formatAuditTs(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+}
+
+/* ══ OFFLINE ═════════════════════════════════════════ */
+function updateOnlineStatus(){
+  const bar=document.getElementById('offline-bar');
+  if(bar) bar.classList.toggle('show',!navigator.onLine);
+}
+window.addEventListener('online', ()=>{updateOnlineStatus();toast('✓ Conexión restaurada');});
+window.addEventListener('offline', updateOnlineStatus);
+function logout(){ KausayAuth.logout(); }
+
+/* ══ INIT ════════════════════════════════════════════ */
 window.addEventListener('load', () => {
-  const saved = localStorage.getItem('kausay_config');
-  if(saved) {
-    try {
-      const s = JSON.parse(saved);
-      Object.assign(CFG, s);
-    } catch(e) {}
-  }
-  renderPaso();
+  KausayAuth.requireAuth(['alcalde','soporte_kausay']);
+  const sess = KausayAuth.getSession();
+
+  KausayBranding.apply({ rol: _sess?.rol || 'alcalde' });
+  const muni   = KausayDB.getMuni();
+  const nombre = sess?.nombre || muni.alcalde || 'Administrador';
+  const ini    = nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+
+  document.getElementById('sb-muni').textContent = muni.nombre||'Municipalidad';
+  document.getElementById('sb-av').textContent   = ini;
+  document.getElementById('sb-name').textContent = nombre;
+  document.getElementById('sb-rol').textContent  = sess?.rol==='soporte_kausay'?'Soporte técnico':'Alcalde — Configuración';
+
+  // Cargar usuarios base de auth.js (en producción vendrán de Supabase)
+  gerUsers = [
+    { nombre:muni.alcalde||'Roberto Sánchez Quiroz',      email:'alcalde@cajamarca.gob.pe',     rol:'alcalde',          gerencia_cod:null,   activo:true },
+    { nombre:muni.secretaria||'Carmen Flores Ríos',        email:'secretaria@cajamarca.gob.pe',  rol:'secretaria',       gerencia_cod:null,   activo:true },
+    { nombre:muni.gm||'Mg. Carlos Vásquez Díaz',           email:'gm@cajamarca.gob.pe',          rol:'gerente_municipal',gerencia_cod:null,   activo:true },
+    ...KausayDB.getGerencias().map(g=>({
+      nombre:g.jefe, email:`${g.cod.toLowerCase()}@cajamarca.gob.pe`,
+      rol:'gerente_sectorial', gerencia_cod:g.cod, activo:g.activa!==false,
+    })),
+    { nombre:'CPC. Luis Mendoza V.',                       email:'oci@cajamarca.gob.pe',         rol:'oci_lectura',      gerencia_cod:null,   activo:true },
+  ];
+
+  initFormState();
+  updateOnlineStatus();
+
+  // EventBus
+  KausayDB.EventBus.on('muni:updated', ()=>{ initFormState(); render(); });
+  KausayDB.EventBus.on('wq:conflict',  ()=>render());
+
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('app').style.display='flex';
+  render();
+  setTimeout(()=>document.getElementById('loader').remove(),500);
 });
 </script>
 </body>

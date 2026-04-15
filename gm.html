@@ -3,531 +3,934 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#185FA5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest-gm.json">
 <link rel="apple-touch-icon" href="icons/icon-gm-192.png">
-<meta name="theme-color" content="#185FA5">
-<title>Kausay — Gerente Municipal</title>
+<title>Coordinación · Gerente Municipal</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui-kit.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--ac:#185FA5;--acBg:#E6F1FB;--acL:#70A8D8;--rojo:#B02020;--rojoBg:#FDEAEA;--oro:#C8880A;--oroBg:#FFF4DC;--verde:#1A7A45;--verdeBg:#E8F5EE;--gris:#F0F2F5;--card:#fff;--txt:#1A1D23;--txt2:#4A5060;--txt3:#8A90A0;--borde:#E2E6ED;--sb:#0F0F12}
-html,body{height:100%;font-family:'Barlow',sans-serif;color:var(--txt);background:var(--gris)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.layout{display:flex;height:100vh;overflow:hidden}
-/* ── SB ── */
-.sb{width:220px;background:var(--sb);display:flex;flex-direction:column;flex-shrink:0}
-.sb-logo{padding:15px 16px 11px;border-bottom:1px solid rgba(255,255,255,.07)}
-.sb-brand{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#fff;line-height:1}
-.sb-brand em{color:var(--acL);font-style:normal}
-.sb-tag{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px}
-.sb-ger{margin:8px 10px 2px;border-radius:8px;padding:9px 11px;background:rgba(255,255,255,.07)}
-.sb-gn{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
-.sb-gm{font-size:9px;color:rgba(255,255,255,.38);margin-top:2px}
-.sb-muni{padding:4px 12px 5px;font-size:10px;color:rgba(255,255,255,.26)}
-.sb-nav{flex:1;overflow-y:auto;padding:4px 0}
-.sb-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.22);padding:10px 16px 4px}
-.sb-it{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;color:rgba(255,255,255,.46);font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all .12s;user-select:none}
-.sb-it:hover{color:#fff;background:rgba(255,255,255,.05)}
-.sb-it.on{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--ac)}
-.sb-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
-.sb-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:var(--rojo);color:#fff}
-.sb-badge.oro{background:var(--oro);color:#1A1D23}
-.sb-ft{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
-.sb-av{width:30px;height:30px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.sb-un{font-size:11px;color:#fff;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-ur{font-size:9px;color:rgba(255,255,255,.33);margin-top:1px}
-.logout{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.38);font-size:9px;padding:4px 8px;border-radius:6px;cursor:pointer;font-family:'Barlow',sans-serif}
-.logout:hover{background:rgba(255,255,255,.15);color:#fff}
-/* ── MAIN ── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.tb{height:52px;background:var(--card);border-bottom:1px solid var(--borde);display:flex;align-items:center;gap:10px;padding:0 18px;flex-shrink:0}
-.tb-ttl{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;flex:1;color:var(--txt)}
-.tb-date{font-size:11px;color:var(--txt3);white-space:nowrap}
-.rt{display:inline-flex;align-items:center;gap:4px;background:var(--verdeBg);color:var(--verde);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
-.rt-dot{width:5px;height:5px;border-radius:50%;background:var(--verde);animation:pulse 1.5s infinite}
-.tb-bell{width:34px;height:34px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;flex-shrink:0}
-.tb-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--rojo);border-radius:50%;border:1.5px solid #fff}
-.content{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
-/* ── PILLS ── */
-.pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;display:inline-block}
-.p-r{background:var(--rojoBg);color:var(--rojo)}.p-a{background:var(--oroBg);color:var(--oro)}.p-g{background:var(--verdeBg);color:var(--verde)}.p-b{background:var(--acBg);color:var(--ac)}.p-x{background:var(--gris);color:var(--txt3);border:1px solid var(--borde)}
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.sec-ttl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt)}
-/* ── ÁREA ROW ── */
-.area{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:background .12s}
-.area:hover{background:var(--gris)}
-.area-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.area-n{font-size:13px;font-weight:600;color:var(--txt)}
-.area-g{font-size:11px;color:var(--txt3);margin-top:2px}
-.area-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
-.area-sv{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;text-align:center;line-height:1;color:var(--txt)}
-.area-sl{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.3px;text-align:center;margin-top:2px}
-.pbar{height:5px;background:var(--borde);border-radius:3px;overflow:hidden;margin-top:3px}
-.pbar-f{height:100%;border-radius:3px}
-/* ── INSTRUC (GM recibe del Alcalde, distribuye a gerentes) ── */
-.ins{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;border-left:4px solid var(--rojo);margin-bottom:8px}
-.ins-hd{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
-.ins-from{font-size:11px;font-weight:600;color:var(--txt3);flex:1}
-.ins-hora{font-size:10px;color:var(--txt3)}
-.ins-body{font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:8px}
-.ins-st{font-size:11px;font-weight:600;padding:4px 9px;border-radius:6px;display:inline-block;margin-bottom:8px}
-.ins-st.ok{background:var(--verdeBg);color:var(--verde)}.ins-st.pend{background:var(--rojoBg);color:var(--rojo)}
-.ins-acts{display:flex;gap:6px;flex-wrap:wrap}
-.ibtn{padding:6px 13px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
-.ibtn-ok{background:var(--verde);color:#fff}
-.ibtn-dist{background:var(--acBg);color:var(--ac);border:1px solid rgba(24,95,165,.2)}
-.ibtn-resp{background:var(--gris);color:var(--txt2);border:1px solid var(--borde)}
-.resp-box{background:var(--gris);border-radius:8px;padding:10px 12px;margin-top:9px;display:none}
-.resp-box.open{display:block}
-.resp-ta{width:100%;border:1px solid var(--borde);border-radius:7px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;resize:none;outline:none;background:#fff;color:var(--txt)}
-.resp-ta:focus{border-color:var(--ac)}
-.resp-row{display:flex;gap:7px;margin-top:7px}
-.resp-send{padding:7px 15px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
-.resp-cancel{padding:7px 10px;background:none;border:1px solid var(--borde);border-radius:7px;font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif;color:var(--txt3)}
-/* ── PLAZO NORMATIVO ── */
-.plazo{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:11px 13px;border-left:4px solid var(--al,var(--rojo));margin-bottom:8px;display:flex;gap:10px}
-.pl-ico{font-size:17px;flex-shrink:0;margin-top:1px}
-.pl-bd{flex:1;min-width:0}
-.pl-ttl{font-size:13px;font-weight:600;color:var(--txt);line-height:1.3}
-.pl-desc{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.5}
-.pl-meta{display:flex;gap:5px;align-items:center;margin-top:5px;flex-wrap:wrap}
-.pl-meta span{font-size:10px;color:var(--txt3)}
-/* ── COORD ── */
-.coord-item{background:var(--card);border:1px solid var(--borde);border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.coord-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
-.coord-ttl{font-size:13px;font-weight:600;color:var(--txt);flex:1;line-height:1.3}
-.coord-areas{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
-.coord-desc{font-size:12px;color:var(--txt2);line-height:1.5;margin-bottom:7px}
-.coord-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.coord-fec{font-size:11px;color:var(--txt3)}
-/* ── INFORME ── */
-.informe-prev{background:#0F0F12;border-radius:12px;padding:15px;color:#fff;position:relative;overflow:hidden}
-.informe-prev::after{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(24,95,165,.25) 0%,transparent 70%);pointer-events:none}
-.inf-hd{display:flex;align-items:center;gap:9px;margin-bottom:11px}
-.inf-ico{width:28px;height:28px;border-radius:7px;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.inf-ttl{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700}
-.inf-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
-.inf-body{font-size:12px;color:rgba(255,255,255,.72);line-height:1.75}
-.inf-hl{background:rgba(24,95,165,.25);color:#70A8D8;padding:0 3px;border-radius:3px;font-weight:600}
-.inf-acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
-.inf-btn{padding:7px 13px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Barlow',sans-serif}
-.inf-p{background:var(--ac);color:#fff}.inf-s{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
-/* ── FORM ── */
-.card{background:var(--card);border:1px solid var(--borde);border-radius:12px;padding:14px 16px}
-.form-row{margin-bottom:10px}
-.form-lbl{display:block;font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.form-inp{width:100%;border:1px solid var(--borde);border-radius:8px;padding:8px 11px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--txt);background:#fff;outline:none}
-.form-inp:focus{border-color:var(--ac)}
-.form-btn{width:100%;padding:10px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
-.form-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.info-box{border-radius:9px;padding:10px 13px;font-size:12px;line-height:1.65}
+/* ── ACENTO ROL: GM (azul) ── */
+:root {
+  --ac:     #185FA5;
+  --ac-bg:  #EEF3FA;
+  --ac-brd: rgba(24, 95, 165, .22);
+}
 
-/* ── BOTÓN VOLVER AL MENÚ (solo mobile) ── */
-.tb-back{display:none;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--borde);background:none;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:var(--txt2);white-space:nowrap;flex-shrink:0}
-.tb-back:active{background:var(--gris)}
-@media(max-width:680px){.tb-back{display:flex}.tb-date{display:none}}
+/* ── RESUMEN EJECUTIVO GM ── */
+.gm-summary {
+  background: var(--c-sb); border-radius: var(--r-lg);
+  padding: 13px var(--sp-md); display: flex; gap: var(--sp-md);
+}
+.gm-summary__left  { flex: 1; min-width: 0; }
+.gm-summary__saludo{ font-size: 10px; color: rgba(255,255,255,.45); font-weight: 500; }
+.gm-summary__nombre{ font-family: var(--f-cond); font-size: 17px; font-weight: 700; color: #fff; line-height: 1.2; }
+.gm-summary__estado{ font-size: 11px; font-weight: 600; margin-top: 4px; }
+.gm-summary__kpis  { display: flex; gap: 10px; flex-shrink: 0; }
+.gm-kpi            { text-align: center; min-width: 42px; }
+.gm-kpi__v         { font-family: var(--f-cond); font-size: 22px; font-weight: 700; line-height: 1; }
+.gm-kpi__l         { font-size: 8px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .3px; line-height: 1.3; margin-top: 2px; }
 
-@media(max-width:680px){.sb{display:none}.form-2{grid-template-columns:1fr}}
+/* ── RANKING GERENCIAS ── */
+.ger-card {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-radius: var(--r-lg); padding: var(--sp-md);
+  border-left: 4px solid var(--gc, var(--c-borde));
+  animation: fadeUp .3s ease both;
+}
+.ger-card__hd {
+  display: flex; align-items: center; gap: var(--sp-sm); margin-bottom: 9px;
+}
+.ger-dot   { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ger-nombre{ font-size: 13px; font-weight: 700; color: var(--c-negro); flex: 1; }
+.ger-jefe  { font-size: 10px; color: var(--c-gris3); }
+.ger-card__kpis{ display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 9px; }
+.ger-kpi   { background: var(--c-bg); border-radius: var(--r-sm); padding: 6px 5px; text-align: center; }
+.ger-kpi__v{ font-family: var(--f-cond); font-size: 16px; font-weight: 700; line-height: 1; }
+.ger-kpi__l{ font-size: 8px; color: var(--c-gris3); text-transform: uppercase; letter-spacing: .3px; margin-top: 2px; line-height: 1.2; }
+.ger-card__acts{ display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ── INSTRUCCIÓN GM ── */
+.instr-gm {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-left: 3px solid var(--ic, var(--c-gris3));
+  border-radius: var(--r-md); padding: 11px var(--sp-md);
+}
+.instr-gm__hd  { display: flex; align-items: center; gap: var(--sp-sm); margin-bottom: 7px; flex-wrap: wrap; }
+.instr-gm__txt { font-size: 12px; color: var(--c-negro); line-height: 1.5; margin-bottom: 7px; }
+.instr-gm__resp{ background: var(--c-ok-bg); border: 1px solid var(--c-ok-brd); border-radius: var(--r-sm); padding: 6px 10px; font-size: 11px; color: var(--c-ok); margin-bottom: 7px; line-height: 1.4; }
+.instr-gm__acts{ display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ── ESCALAMIENTO AL ALCALDE ── */
+.escalar-card {
+  background: var(--c-critico-bg); border: 1px solid var(--c-critico-brd);
+  border-radius: var(--r-lg); padding: var(--sp-md);
+}
+.escalar-card__hd  { display: flex; align-items: center; gap: var(--sp-sm); margin-bottom: var(--sp-sm); }
+.escalar-card__ico { font-size: 22px; flex-shrink: 0; }
+.escalar-card__ttl { font-size: 13px; font-weight: 700; color: var(--c-critico); }
+.escalar-card__desc{ font-size: 11px; color: var(--c-gris2); line-height: 1.4; margin-bottom: 9px; }
+
+/* ── OBRA CRÍTICA GM ── */
+.obra-gm {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-radius: var(--r-md); padding: var(--sp-md);
+  display: flex; gap: var(--sp-sm); align-items: flex-start;
+}
+.obra-gm__left  { flex: 1; min-width: 0; }
+.obra-gm__nombre{ font-size: 13px; font-weight: 600; color: var(--c-negro); line-height: 1.35; margin-bottom: 4px; }
+.obra-gm__meta  { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+.obra-gm__info  { font-size: 10px; color: var(--c-gris3); }
+.obra-gm__right { flex-shrink: 0; text-align: right; }
+.obra-gm__pct   { font-family: var(--f-cond); font-size: 26px; font-weight: 800; line-height: 1; }
+.obra-gm__pct-l { font-size: 9px; color: var(--c-gris3); }
+
+/* ── MODAL ESCALAR / DERIVAR ── */
+.modal-dest { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 11px; }
+.dest-opt { padding: 9px 6px; border: 1.5px solid var(--c-borde); border-radius: var(--r-md); background: var(--c-card); cursor: pointer; text-align: center; font-family: var(--f-sans); transition: var(--transition); }
+.dest-opt:hover { border-color: var(--c-gris3); }
+.dest-opt.sel   { border-color: var(--ac); background: var(--ac-bg); }
+.dest-opt__ico  { font-size: 18px; display: block; margin-bottom: 3px; }
+.dest-opt__lbl  { font-size: 10px; font-weight: 600; color: var(--c-negro); line-height: 1.3; }
+
+/* ── PRESUPUESTO DESVIACIÓN ── */
+.presup-row {
+  background: var(--c-card); border: 1px solid var(--c-borde);
+  border-radius: var(--r-md); padding: 10px var(--sp-md);
+  display: flex; align-items: center; gap: var(--sp-md);
+}
+.presup-row__nombre{ font-size: 12px; font-weight: 600; color: var(--c-negro); flex: 1; min-width: 0; }
+.presup-row__bar   { flex: 2; min-width: 80px; }
+.presup-row__pct   { font-family: var(--f-cond); font-size: 20px; font-weight: 700; min-width: 46px; text-align: right; }
+
+@media(max-width:680px) {
+  .gm-summary__kpis  { display: none; }
+  .ger-card__kpis    { grid-template-columns: repeat(2,1fr); }
+  .modal-dest        { grid-template-columns: repeat(2,1fr); }
+}
 </style>
 </head>
 <body>
-<div id="loading" style="height:100vh;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8A90A0">Cargando...</div>
 
-<div class="layout" id="app" style="display:none">
-  <div class="sb" id="sb"></div>
-  <div class="main">
-    <div class="tb">
-      <div class="tb-ttl" id="tb-ttl"></div>
-      <div class="tb-date" id="tb-date"></div>
-      <div class="rt"><span class="rt-dot"></span>En vivo</div>
-      <button class="tb-bell">🔔<span class="tb-dot" id="tb-dot" style="display:none"></span></button>
+<!-- LOADER -->
+<div class="kk-loader" id="loader">
+  <div class="kk-loader__spin"></div>
+  <div class="kk-loader__txt">Panel de coordinación</div>
+</div>
+
+<!-- MODAL: DERIVAR / ESCALAR -->
+<div class="kk-modal-bg" id="modal-derivar">
+  <div class="kk-modal">
+    <div class="kk-modal__hd">
+      <span class="kk-modal__ttl" id="modal-derivar-ttl">Emitir instrucción</span>
+      <button class="kk-modal__close" onclick="cerrarModal('modal-derivar')">✕</button>
     </div>
-    <div class="content" id="content"></div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Tipo</label>
+      <div class="kk-chips" id="derivar-chips">
+        <button class="kk-chip-btn sel" data-tipo="instruccion">📌 Instrucción</button>
+        <button class="kk-chip-btn" data-tipo="consulta">❓ Consulta</button>
+        <button class="kk-chip-btn" data-tipo="alerta">⚠️ Alerta</button>
+      </div>
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Destinatario</label>
+      <div class="modal-dest" id="derivar-dests"></div>
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Mensaje <span style="color:var(--c-critico)">*</span></label>
+      <textarea class="kk-form-inp kk-form-ta" id="derivar-txt" placeholder="Instrucción clara con acción esperada y plazo..."></textarea>
+      <div class="kk-form-err" id="derivar-err">Campo requerido</div>
+    </div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Prioridad</label>
+      <select class="kk-form-inp kk-form-sel" id="derivar-prio">
+        <option value="urgente">🔴 Urgente</option>
+        <option value="normal" selected>🟡 Normal</option>
+        <option value="baja">🟢 Baja</option>
+      </select>
+    </div>
+    <button class="kk-btn kk-btn--primary" onclick="enviarDerivacion()">Enviar →</button>
   </div>
 </div>
 
-<script>
-/* ══ DATOS ═══════════════════════════════════════════════ */
-const AREAS = [
-  {cod:'INFRA',   nombre:'Infraestructura y Obras',    gerente:'Ing. Ana Quispe',   obras:18, ejec:71, comp:8,  ven:2, color:'#0F6E56'},
-  {cod:'RENTAS',  nombre:'Rentas y Tributación',        gerente:'Cont. C. Herrera',  obras:0,  ejec:41, comp:4,  ven:2, color:'#185FA5'},
-  {cod:'SERVICIOS',nombre:'Servicios Municipales',     gerente:'Lic. Rosa Castro',  obras:3,  ejec:56, comp:6,  ven:2, color:'#5C3E8F'},
-  {cod:'SOCIAL',  nombre:'Desarrollo Social',           gerente:'Lic. Marco Torres', obras:4,  ejec:78, comp:5,  ven:0, color:'#B5540A'},
-  {cod:'SECRETARIA',nombre:'Secretaría General',       gerente:'Abg. Patricia A.',  obras:0,  ejec:68, comp:3,  ven:0, color:'#4A4A70'},
-  {cod:'PLANIF',  nombre:'Planeamiento y Presupuesto',  gerente:'Econ. Eduardo L.',  obras:0,  ejec:39, comp:4,  ven:1, color:'#2E6B5E'},
-];
-
-let instrucciones = [
-  {tipo:'instruccion',txt:'Convocar urgente al contratista de Jr. Lima para mañana 9am. Si no confirma antes de las 5pm, iniciamos resolución de contrato.',hora:'09:15',leida:false,resp:'',dest:null},
-  {tipo:'consulta',txt:'¿Cuál es el avance real de ejecución en Planeamiento? Me preocupa el 39%. Necesito entender el problema antes del cierre fiscal.',hora:'Ayer 16:40',leida:true,resp:'Las partidas con mayor saldo son bienes y servicios (S/480K) e inversiones menores (S/320K). Preparando plan de acción.',dest:'PLANIF'},
-  {tipo:'instruccion',txt:'Necesito un informe consolidado de todas las gerencias con el avance al cierre del mes. Para la sesión de concejo del jueves.',hora:'Hace 2d',leida:true,resp:'Informe en elaboración. Estará listo el miércoles.',dest:null},
-];
-
-const PLAZOS = [
-  {ico:'💰',ttl:'Devengado 4to trimestre · SIAF/MEF',desc:'Planeamiento debe devengar S/1.2M antes del 15 dic. Riesgo de devolución al MEF.',dias:18,sis:'MEF/SIAF',resp:'PLANIF',niv:'critica'},
-  {ico:'📋',ttl:'Actualización Invierte.pe · 3 proyectos',desc:'Infraestructura debe actualizar avance físico de PMI-2024-001, 003 y 007.',dias:11,sis:'Invierte.pe',resp:'INFRA',niv:'critica'},
-  {ico:'🔍',ttl:'Subsanación hallazgos CGR · 4 pendientes',desc:'Coordinación general a cargo del Gerente Municipal. Responsabilidad compartida.',dias:24,sis:'Contraloría',resp:'GM',niv:'alerta'},
-  {ico:'🛒',ttl:'Renovación contratos servicios · SEACE',desc:'3 contratos vencen a fin de año. Servicios debe iniciar proceso de renovación.',dias:35,sis:'SEACE',resp:'SERVICIOS',niv:'info'},
-];
-
-const COORDIN = [
-  {ttl:'Habilitación acceso para obra Jr. Lima',areas:['INFRA','SERVICIOS'],desc:'Se requiere corte de agua temporal durante la pavimentación. Servicios debe coordinar el cronograma con Infraestructura.',fec:'Mañana',estado:'pendiente'},
-  {ttl:'Datos para informe cierre de año al concejo',areas:['PLANIF','RENTAS','INFRA'],desc:'Planeamiento consolida los datos de ejecución presupuestal. Rentas y Obras deben enviar sus reportes antes del miércoles.',fec:'Miércoles',estado:'en_proceso'},
-];
-
-const pctC = p => p>=70?'#1A7A45':p>=50?'#C8880A':'#B02020';
-const hoy = new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
-const mk = (t,c) => { const e=document.createElement(t); if(c)e.className=c; return e; };
-let vista = 'areas';
-
-const NAV = [
-  {sec:'Coordinación', items:[
-    {id:'areas',     ico:'📡', lbl:'Panel de áreas'},
-    {id:'instruc',   ico:'📬', lbl:'Instrucciones del alcalde', get b(){return instrucciones.filter(i=>!i.leida).length||null}},
-    {id:'coord',     ico:'🔗', lbl:'Coordinaciones multi-área'},
-  ]},
-  {sec:'Control', items:[
-    {id:'plazos',    ico:'⚖️', lbl:'Plazos normativos', get b(){return PLAZOS.filter(p=>p.niv==='critica').length||null}, bCls:'oro'},
-    {id:'informe',   ico:'📄', lbl:'Preparar informe'},
-  ]},
-];
-const TITULOS = {areas:'Panel de todas las áreas',instruc:'Instrucciones del alcalde',coord:'Coordinaciones multi-área',plazos:'Plazos normativos del equipo',informe:'Preparar informe para el alcalde'};
-
-/* ══ INIT ═════════════════════════════════════════════ */
-/* ══ LEER CONFIGURACIÓN DE LA MUNICIPALIDAD ══════════ */
-function loadConfig() {
-  try {
-    const raw = sessionStorage.getItem('kausay_config') || localStorage.getItem('kausay_config');
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
-  return null;
-}
-function applyConfig(cfg) {
-  if (!cfg) return;
-  // Actualizar nombre municipalidad en sidebar
-  document.querySelectorAll('.sb-muni').forEach(el => { el.textContent = cfg.muni_nombre || el.textContent; });
-}
-
-/* ══ LEER PARÁMETROS DE URL (modo demo sin sessionStorage) ══ */
-(function() {
-  const p = new URLSearchParams(window.location.search);
-  const rol = p.get('rol');
-  const nombre = p.get('nombre');
-  const gerencia = p.get('gerencia');
-  if (rol)     { sessionStorage.setItem('kausay_demo_rol', rol); }
-  if (nombre)  { sessionStorage.setItem('kausay_demo_nombre', decodeURIComponent(nombre)); }
-  if (gerencia){ sessionStorage.setItem('kausay_demo_gerencia', gerencia); }
-})();
-
-window.addEventListener('load', ()=>{
-  const _cfg = loadConfig();
-  const demoNombre = sessionStorage.getItem('kausay_demo_nombre');
-  const gmNombre = (_cfg?.gm_nombre) || demoNombre || 'Mg. Carlos Vásquez Díaz';
-  // Parchar el sidebar con el nombre real
-  document.getElementById('loading').remove();
-  document.getElementById('app').style.display='flex';
-  document.getElementById('tb-date').textContent = hoy;
-  if (_cfg) applyConfig(_cfg);
-  buildSb(gmNombre, _cfg?.muni_nombre);
-  render();
-});
-
-function nav(v){ vista=v; render(); }
-
-function buildSb(nombre, muni){
-  nombre = nombre || 'Gerente Municipal';
-  muni = muni || 'Municipalidad Provincial de Cajamarca';
-  document.getElementById('sb').innerHTML = `
-    <div class="sb-logo"><div class="sb-brand">Kausay<em>Gerente</em></div><div class="sb-tag">Gerente Municipal</div></div>
-    <div class="sb-ger"><div class="sb-gn">🏛 Gerencia Municipal</div><div class="sb-gm">Coordinación general</div></div>
-    <div class="sb-muni">${muni}</div>
-    <div class="sb-nav" id="sb-nav"></div>
-    <div class="sb-ft">
-      <div class="sb-av">${nombre.split(" ").slice(0,2).map(p=>p[0]).join("")}</div>
-      <div><div class="sb-un">${nombre}</div><div class="sb-ur">Gerente Municipal</div></div>
-      <button class="logout" onclick="window.location.href='login.html'">Salir</button>
-    </div>`;
-}
-
-function render(){
-  const navEl = document.getElementById('sb-nav');
-  if(navEl){
-    navEl.innerHTML='';
-    NAV.forEach(sec=>{
-      const sl=mk('div','sb-sec'); sl.textContent=sec.sec; navEl.appendChild(sl);
-      sec.items.forEach(it=>{
-        const b=it.b;
-        const item=mk('div','sb-it'+(vista===it.id?' on':''));
-        if(vista===it.id) item.style.borderLeftColor='var(--ac)';
-        item.innerHTML=`<span class="sb-ico">${it.ico}</span><span style="flex:1">${it.lbl}</span>`;
-        if(b){ const bd=mk('span','sb-badge '+(it.bCls||'')); bd.textContent=b; item.appendChild(bd); }
-        item.onclick=()=>nav(it.id);
-        navEl.appendChild(item);
-      });
-    });
-  }
-  const ttl=document.getElementById('tb-ttl'); if(ttl) ttl.textContent=TITULOS[vista]||vista;
-  const tbBack=document.getElementById('tb-back');
-  if(tbBack) tbBack.style.display=(vista!=='areas')? 'flex':'none';
-  const pend=instrucciones.filter(i=>!i.leida).length;
-  const tdot=document.getElementById('tb-dot'); if(tdot) tdot.style.display=pend?'block':'none';
-  const c=document.getElementById('content'); if(!c) return; c.innerHTML='';
-  if(vista==='areas')    vAreas(c);
-  else if(vista==='instruc') vInstruc(c);
-  else if(vista==='coord')   vCoord(c);
-  else if(vista==='plazos')  vPlazos(c);
-  else if(vista==='informe') vInforme(c);
-}
-
-/* ══ PANEL DE ÁREAS ═══════════════════════════════════ */
-function vAreas(c){
-  const hd=mk('div','sec-hd');
-  hd.innerHTML='<span class="sec-ttl">Estado de todas las áreas</span>';
-  const rt=mk('div','rt'); rt.innerHTML='<span class="rt-dot"></span>Actualizado ahora';
-  hd.appendChild(rt); c.appendChild(hd);
-
-  const totalVen=AREAS.reduce((s,a)=>s+a.ven,0);
-  if(totalVen>0){
-    const box=mk('div','info-box');
-    box.style.cssText='background:#FDEAEA;color:#B02020;margin-bottom:0';
-    box.innerHTML=`⚠️ <strong>${totalVen} compromisos vencidos</strong> en ${AREAS.filter(a=>a.ven>0).length} gerencias sin respuesta. El alcalde ya tiene esta alerta.`;
-    c.appendChild(box);
-  }
-
-  AREAS.forEach(a=>{
-    const item=mk('div','area');
-    const col=pctC(a.ejec);
-    const hd2=mk('div','area-hd');
-    hd2.innerHTML=`<div><div class="area-n">${a.nombre}</div><div class="area-g">${a.gerente}</div></div>`;
-    const badge=mk('span','pill '+(a.ven>0?'p-r':'p-g'));
-    badge.textContent=a.ven>0?a.ven+' vencidos':'Al día';
-    hd2.appendChild(badge);
-
-    const stats=mk('div','area-stats');
-    [{v:a.ejec+'%',l:'Ejec. presup.',col},{v:''+a.obras,l:'Obras activas',col:'var(--txt)'},{v:''+a.comp,l:'Compromisos',col:'var(--txt)'}].forEach(s=>{
-      const sd=mk('div','');
-      sd.innerHTML=`<div class="area-sv" style="color:${s.col}">${s.v}</div><div class="area-sl">${s.l}</div>`;
-      stats.appendChild(sd);
-    });
-
-    const pb=mk('div','pbar');
-    const pbf=mk('div','pbar-f'); pbf.style.width=a.ejec+'%'; pbf.style.background=col;
-    pb.appendChild(pbf);
-
-    item.appendChild(hd2); item.appendChild(stats); item.appendChild(pb);
-    c.appendChild(item);
-  });
-}
-
-/* ══ INSTRUCCIONES DEL ALCALDE ════════════════════════ */
-function vInstruc(c){
-  const pend=instrucciones.filter(i=>!i.leida).length;
-  const hd=mk('div','sec-hd');
-  hd.innerHTML='<span class="sec-ttl">Instrucciones del alcalde</span>';
-  const b=mk('span','pill '+(pend?'p-r':'p-g')); b.textContent=pend?pend+' sin confirmar':'Todas confirmadas';
-  hd.appendChild(b); c.appendChild(hd);
-
-  const tipoCols={instruccion:'#B02020',consulta:'#185FA5',alerta:'#C8880A',informe:'#1A7A45'};
-  const tipoPill={instruccion:'p-r',consulta:'p-b',alerta:'p-a',informe:'p-g'};
-  const tipoLbl={instruccion:'Instrucción',consulta:'Consulta',alerta:'Alerta',informe:'Informe'};
-
-  instrucciones.forEach((ins,i)=>{
-    const item=mk('div','ins');
-    item.style.borderLeftColor=tipoCols[ins.tipo]||'#B02020';
-
-    const hd2=mk('div','ins-hd');
-    hd2.innerHTML=`<span class="ins-from">Del Alcalde · ${ins.hora}</span>`;
-    const tp=mk('span','pill '+tipoPill[ins.tipo]); tp.textContent=tipoLbl[ins.tipo]||ins.tipo;
-    hd2.appendChild(tp);
-
-    const body=mk('div','ins-body'); body.textContent=ins.txt;
-    const st=mk('div','ins-st '+(ins.leida?'ok':'pend'));
-    st.textContent=ins.leida?'✓ Leído y confirmado al alcalde':'⚠ Pendiente de confirmación';
-
-    // Distribución a gerente
-    let distInfo=null;
-    if(ins.dest){
-      const ar=AREAS.find(a=>a.cod===ins.dest);
-      distInfo=mk('div','');
-      distInfo.style.cssText='font-size:11px;color:#185FA5;font-weight:600;margin-bottom:8px;padding:4px 9px;background:#E6F1FB;border-radius:6px;display:inline-block';
-      distInfo.textContent='↦ Distribuida a: '+(ar?ar.nombre:ins.dest);
-    }
-
-    const acts=mk('div','ins-acts');
-    if(!ins.leida){
-      const ok=mk('button','ibtn ibtn-ok'); ok.textContent='✓ Confirmar lectura';
-      ok.onclick=()=>{ instrucciones[i].leida=true; render(); };
-      acts.appendChild(ok);
-    }
-
-    // Distribuir a gerente sectorial
-    const distBtn=mk('button','ibtn ibtn-dist'); distBtn.textContent='↦ Distribuir a gerencia';
-    const distBox=mk('div','resp-box'+(ins.dest?' open':''));
-    const selGer=mk('select','resp-ta'); selGer.style.resize='none';
-    const optDef=mk('option'); optDef.textContent='Seleccionar gerencia...'; optDef.value='';
-    selGer.appendChild(optDef);
-    AREAS.forEach(a=>{ const o=mk('option'); o.value=a.cod; o.textContent=a.nombre; if(ins.dest===a.cod)o.selected=true; selGer.appendChild(o); });
-    const notas=mk('textarea','resp-ta'); notas.rows=2; notas.placeholder='Contexto adicional para la gerencia (opcional)...'; notas.style.marginTop='7px';
-    const distRow=mk('div','resp-row');
-    const distSend=mk('button','resp-send'); distSend.textContent='Distribuir y notificar';
-    const distCancel=mk('button','resp-cancel'); distCancel.textContent='Cancelar';
-    distSend.onclick=()=>{
-      if(!selGer.value) return;
-      instrucciones[i].dest=selGer.value; instrucciones[i].leida=true;
-      distSend.textContent='✓ Distribuida'; distSend.disabled=true;
-      setTimeout(()=>render(),900);
-    };
-    distCancel.onclick=()=>distBox.classList.remove('open');
-    distBtn.onclick=()=>distBox.classList.toggle('open');
-    distRow.appendChild(distSend); distRow.appendChild(distCancel);
-    distBox.appendChild(selGer); distBox.appendChild(notas); distBox.appendChild(distRow);
-    acts.appendChild(distBtn);
-
-    // Responder al alcalde
-    const rb=mk('button','ibtn ibtn-resp'); rb.textContent=ins.resp?'✏ Editar respuesta':'💬 Responder al alcalde';
-    const respBox=mk('div','resp-box'+(ins.resp?' open':''));
-    const respTa=mk('textarea','resp-ta'); respTa.rows=3;
-    respTa.placeholder='Escribe tu respuesta o reporte de avance al alcalde...'; respTa.value=ins.resp||'';
-    const respRow=mk('div','resp-row');
-    const respSend=mk('button','resp-send'); respSend.textContent='Enviar respuesta al alcalde';
-    const respCancel=mk('button','resp-cancel'); respCancel.textContent='Cancelar';
-    respSend.onclick=()=>{
-      if(!respTa.value.trim()) return;
-      instrucciones[i].resp=respTa.value; instrucciones[i].leida=true;
-      respSend.textContent='✓ Enviada'; respSend.disabled=true;
-      setTimeout(()=>render(),900);
-    };
-    respCancel.onclick=()=>respBox.classList.remove('open');
-    rb.onclick=()=>respBox.classList.toggle('open');
-    respRow.appendChild(respSend); respRow.appendChild(respCancel);
-    respBox.appendChild(respTa); respBox.appendChild(respRow);
-    acts.appendChild(rb);
-
-    item.appendChild(hd2); item.appendChild(body); item.appendChild(st);
-    if(distInfo) item.appendChild(distInfo);
-    item.appendChild(acts); item.appendChild(distBox); item.appendChild(respBox);
-    c.appendChild(item);
-  });
-}
-
-/* ══ COORDINACIONES MULTI-ÁREA ════════════════════════ */
-function vCoord(c){
-  const hd=mk('div','sec-hd'); hd.innerHTML='<span class="sec-ttl">Coordinaciones activas</span><span class="pill p-b">'+COORDIN.length+' en curso</span>';
-  c.appendChild(hd);
-
-  COORDIN.forEach(coord=>{
-    const item=mk('div','coord-item');
-    const hd2=mk('div','coord-hd');
-    const ttl=mk('div','coord-ttl'); ttl.textContent=coord.ttl;
-    const st=mk('span','pill '+(coord.estado==='en_proceso'?'p-a':'p-x'));
-    st.textContent=coord.estado==='en_proceso'?'En proceso':'Pendiente';
-    hd2.appendChild(ttl); hd2.appendChild(st);
-
-    const areas=mk('div','coord-areas');
-    coord.areas.forEach(cod=>{
-      const ar=AREAS.find(a=>a.cod===cod);
-      const tag=mk('span','pill p-b'); tag.style.background=ar?.color||'#185FA5'; tag.style.color='#fff';
-      tag.textContent=ar?ar.nombre:cod;
-      areas.appendChild(tag);
-    });
-
-    const desc=mk('div','coord-desc'); desc.textContent=coord.desc;
-    const foot=mk('div','coord-foot');
-    foot.innerHTML=`<span class="coord-fec">📅 Fecha límite: <strong>${coord.fec}</strong></span>`;
-
-    item.appendChild(hd2); item.appendChild(areas); item.appendChild(desc); item.appendChild(foot);
-    c.appendChild(item);
-  });
-
-  const nhd=mk('div','sec-hd'); nhd.style.marginTop='4px'; nhd.innerHTML='<span class="sec-ttl">Nueva coordinación</span>';
-  c.appendChild(nhd);
-  const card=mk('div','card');
-  card.innerHTML=`
-    <div class="form-row"><label class="form-lbl">Asunto de coordinación</label><input class="form-inp" placeholder="Describe el asunto que requiere coordinación entre áreas..."></div>
-    <div class="form-row"><label class="form-lbl">Áreas involucradas</label>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 0">${AREAS.map(a=>`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" style="accent-color:${a.color}"> ${a.nombre}</label>`).join('')}</div>
+<!-- MODAL: PEDIR INFORME -->
+<div class="kk-modal-bg" id="modal-informe">
+  <div class="kk-modal">
+    <div class="kk-modal__hd">
+      <span class="kk-modal__ttl">Pedir informe a gerencia</span>
+      <button class="kk-modal__close" onclick="cerrarModal('modal-informe')">✕</button>
     </div>
-    <div class="form-2">
-      <div class="form-row"><label class="form-lbl">Fecha límite</label><input type="date" class="form-inp"></div>
-      <div class="form-row"><label class="form-lbl">Prioridad</label><select class="form-inp"><option>Alta</option><option>Media</option><option>Baja</option></select></div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Gerencia</label>
+      <select class="kk-form-inp kk-form-sel" id="informe-ger"></select>
     </div>
-    <button class="form-btn">Crear coordinación y notificar gerencias</button>`;
-  c.appendChild(card);
-}
-
-/* ══ PLAZOS NORMATIVOS ════════════════════════════════ */
-function vPlazos(c){
-  const hd=mk('div','sec-hd'); hd.innerHTML='<span class="sec-ttl">Plazos normativos del equipo</span>';
-  c.appendChild(hd);
-
-  const crit=PLAZOS.filter(p=>p.niv==='critica').length;
-  if(crit){
-    const box=mk('div','info-box');
-    box.style.cssText='background:#FDEAEA;color:#B02020;margin-bottom:0';
-    box.innerHTML=`⚠️ <strong>${crit} plazos críticos</strong> requieren acción inmediata. El alcalde también los ve en su semáforo normativo.`;
-    c.appendChild(box);
-  }
-
-  PLAZOS.forEach(p=>{
-    const cols={critica:'#B02020',alerta:'#C8880A',info:'#185FA5'};
-    const pills={critica:'p-r',alerta:'p-a',info:'p-b'};
-    const ar=AREAS.find(a=>a.cod===p.resp);
-    const item=mk('div','plazo'); item.style.setProperty('--al',cols[p.niv]);
-    const ico=mk('span','pl-ico'); ico.textContent=p.ico;
-    const bd=mk('div','pl-bd');
-    const ttl=mk('div','pl-ttl'); ttl.textContent=p.ttl;
-    const desc=mk('div','pl-desc'); desc.textContent=p.desc;
-    const meta=mk('div','pl-meta');
-    const badge=mk('span','pill '+pills[p.niv]); badge.textContent=p.dias+' días restantes';
-    const sis=mk('span',''); sis.textContent=p.sis;
-    const resp=mk('span',''); resp.textContent='· Resp: '+(ar?ar.nombre:p.resp==='GM'?'Gerente Municipal (tú)':p.resp);
-    meta.appendChild(badge); meta.appendChild(sis); meta.appendChild(resp);
-    bd.appendChild(ttl); bd.appendChild(desc); bd.appendChild(meta);
-    item.appendChild(ico); item.appendChild(bd);
-    c.appendChild(item);
-  });
-}
-
-/* ══ PREPARAR INFORME ═════════════════════════════════ */
-function vInforme(c){
-  const hd=mk('div','sec-hd'); hd.innerHTML='<span class="sec-ttl">Preparar informe para el alcalde</span>';
-  c.appendChild(hd);
-
-  const preview=mk('div','informe-prev');
-  preview.innerHTML=`
-    <div class="inf-hd"><div class="inf-ico">🤖</div><div><div class="inf-ttl">Borrador generado por IA — semana 47</div><div class="inf-sub">Claude · Municipalidad Provincial de Cajamarca</div></div></div>
-    <div class="inf-body">
-      La ejecución presupuestal acumulada al cierre de noviembre es de <span class="inf-hl">67%</span>, dentro del rango esperado excepto en Planeamiento (<span class="inf-hl">39%</span>) y Rentas (<span class="inf-hl">41%</span>) donde existe riesgo de devolución al MEF. El asunto más urgente es la <span class="inf-hl">obra Jr. Lima</span> (paralizada 26 días) que requiere decisión del alcalde antes del viernes. Las áreas con mejor desempeño son Desarrollo Social (78%) e Infraestructura (71%). Se recomienda convocar reunión de emergencia con contratista y revisar plan de devengado de Planeamiento esta semana.
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">¿Qué informe necesitas? <span style="color:var(--c-critico)">*</span></label>
+      <textarea class="kk-form-inp kk-form-ta" id="informe-txt" placeholder="Especifica el informe, período y formato esperado..."></textarea>
     </div>
-    <div class="inf-acts">
-      <button class="inf-btn inf-p">✓ Aprobar y enviar al alcalde</button>
-      <button class="inf-btn inf-s">✏ Editar borrador</button>
-      <button class="inf-btn inf-s">📥 Descargar PDF</button>
-    </div>`;
-  c.appendChild(preview);
-
-  const nhd=mk('div','sec-hd'); nhd.style.marginTop='4px'; nhd.innerHTML='<span class="sec-ttl">Generar nuevo informe</span>';
-  c.appendChild(nhd);
-  const card=mk('div','card');
-  card.innerHTML=`
-    <div class="form-row"><label class="form-lbl">Tipo de informe</label>
-      <select class="form-inp"><option>Ejecutivo semanal</option><option>Cierre mensual</option><option>Pre-sesión de concejo</option><option>Informe de emergencia</option></select></div>
-    <div class="form-row"><label class="form-lbl">Áreas a incluir</label>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 0">${AREAS.map(a=>`<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" checked style="accent-color:${a.color}"> ${a.nombre}</label>`).join('')}</div>
+    <div class="kk-form-row">
+      <label class="kk-form-lbl">Plazo de respuesta</label>
+      <input class="kk-form-inp" type="date" id="informe-plazo">
     </div>
-    <div class="form-row"><label class="form-lbl">Instrucciones adicionales para la IA</label><textarea class="form-inp" rows="2" placeholder="Ej: Enfatizar el riesgo de cierre presupuestal en Planeamiento y el tema de Jr. Lima..."></textarea></div>
-    <button class="form-btn">🤖 Generar borrador con IA</button>`;
-  c.appendChild(card);
-}
+    <button class="kk-btn kk-btn--primary" onclick="enviarSolicitudInforme()">Solicitar informe →</button>
+  </div>
+</div>
 
-render();
-</script>
+<!-- TOAST -->
+<div class="kk-toast" id="toast"></div>
+
+<!-- APP -->
+<div class="kk-app" id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <div class="kk-sb">
+    <div class="kk-sb__head">
+      <img class="kk-sb__escudo" src="escudo.png" alt="Escudo" onerror="this.style.display='none'">
+      <div class="kk-sb__muni" id="sb-muni">Municipalidad Provincial de Cajamarca</div>
+      <div class="kk-sb__tag">Gerencia Municipal · Coordinación</div>
+    </div>
+    <div class="kk-sb__nav" id="sb-nav"></div>
+    <div class="kk-sb__foot">
+      <div class="kk-sb__user">
+        <div class="kk-sb__av" id="sb-av">GM</div>
+        <div>
+          <div class="kk-sb__name" id="sb-name">Gerente Municipal</div>
+          <div class="kk-sb__rol">Coordinación general</div>
+        </div>
+        <button class="kk-sb__logout" onclick="logout()">Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="kk-main">
+    <div class="kk-offline-bar" id="offline-bar">📡 Sin conexión — los cambios se guardarán al recuperar señal</div>
+    <div class="kk-tb">
+      <button class="kk-tb__back" id="tb-back" onclick="nav('coordinacion')">← Menú</button>
+      <div class="kk-tb__title" id="tb-title">Coordinación general</div>
+      <div class="kk-tb__clock" id="tb-clock"></div>
+      <button class="kk-tb__notif" id="tb-notif">🔔<span class="kk-tb__dot" id="tb-dot" style="display:none"></span></button>
+    </div>
+    <div class="kk-content" id="content"></div>
+    <div class="kk-dock"    id="dock"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="branding.js"></script>
+<script src="freshness.js"></script>
+<script src="export.js"></script>
+
+
+<script src="auth.js"></script>
 <script src="shared.js"></script>
 <script>
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
+/* ══ ESTADO ══════════════════════════════════════════ */
+let vista = 'coordinacion';
+let derivarTipo = 'instruccion';
+let derivarDestino = null;
+
+const NAV_DEF = [
+  { sec:'Panel ejecutivo', items:[
+    { id:'coordinacion', ico:'⚡', lbl:'Coordinación',          badge:()=>{ const r=KausayDB.getResumenEjecutivo(); return r.alertas_criticas+r.obras_criticas; } },
+    { id:'gerencias',    ico:'🏛', lbl:'Ranking gerencias',     badge:()=>{ const gs=KausayDB.getGerencias(); return gs.filter(g=>g.ejec<50).length; } },
+    { id:'instrucciones',ico:'📬', lbl:'Instrucciones alcalde', badge:()=>KausayDB.getInstrucciones('GM').filter(i=>!i.confirmada&&i.de==='alcalde').length },
+  ]},
+  { sec:'Seguimiento', items:[
+    { id:'compromisos',  ico:'🤝', lbl:'Compromisos',           badge:()=>KausayDB.getCompromisos().filter(c=>c.ven||c.estado==='vencido').length },
+    { id:'obras',        ico:'🏗', lbl:'Obras críticas',        badge:()=>KausayDB.getObras().filter(o=>['critico','alto'].includes(o.riesgo)).length },
+    { id:'presupuesto',  ico:'💰', lbl:'Desviaciones presup.',  badge:()=>KausayDB.getPresupuesto().por_area.filter(p=>p.pct<50).length },
+  ]},
+  { sec:'Escalamiento', items:[
+    { id:'escalar',      ico:'🚨', lbl:'Escalar al alcalde',    badge:()=>calcEscalables() },
+  ]},
+];
+
+const TITULOS = {
+  coordinacion:'Coordinación general', gerencias:'Ranking de gerencias',
+  instrucciones:'Instrucciones del alcalde', compromisos:'Compromisos y vencimientos',
+  obras:'Obras críticas y coordinación', presupuesto:'Desviaciones presupuestales',
+  escalar:'Escalar al alcalde',
+};
+
+const TIPO_COLORS_AG = { interna:'#8A90A0',campo:'#C8880A',audiencia:'#185FA5',concejo:'#8B1A1A',admin:'#4A5060' };
+
+function calcEscalables() {
+  const obras = KausayDB.getObras().filter(o=>o.riesgo==='critico').length;
+  const plazos = KausayDB.getCriticos().length;
+  const comps = KausayDB.getCompromisos().filter(c=>c.ven&&c.prioridad==='alta').length;
+  return obras + plazos + comps;
+}
+
+/* ══ NAV ═════════════════════════════════════════════ */
+function nav(v) { vista=v; render(); window.scrollTo(0,0); }
+
+function buildNav() {
+  const sb = document.getElementById('sb-nav');
+  if (!sb) return;
+  sb.innerHTML = '';
+  NAV_DEF.forEach(sec => {
+    const s=mk('div','kk-sb__sec'); s.textContent=sec.sec; sb.appendChild(s);
+    sec.items.forEach(it => {
+      const el=mk('div','kk-nav-item'+(vista===it.id?' on':''));
+      const b=it.badge?.()||0;
+      el.innerHTML=`<span class="kk-nav-item__ico">${it.ico}</span><span class="kk-nav-item__lbl">${it.lbl}</span>${b>0?`<span class="kk-nav-badge">${b}</span>`:''}`;
+      el.onclick=()=>nav(it.id);
+      sb.appendChild(el);
+    });
+  });
+}
+
+/* ══ RELOJ ═══════════════════════════════════════════ */
+function tick() {
+  const n=new Date(), el=document.getElementById('tb-clock');
+  if(el) el.textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')} · ${n.toLocaleDateString('es-PE',{weekday:'short',day:'numeric',month:'short'})}`;
+}
+tick(); setInterval(tick,15000);
+
+/* ══ RENDER ══════════════════════════════════════════ */
+function render() {
+  const c=document.getElementById('content');
+  if(!c) return;
+  c.innerHTML='';
+  const ttl=document.getElementById('tb-title');
+  if(ttl) ttl.textContent=TITULOS[vista]||vista;
+  const back=document.getElementById('tb-back');
+  if(back) back.style.display=vista==='coordinacion'?'none':'flex';
+  const r=KausayDB.getResumenEjecutivo();
+  const dot=document.getElementById('tb-dot');
+  if(dot) dot.style.display=(r.alertas_criticas>0||r.instr_sin_leer>0)?'block':'none';
+  buildNav(); buildDock();
+
+  if(vista==='coordinacion')  vCoordinacion(c,r);
+  else if(vista==='gerencias') vGerencias(c);
+  else if(vista==='instrucciones') vInstrucciones(c);
+  else if(vista==='compromisos') vCompromisos(c);
+  else if(vista==='obras') vObras(c);
+  else if(vista==='presupuesto') vPresupuesto(c);
+  else if(vista==='escalar') vEscalar(c);
+}
+
+/* ══ V1: COORDINACIÓN GENERAL ════════════════════════ */
+function vCoordinacion(c, r) {
+  const muni = KausayDB.getMuni();
+  const gers = KausayDB.getGerencias();
+  const criticas = gers.filter(g=>g.ejec<50).length;
+  const alertas  = gers.filter(g=>g.ejec>=50&&g.ejec<70).length;
+  const ok       = gers.filter(g=>g.ejec>=70).length;
+
+  // Resumen ejecutivo
+  const estadoCol = r.estado==='critico'?'var(--c-critico)':r.estado==='alerta'?'var(--c-alerta)':'var(--c-ok)';
+  const estadoTxt = r.estado==='critico'?'Municipio con alertas críticas activas':r.estado==='alerta'?`${r.alertas_criticas+r.alertas_alerta} situaciones de riesgo en seguimiento`:`Gestión municipal estable · ${r.ejec_global}% ejecutado`;
+
+  const summary = mk('div','gm-summary');
+  summary.innerHTML=`
+    <div class="gm-summary__left">
+      <div class="gm-summary__saludo">Buenos días —</div>
+      <div class="gm-summary__nombre">${KausayDB.getMuni().gm||'Gerente Municipal'}</div>
+      <div class="gm-summary__estado" style="color:${estadoCol}">${estadoTxt}</div>
+    </div>
+    <div class="gm-summary__kpis">
+      ${[
+        {v:criticas, l:'Gerencias\ncríticas',   c:criticas>0?'var(--c-critico)':'var(--c-ok)'},
+        {v:r.obras_criticas, l:'Obras\ncríticas', c:r.obras_criticas>0?'var(--c-critico)':'var(--c-ok)'},
+        {v:r.instr_sin_leer, l:'Sin\nacuse',      c:r.instr_sin_leer>0?'var(--c-alerta)':'var(--c-ok)'},
+        {v:r.compromisos_ven,l:'Comp.\nvencidos', c:r.compromisos_ven>0?'var(--c-critico)':'var(--c-ok)'},
+      ].map(k=>`<div class="gm-kpi"><div class="gm-kpi__v" style="color:${k.c}">${k.v}</div><div class="gm-kpi__l">${k.l}</div></div>`).join('')}
+    </div>`;
+  c.appendChild(summary);
+
+  // Semáforo de gerencias (mini-ranking)
+  c.appendChild(secHead('Semáforo de gerencias','Ver ranking completo',()=>nav('gerencias')));
+  const grid = mk('div',''); grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px';
+  gers.forEach(g => {
+    const col = g.ejec>=70?'var(--c-ok)':g.ejec>=50?'var(--c-alerta)':'var(--c-critico)';
+    const bg  = g.ejec>=70?'var(--c-ok-bg)':g.ejec>=50?'var(--c-alerta-bg)':'var(--c-critico-bg)';
+    const item = mk('div','');
+    item.style.cssText=`background:${bg};border:1px solid ${g.ejec>=70?'var(--c-ok-brd)':g.ejec>=50?'var(--c-alerta-brd)':'var(--c-critico-brd)'};border-radius:var(--r-md);padding:9px 11px;cursor:pointer`;
+    item.innerHTML=`
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <span style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0;display:inline-block"></span>
+        <span style="font-size:11px;font-weight:700;color:var(--c-negro);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.nombre.split(' ').slice(0,2).join(' ')}</span>
+      </div>
+      <div style="font-family:var(--f-cond);font-size:20px;font-weight:800;color:${col}">${g.ejec}%</div>
+      <div style="font-size:9px;color:var(--c-gris3)">ejecución</div>`;
+    item.onclick=()=>nav('gerencias');
+    grid.appendChild(item);
+  });
+  c.appendChild(grid);
+
+  // Instrucciones sin acuse
+  const sinAcuse = KausayDB.getInstrucciones('GM').filter(i=>!i.confirmada&&i.de==='alcalde');
+  if(sinAcuse.length) {
+    c.appendChild(secHead(`${sinAcuse.length} instrucción${sinAcuse.length>1?'es':''} sin acuse`,'Ver todas',()=>nav('instrucciones')));
+    sinAcuse.slice(0,1).forEach(i=>c.appendChild(renderInstrGM(i)));
   }
+
+  // Obras críticas
+  const obrasCrit = KausayDB.getObras().filter(o=>o.riesgo==='critico');
+  if(obrasCrit.length) {
+    c.appendChild(secHead(`${obrasCrit.length} obra${obrasCrit.length>1?'s críticas':' crítica'}`,'Ver obras',()=>nav('obras')));
+    obrasCrit.slice(0,2).forEach(o=>c.appendChild(renderObraGM(o)));
+  }
+
+  // Compromisos vencidos
+  const vencidos = KausayDB.getCompromisos().filter(c=>c.ven||c.estado==='vencido');
+  if(vencidos.length) {
+    c.appendChild(secHead(`${vencidos.length} compromiso${vencidos.length>1?'s vencidos':' vencido'}`,'Ver compromisos',()=>nav('compromisos')));
+    vencidos.slice(0,2).forEach(x=>c.appendChild(renderCompGM(x)));
+  }
+
+  // Plazos críticos
+  const plazos = KausayDB.getCriticos();
+  if(plazos.length) {
+    c.appendChild(secHead('Plazos normativos críticos','Ver semáforo',()=>nav('obras')));
+    plazos.forEach(p=>{
+      const col=p.dias<=11?'var(--c-critico)':'var(--c-alerta)';
+      const item=mk('div','kk-plazo'); item.style.setProperty('--plazo-color',col);
+      item.innerHTML=`<div><div class="kk-plazo__dias" style="color:${col}">${p.dias}</div><div class="kk-plazo__d">días</div></div><div class="kk-plazo__sep"></div><div class="kk-plazo__body"><div class="kk-plazo__sis">${p.sistema}</div><div class="kk-plazo__desc">${p.desc}</div><div class="kk-plazo__resp">Responsable: <strong>${p.resp}</strong></div></div>`;
+      c.appendChild(item);
+    });
+  }
+}
+
+/* ══ V2: RANKING GERENCIAS ═══════════════════════════ */
+function vGerencias(c) {
+  const gers = KausayDB.getGerencias();
+  const sorted = [...gers].sort((a,b)=>a.ejec-b.ejec); // peor primero
+
+  c.appendChild(secHead('Estado por gerencia — peor a mejor','',null));
+  sorted.forEach((g,i)=>{
+    const col = g.ejec>=70?'var(--c-ok)':g.ejec>=50?'var(--c-alerta)':'var(--c-critico)';
+    const obras = KausayDB.getObras(g.cod);
+    const obrasCrit = obras.filter(o=>['critico','alto'].includes(o.riesgo)).length;
+    const comps = KausayDB.getCompromisos(g.cod);
+    const compVen = comps.filter(x=>x.ven||x.estado==='vencido').length;
+    const pres = KausayDB.getPresupuestoArea(g.cod);
+    const kpis = KausayDB.getIndicadores(g.cod);
+
+    const card = mk('div','ger-card');
+    card.style.cssText=`--gc:${col};animation-delay:${i*.05}s`;
+    card.innerHTML=`
+      <div class="ger-card__hd">
+        <span class="ger-dot" style="background:${col}"></span>
+        <div>
+          <div class="ger-nombre">${g.nombre}</div>
+          <div class="ger-jefe">${g.jefe}</div>
+        </div>
+        <span class="kk-chip ${g.ejec>=70?'kk-chip--ok':g.ejec>=50?'kk-chip--alerta':'kk-chip--critico'}">${g.ejec>=70?'Normal':g.ejec>=50?'Alerta':'Crítico'}</span>
+      </div>
+      <div class="ger-card__kpis">
+        <div class="ger-kpi">
+          <div class="ger-kpi__v" style="color:${col}">${g.ejec}%</div>
+          <div class="ger-kpi__l">Ejec.\npresup.</div>
+        </div>
+        <div class="ger-kpi">
+          <div class="ger-kpi__v" style="color:${obrasCrit>0?'var(--c-critico)':'var(--c-gris2)'}">${obrasCrit}</div>
+          <div class="ger-kpi__l">Obras\ncríticas</div>
+        </div>
+        <div class="ger-kpi">
+          <div class="ger-kpi__v" style="color:${compVen>0?'var(--c-critico)':'var(--c-gris2)'}">${compVen}</div>
+          <div class="ger-kpi__l">Comp.\nvencidos</div>
+        </div>
+        <div class="ger-kpi">
+          <div class="ger-kpi__v" style="color:var(--c-gris2)">${kpis.length>0?Math.round(kpis[0].v/kpis[0].meta*100)+'%':'—'}</div>
+          <div class="ger-kpi__l">KPI\nprincipal</div>
+        </div>
+      </div>
+      ${pres?`<div style="margin-bottom:8px">
+        <div class="kk-bar-track" style="height:5px;margin-bottom:3px"><div class="kk-bar-fill" style="width:${pres.pct}%;background:${col}"></div></div>
+        <div style="font-size:10px;color:var(--c-gris3)">${KausayDB.fmt(pres.ejec)} de ${KausayDB.fmt(pres.asig)} asignados</div>
+      </div>`:''}
+      <div class="ger-card__acts">
+        <button class="kk-btn kk-btn--ghost" style="font-size:11px;padding:5px 11px" onclick="abrirDerivar('${g.cod}','${g.nombre}')">📌 Instrucción</button>
+        <button class="kk-btn kk-btn--ghost" style="font-size:11px;padding:5px 11px" onclick="abrirInforme('${g.cod}')">📊 Pedir informe</button>
+        ${g.ejec<50?`<button class="kk-btn kk-btn--danger" style="font-size:11px;padding:5px 11px" onclick="escalerGerencia('${g.cod}','${g.nombre}')">🚨 Escalar</button>`:''}
+      </div>`;
+    c.appendChild(card);
+  });
+}
+
+/* ══ V3: INSTRUCCIONES DEL ALCALDE ═══════════════════ */
+function vInstrucciones(c) {
+  const todas = KausayDB.getInstrucciones('GM');
+  const delAlcalde = todas.filter(i=>i.de==='alcalde');
+  const sinAcuse   = delAlcalde.filter(i=>!i.confirmada);
+  const conResp    = delAlcalde.filter(i=>i.respuesta&&i.respuesta.length>0);
+  const confirmadas= delAlcalde.filter(i=>i.confirmada&&(!i.respuesta||i.respuesta.length===0));
+
+  if(sinAcuse.length) {
+    c.appendChild(secHead(`Sin acuse (${sinAcuse.length})`,'',null));
+    sinAcuse.forEach(i=>c.appendChild(renderInstrGM(i,true)));
+  }
+  if(conResp.length) {
+    c.appendChild(secHead('Respondidas','',null));
+    conResp.forEach(i=>c.appendChild(renderInstrGM(i)));
+  }
+  if(confirmadas.length) {
+    c.appendChild(secHead('Confirmadas','',null));
+    confirmadas.forEach(i=>c.appendChild(renderInstrGM(i)));
+  }
+  if(!delAlcalde.length) c.appendChild(emptyState('📬','Sin instrucciones del alcalde','Las instrucciones dirigidas a la Gerencia Municipal aparecerán aquí.'));
+}
+
+/* ══ V4: COMPROMISOS ═════════════════════════════════ */
+function vCompromisos(c) {
+  const all  = KausayDB.getCompromisos();
+  const ven  = all.filter(x=>x.ven||x.estado==='vencido');
+  const pend = all.filter(x=>x.estado==='pendiente'&&!x.ven);
+  const proc = all.filter(x=>x.estado==='en_proceso');
+
+  c.appendChild(secHead('Compromisos del municipio','',null));
+  if(!all.length){c.appendChild(emptyState('🤝','Sin compromisos registrados',''));return;}
+
+  if(ven.length){
+    c.appendChild(secHead(`Vencidos sin cumplimiento (${ven.length})`,'',null));
+    ven.forEach(x=>c.appendChild(renderCompGM(x,true)));
+  }
+  if(proc.length){
+    c.appendChild(secHead('En proceso','',null));
+    proc.forEach(x=>c.appendChild(renderCompGM(x)));
+  }
+  if(pend.length){
+    c.appendChild(secHead(`Pendientes (${pend.length})`,'',null));
+    pend.forEach(x=>c.appendChild(renderCompGM(x)));
+  }
+}
+
+/* ══ V5: OBRAS CRÍTICAS ══════════════════════════════ */
+function vObras(c) {
+  const obras = KausayDB.getObras();
+  const groups = [
+    {lbl:'Paralizadas o críticas', items:obras.filter(o=>o.riesgo==='critico'),  delay:0},
+    {lbl:'Riesgo alto',           items:obras.filter(o=>o.riesgo==='alto'),      delay:.05},
+    {lbl:'Riesgo medio',          items:obras.filter(o=>o.riesgo==='medio'),     delay:.1},
+    {lbl:'Normal / licitación',   items:obras.filter(o=>['bajo'].includes(o.riesgo)||o.estado==='licitacion'), delay:.15},
+  ];
+  groups.filter(g=>g.items.length).forEach(g=>{
+    c.appendChild(secHead(`${g.lbl} (${g.items.length})`,'',null));
+    g.items.forEach(o=>c.appendChild(renderObraGM(o)));
+  });
+  if(!obras.length) c.appendChild(emptyState('🏗','Sin obras registradas',''));
+}
+
+/* ══ V6: PRESUPUESTO / DESVIACIONES ═════════════════ */
+function vPresupuesto(c) {
+  const pres = KausayDB.getPresupuesto();
+  const sorted = [...pres.por_area].sort((a,b)=>a.pct-b.pct);
+
+  // Totalizador
+  const tot = mk('div','');
+  tot.style.cssText='background:var(--c-sb);border-radius:var(--r-lg);padding:13px var(--sp-md);margin-bottom:8px;display:flex;gap:var(--sp-md);align-items:center';
+  const totCol=KausayDB.pctColor(pres.pct_global);
+  tot.innerHTML=`
+    <div style="flex:1">
+      <div style="font-size:10px;color:rgba(255,255,255,.45)">Ejecución global ${new Date().getFullYear()}</div>
+      <div style="font-family:var(--f-cond);font-size:28px;font-weight:800;color:${totCol}">${pres.pct_global}%</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">${KausayDB.fmt(pres.ejecutado)} de ${KausayDB.fmt(pres.total)}</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:11px;font-weight:600;color:${totCol}">${KausayDB.pctLabel(pres.pct_global)}</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38);margin-top:2px">S/${((pres.total-pres.ejecutado)/1000000).toFixed(1)}M por ejecutar</div>
+    </div>`;
+  c.appendChild(tot);
+
+  c.appendChild(secHead('Por gerencia — mayor desviación primero','',null));
+  sorted.forEach(p=>{
+    const col=KausayDB.pctColor(p.pct);
+    const row=mk('div','presup-row');
+    row.innerHTML=`
+      <div class="presup-row__nombre">${p.nombre.split(' ').slice(0,2).join(' ')}</div>
+      <div class="presup-row__bar">
+        <div class="kk-bar-track" style="height:6px;margin-bottom:3px"><div class="kk-bar-fill" style="width:${p.pct}%;background:${col}"></div></div>
+        <div style="font-size:9px;color:var(--c-gris3)">${KausayDB.fmt(p.ejec)} / ${KausayDB.fmt(p.asig)}</div>
+      </div>
+      <div class="presup-row__pct" style="color:${col}">${p.pct}%</div>`;
+    c.appendChild(row);
+  });
+
+  // Gerencias en riesgo de no ejecutar
+  const enRiesgo = sorted.filter(p=>p.pct<50);
+  if(enRiesgo.length) {
+    c.appendChild(secHead('Acción requerida — ejecución crítica','',null));
+    enRiesgo.forEach(p=>{
+      const saldo=p.asig-p.ejec;
+      const card=mk('div','escalar-card');
+      card.innerHTML=`
+        <div class="escalar-card__hd">
+          <span class="escalar-card__ico">⚠️</span>
+          <div class="escalar-card__ttl">${p.nombre}</div>
+        </div>
+        <div class="escalar-card__desc">${p.pct}% ejecutado · Saldo sin ejecutar: <strong>${KausayDB.fmt(saldo)}</strong>. Riesgo de devolución de recursos al MEF.</div>
+        <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="abrirDerivar('${p.cod}','${p.nombre}')">📌 Emitir instrucción de devengado</button>`;
+      c.appendChild(card);
+    });
+  }
+}
+
+/* ══ V7: ESCALAR AL ALCALDE ═══════════════════════════ */
+function vEscalar(c) {
+  const obrasCrit  = KausayDB.getObras().filter(o=>o.riesgo==='critico');
+  const plazos     = KausayDB.getCriticos();
+  const compVen    = KausayDB.getCompromisos().filter(x=>x.ven&&x.prioridad==='alta');
+  const presupCrit = KausayDB.getPresupuesto().por_area.filter(p=>p.pct<40);
+
+  const total = obrasCrit.length + plazos.length + compVen.length + presupCrit.length;
+
+  if(!total){
+    c.appendChild(emptyState('✅','Sin elementos para escalar','Todo está dentro de los parámetros manejables. Excelente gestión.'));
+    return;
+  }
+
+  c.appendChild(secHead(`${total} elementos que requieren decisión del alcalde`,'',null));
+
+  // Obras paralizadas
+  if(obrasCrit.length) {
+    c.appendChild(secHead('Obras críticas — decisión del alcalde','',null));
+    obrasCrit.forEach(o=>{
+      const card=mk('div','escalar-card');
+      card.innerHTML=`
+        <div class="escalar-card__hd">
+          <span class="escalar-card__ico">🚨</span>
+          <div class="escalar-card__ttl">${o.nombre}</div>
+        </div>
+        <div class="escalar-card__desc">${o.estado==='paralizada'?`Paralizada ${o.dias_sin_av} días.`:'En riesgo crítico.'} Presupuesto en riesgo: <strong>${KausayDB.fmt(o.presup)}</strong>. Requiere decisión: continuar, resolver o intervenir.</div>
+        <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="escalerAlcalde('obra','${o.nombre}')">🚨 Escalar al alcalde</button>`;
+      c.appendChild(card);
+    });
+  }
+
+  // Plazos críticos
+  if(plazos.length) {
+    c.appendChild(secHead('Plazos normativos — alertar al alcalde','',null));
+    plazos.forEach(p=>{
+      const card=mk('div','escalar-card');
+      card.innerHTML=`
+        <div class="escalar-card__hd">
+          <span class="escalar-card__ico">⏰</span>
+          <div class="escalar-card__ttl">${p.sistema} — ${p.dias} días</div>
+        </div>
+        <div class="escalar-card__desc">${p.desc}. Responsable: <strong>${p.resp}</strong>. Requiere que el alcalde exija el plan de cumplimiento.</div>
+        <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="escalerAlcalde('plazo','${p.sistema}: ${p.desc}')">🚨 Escalar al alcalde</button>`;
+      c.appendChild(card);
+    });
+  }
+
+  // Compromisos vencidos alta prioridad
+  if(compVen.length) {
+    c.appendChild(secHead('Compromisos de alta prioridad vencidos','',null));
+    compVen.forEach(x=>{
+      const card=mk('div','escalar-card');
+      card.innerHTML=`
+        <div class="escalar-card__hd">
+          <span class="escalar-card__ico">🤝</span>
+          <div class="escalar-card__ttl">${x.desc.slice(0,60)}${x.desc.length>60?'...':''}</div>
+        </div>
+        <div class="escalar-card__desc">Responsable: <strong>${x.resp}</strong>. Fecha: <strong>${x.fec}</strong>. Sin cumplimiento ni reporte.</div>
+        <button class="kk-btn kk-btn--danger" style="font-size:11px;padding:6px 14px" onclick="escalerAlcalde('compromiso','${x.desc.slice(0,60)}')">🚨 Escalar al alcalde</button>`;
+      c.appendChild(card);
+    });
+  }
+}
+
+/* ══ RENDERERS ═══════════════════════════════════════ */
+function renderInstrGM(ins, conAcciones=false) {
+  const tipoCol = {instruccion:'var(--c-critico)',consulta:'var(--c-info)',alerta:'var(--c-alerta)'}[ins.tipo]||'var(--c-gris3)';
+  const card=mk('div','instr-gm'); card.style.setProperty('--ic',tipoCol);
+  const tipoLabel={instruccion:'Instrucción',consulta:'Consulta',alerta:'Alerta',difusion:'Difusión'}[ins.tipo]||ins.tipo;
+  card.innerHTML=`
+    <div class="instr-gm__hd">
+      <span class="kk-chip kk-tipo--${ins.tipo}">${tipoLabel}</span>
+      <span style="font-size:10px;font-weight:600;color:var(--c-gris2);flex:1;margin-left:4px">Del Alcalde</span>
+      <span style="font-size:10px;color:var(--c-gris3)">${ins.hora}</span>
+      <span style="font-size:10px;font-weight:700;color:${ins.confirmada?'var(--c-ok)':'var(--c-alerta)'};${!ins.confirmada?'animation:pulse 2s infinite':''}">${ins.confirmada?'✓ Leída':'⏳ Sin acuse'}</span>
+    </div>
+    <div class="instr-gm__txt">${ins.contenido}</div>
+    ${ins.respuesta?`<div class="instr-gm__resp"><strong>Mi respuesta:</strong> ${ins.respuesta}</div>`:''}
+    ${ins.prioridad==='urgente'?`<div class="kk-item__prio-urgente" style="margin-bottom:6px">⚡ Urgente</div>`:''}
+    <div class="instr-gm__acts">
+      ${!ins.confirmada?`<button class="kk-btn kk-btn--ok" style="font-size:11px;padding:5px 11px" onclick="confirmarInstr('${ins.id}')">✓ Confirmar lectura</button>`:''}
+      ${!ins.respuesta?`<button class="kk-btn kk-btn--ghost" style="font-size:11px;padding:5px 11px" onclick="abrirRespuesta('${ins.id}')">Responder</button>`:''}
+      <button class="kk-btn kk-btn--ghost" style="font-size:11px;padding:5px 11px" onclick="abrirDerivar(null,null,'${ins.contenido.slice(0,80)}')">Derivar</button>
+    </div>`;
+  return card;
+}
+
+function renderCompGM(comp, urgente=false) {
+  const col=comp.ven||comp.estado==='vencido'?'var(--c-critico)':comp.estado==='en_proceso'?'var(--c-info)':'var(--c-alerta)';
+  const card=mk('div','kk-item');
+  card.innerHTML=`
+    <div class="kk-item__hd">
+      <span class="kk-item__tipo kk-tipo--${comp.origen}">${comp.origen}</span>
+      <span style="font-size:10px;font-weight:700;color:${col};margin-left:auto">${comp.ven||comp.estado==='vencido'?'VENCIDO':comp.estado.replace('_',' ').toUpperCase()}</span>
+    </div>
+    <div class="kk-item__txt">${comp.desc}</div>
+    <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+      <span class="kk-chip kk-chip--neutral">Resp: ${comp.resp}</span>
+      <span style="font-size:11px;font-weight:700;color:${col}">${comp.fec}</span>
+      ${comp.prioridad==='alta'?'<span class="kk-chip kk-chip--critico">Alta prioridad</span>':''}
+      ${urgente?`<button class="kk-btn kk-btn--ghost" style="font-size:10px;padding:3px 9px;margin-left:auto" onclick="abrirDerivar('${comp.resp}','${comp.resp}')">📌 Seguimiento</button>`:''}
+    </div>`;
+  return card;
+}
+
+function renderObraGM(o) {
+  const col=KausayDB.riesgoColor(o.riesgo);
+  const ger=KausayDB.getGerencia(o.ger);
+  const card=mk('div','obra-gm');
+  card.style.borderLeft=`3px solid ${col}`;
+  card.innerHTML=`
+    <div class="obra-gm__left">
+      <div class="obra-gm__nombre">${o.nombre}</div>
+      <div class="obra-gm__meta">
+        <span class="kk-chip ${o.riesgo==='critico'?'kk-chip--critico':o.riesgo==='alto'?'kk-chip--alerta':'kk-chip--neutral'}">${o.riesgo}</span>
+        ${ger?`<span style="font-size:10px;color:var(--c-gris3)">${ger.nombre.split(' ').slice(0,1).join(' ')}</span>`:''}
+        ${o.dias_sin_av>0?`<span style="font-size:10px;color:${o.dias_sin_av>7?'var(--c-critico)':'var(--c-alerta)'};font-weight:600">${o.dias_sin_av}d sin avance</span>`:''}
+      </div>
+      <div class="obra-gm__info">${KausayDB.fmt(o.presup)} · Fin: ${o.fin}</div>
+      <div class="instr-gm__acts" style="margin-top:7px">
+        <button class="kk-btn kk-btn--ghost" style="font-size:11px;padding:5px 11px" onclick="abrirDerivar('${o.ger}','${o.ger}','Requiero actualización urgente de avance de obra: ${o.nombre.slice(0,40)}')">📌 Pedir avance</button>
+        ${o.riesgo==='critico'?`<button class="kk-btn kk-btn--danger" style="font-size:11px;padding:5px 11px" onclick="escalerAlcalde('obra','${o.nombre.slice(0,60)}')">🚨 Escalar</button>`:''}
+      </div>
+    </div>
+    <div class="obra-gm__right">
+      <div class="obra-gm__pct" style="color:${col}">${o.pct}%</div>
+      <div class="obra-gm__pct-l">avance</div>
+      <div class="kk-bar-track" style="width:52px;height:5px;margin-top:5px"><div class="kk-bar-fill" style="width:${o.pct}%;background:${col}"></div></div>
+    </div>`;
+  return card;
+}
+
+/* ══ DOCK ════════════════════════════════════════════ */
+function buildDock() {
+  const dock=document.getElementById('dock'); if(!dock) return;
+  const items=[
+    {ico:'📌',lbl:'Emitir\ninstrucción', fn:()=>{abrirDerivar(null,null,'');KausayDB.Telemetry.firstAction();},primary:true},
+    {ico:'📊',lbl:'Pedir\ninforme',      fn:()=>abrirModal('modal-informe')},
+    {ico:'🚨',lbl:'Escalar\nal alcalde', fn:()=>nav('escalar')},
+    {ico:'🏗',lbl:'Obras\ncríticas',     fn:()=>nav('obras')},
+    {ico:'💰',lbl:'Presupuesto',         fn:()=>nav('presupuesto')},
+  ];
+  dock.innerHTML='';
+  items.forEach(it=>{
+    const btn=mk('button','kk-dock-btn'+(it.primary?' kk-dock-btn--primary':''));
+    btn.innerHTML=`<span class="kk-dock-btn__ico">${it.ico}</span><span class="kk-dock-btn__lbl">${it.lbl}</span>`;
+    btn.onclick=it.fn; dock.appendChild(btn);
+  });
+}
+
+/* ══ ACCIONES ════════════════════════════════════════ */
+function confirmarInstr(id) {
+  KausayDB.confirmarInstruccion(id);
+  KausayDB.Telemetry.firstAction();
+  toast('✓ Instrucción confirmada. El alcalde fue notificado.');
+  render();
+}
+
+function abrirRespuesta(id) {
+  const txt = prompt('Tu respuesta a esta instrucción:');
+  if(!txt||!txt.trim()) return;
+  KausayDB.responderInstruccion(id, txt.trim());
+  toast('✓ Respuesta enviada al alcalde');
+  render();
+}
+
+function abrirDerivar(gerCod, gerNombre, prefill='') {
+  derivarDestino = gerCod;
+  document.getElementById('modal-derivar-ttl').textContent = gerNombre ? `Instrucción → ${gerNombre}` : 'Emitir instrucción';
+  document.getElementById('derivar-txt').value = prefill;
+  document.getElementById('derivar-err').classList.remove('show');
+
+  // Build destination grid
+  const gers = KausayDB.getGerencias();
+  const grid = document.getElementById('derivar-dests');
+  grid.innerHTML = '';
+  [{cod:'GM',nombre:'Gerente Mun.',ico:'🏛'}, ...gers.map(g=>({cod:g.cod,nombre:g.nombre.split(' ').slice(0,2).join(' '),ico:'🏢'}))].forEach(d=>{
+    const btn=mk('button','dest-opt'+(d.cod===gerCod?' sel':''));
+    btn.innerHTML=`<span class="dest-opt__ico">${d.ico}</span><span class="dest-opt__lbl">${d.nombre}</span>`;
+    btn.onclick=()=>{ document.querySelectorAll('.dest-opt').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); derivarDestino=d.cod; };
+    grid.appendChild(btn);
+  });
+  abrirModal('modal-derivar');
+}
+
+function enviarDerivacion() {
+  const txt = document.getElementById('derivar-txt')?.value.trim();
+  if(!txt){ document.getElementById('derivar-err').classList.add('show'); return; }
+  const prio = document.getElementById('derivar-prio')?.value;
+  const para = derivarDestino || 'GM';
+  const ger = KausayDB.getGerencia(para);
+  const paraLabel = ger?.nombre || (para==='GM'?'Gerente Municipal':para);
+  KausayDB.addInstruccion({ tipo:derivarTipo, para, paraLabel, contenido:txt, prioridad:prio });
+  document.getElementById('derivar-txt').value='';
+  cerrarModal('modal-derivar');
+  toast(`✓ Instrucción enviada a ${paraLabel}`);
+  KausayDB.Telemetry.instruccionEnviada(derivarTipo);
+  nav('instrucciones');
+}
+
+function abrirInforme(gerCod) {
+  const sel = document.getElementById('informe-ger');
+  sel.innerHTML = KausayDB.getGerencias().map(g=>`<option value="${g.cod}" ${g.cod===gerCod?'selected':''}>${g.nombre}</option>`).join('');
+  abrirModal('modal-informe');
+}
+
+function enviarSolicitudInforme() {
+  const txt   = document.getElementById('informe-txt')?.value.trim();
+  const gerCod= document.getElementById('informe-ger')?.value;
+  const plazo = document.getElementById('informe-plazo')?.value;
+  if(!txt){toast('⚠ Describe el informe requerido');return;}
+  const ger = KausayDB.getGerencia(gerCod);
+  KausayDB.addInstruccion({
+    tipo:'consulta', para:gerCod,
+    paraLabel: ger?.nombre || gerCod,
+    contenido: `[INFORME SOLICITADO] ${txt}${plazo?` — Plazo: ${plazo}`:''}`,
+    prioridad:'normal',
+  });
+  document.getElementById('informe-txt').value='';
+  cerrarModal('modal-informe');
+  toast(`✓ Solicitud de informe enviada a ${ger?.nombre||gerCod}`);
+  nav('instrucciones');
+}
+
+function escalerGerencia(cod, nombre) {
+  KausayDB.addInstruccion({
+    tipo:'alerta', para:'alcalde', paraLabel:'Alcalde',
+    contenido:`[ESCALAMIENTO GM] La gerencia ${nombre} presenta ejecución crítica y requiere su intervención directa.`,
+    prioridad:'urgente',
+  });
+  KausayDB.Audit.emit('escalamiento', cod, nombre, 'escalar', null, {destino:'alcalde',motivo:'ejecucion_critica'});
+  toast(`🚨 Escalamiento enviado al alcalde sobre ${nombre}`);
+  render();
+}
+
+function escalerAlcalde(tipo, descripcion) {
+  KausayAuth.reauth('Escalar situación crítica al alcalde').then(ok => {
+    if (!ok) { const t=document.getElementById('toast');t.textContent='⚠ Verificación cancelada';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500); return; }
+  const msgs = {
+    obra:`[ESCALAMIENTO] Obra requiere decisión urgente: ${descripcion}`,
+    plazo:`[ESCALAMIENTO] Plazo normativo inminente: ${descripcion}`,
+    compromiso:`[ESCALAMIENTO] Compromiso vencido de alta prioridad: ${descripcion}`,
+  };
+  KausayDB.addInstruccion({
+    tipo:'alerta', para:'alcalde', paraLabel:'Alcalde',
+    contenido: msgs[tipo]||`[ESCALAMIENTO] ${descripcion}`,
+    prioridad:'urgente',
+  });
+  KausayDB.Audit.emit('escalamiento', tipo, descripcion.slice(0,50), 'escalar', null, {destino:'alcalde',tipo});
+  toast('🚨 Escalamiento enviado al alcalde');
+  render();
+  }); // end reauth
+}
+
+/* ══ CHIPS TIPO DERIVAR ═══════════════════════════════ */
+document.querySelectorAll('[data-tipo]').forEach(btn=>{
+  if(btn.closest('#derivar-chips')) {
+    btn.onclick=()=>{
+      document.querySelectorAll('#derivar-chips .kk-chip-btn').forEach(b=>b.classList.remove('sel'));
+      btn.classList.add('sel');
+      derivarTipo=btn.dataset.tipo;
+    };
+  }
+});
+
+/* ══ MODALES ═════════════════════════════════════════ */
+function abrirModal(id){ document.getElementById(id)?.classList.add('show'); }
+function cerrarModal(id){ document.getElementById(id)?.classList.remove('show'); }
+
+/* ══ HELPERS ═════════════════════════════════════════ */
+function mk(tag,cls){ const el=document.createElement(tag); if(cls) el.className=cls; return el; }
+function secHead(ttl,lnkTxt,lnkFn){
+  const hd=mk('div','kk-sec-hd');
+  hd.innerHTML=`<span class="kk-sec-ttl">${ttl}</span>`;
+  if(lnkTxt&&lnkFn){const btn=mk('button','kk-sec-lnk');btn.textContent=lnkTxt;btn.onclick=lnkFn;hd.appendChild(btn);}
+  return hd;
+}
+function emptyState(ico,ttl,desc){
+  const el=mk('div','kk-empty');
+  el.innerHTML=`<div class="kk-empty__ico">${ico}</div><div class="kk-empty__ttl">${ttl}</div><div class="kk-empty__desc">${desc}</div>`;
+  return el;
+}
+function toast(msg,dur=2800){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ══ OFFLINE ═════════════════════════════════════════ */
+function updateOnlineStatus(){
+  const bar=document.getElementById('offline-bar');
+  if(bar) bar.classList.toggle('show',!navigator.onLine);
+}
+window.addEventListener('online', ()=>{updateOnlineStatus();toast('✓ Conexión restaurada');});
+window.addEventListener('offline', updateOnlineStatus);
+
+function logout(){ window.location.href='index.html'; }
+
+/* ══ INIT ════════════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  // ── AUTH ──
+  KausayAuth.requireAuth(['gerente_municipal', 'alcalde', 'asesor_despacho']);
+  const _sess = KausayAuth.getSession();
+  KausayBranding.apply({ rol: _sess?.rol || 'gerente_municipal' });
+  const muni  = KausayDB.getMuni();
+  const nombre= sessionStorage.getItem('kausay_demo_nombre')||muni.gm||'Gerente Municipal';
+  const ini   = nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
+
+  document.getElementById('sb-muni').textContent = muni.nombre||'Municipalidad';
+  document.getElementById('sb-av').textContent   = ini;
+  document.getElementById('sb-name').textContent = nombre;
+
+  // Poblar selector de gerencias en modal informe
+  const sel = document.getElementById('informe-ger');
+  if(sel) sel.innerHTML = KausayDB.getGerencias().map(g=>`<option value="${g.cod}">${g.nombre}</option>`).join('');
+
+  updateOnlineStatus();
+
+  // EventBus — dentro de load
+  KausayDB.EventBus.on('instruccion:confirmada',       ()=>render());
+  KausayDB.EventBus.on('instruccion:respondida',       ()=>render());
+  KausayDB.EventBus.on('instruccion:nueva',            ()=>render());
+  KausayDB.EventBus.on('obra:avance',                  ()=>render());
+  KausayDB.EventBus.on('compromiso:nuevo',             ()=>render());
+  KausayDB.EventBus.on('compromiso:updated',           ()=>render());
+  KausayDB.EventBus.on('alerta:nueva',                 ()=>render());
+  KausayDB.EventBus.on('wq:conflict',                  ()=>render());
+  KausayDB.EventBus.on('remote:instruccion:nueva',     ()=>render());
+  KausayDB.EventBus.on('remote:obra:avance',           ()=>render());
+
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('app').style.display='flex';
+
+  render();
+
+  
+  // ── REALTIME SUPABASE (Etapa 4) ──
+  KausayDB.subscribeRealtime('instrucciones', payload => {
+    KausayDB.Cache.invalidate('instrucciones');
+    if (payload.eventType === 'INSERT') KausayDB.EventBus.emit('instruccion:nueva', payload.new);
+    if (payload.eventType === 'UPDATE') KausayDB.EventBus.emit('instruccion:confirmada', { id: payload.new?.id });
+    render();
+  });
+  KausayDB.subscribeRealtime('obras', payload => {
+    KausayDB.Cache.invalidate('obras');
+    KausayDB.EventBus.emit('obra:avance', { id: payload.new?.id });
+    render();
+  });
+  KausayDB.subscribeRealtime('compromisos', payload => {
+    KausayDB.Cache.invalidate('compromisos');
+    render();
+  });
+  if (KausayDB.CONFIG.USE_SUPABASE) KausayDB.loadInitialData().then(() => render());
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  KausayFreshness.autoMount();
+  KausayExport.renderExportBtn('kk-fresh-wrap', ["instrucciones", "compromisos", "obras", "presupuesto"]);
+  setTimeout(()=>document.getElementById('loader').remove(),500);
+});
 </script>
 </body>
 </html>
