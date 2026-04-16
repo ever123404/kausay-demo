@@ -1,676 +1,821 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#0F1015">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title id="page-title">Sistema Municipal · Cajamarca</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ui-kit.css">
-<style>
-/* ── OVERRIDE GLOBAL para portada oscura ── */
-html,body { overflow: auto; background: #0F1015; color: #fff; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0B1622">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Centro de Mando Municipal — Municipalidad Provincial de Cajamarca">
+  <title>Cajamarca · Centro de Mando</title>
 
-/* ── FONDO INSTITUCIONAL ── */
-.ix-bg {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    radial-gradient(ellipse at 20% 0%,   rgba(139,26,26,.18) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 100%, rgba(24,50,95,.15)  0%, transparent 55%),
-    #0F1015;
-}
+  <!-- Google Fonts: Barlow Condensed (títulos) + Barlow (cuerpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-/* ── LAYOUT PRINCIPAL ── */
-.ix-page { position: relative; z-index: 1; min-height: 100vh;
-  display: flex; flex-direction: column; max-width: 440px;
-  margin: 0 auto; padding: 0 0 40px; }
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       KAUSAY MUNICIPAL v2.1 — Design System Institucional
+       Paleta: Vino · Azul · Dorado · Carbón · Blanco
+       Contraste: AA/AAA para lectura en exterior y brillo bajo
+    ══════════════════════════════════════════════════════════ */
 
-/* ── HEADER INSTITUCIONAL ── */
-.ix-header {
-  padding: 28px 20px 20px;
-  display: flex; flex-direction: column; align-items: center;
-  text-align: center; gap: 0;
-}
-.ix-escudo {
-  width: 68px; height: auto;
-  filter: drop-shadow(0 3px 16px rgba(0,0,0,.7));
-  margin-bottom: 12px; display: block;
-}
-.ix-muni-nombre {
-  font-family: var(--f-cond); font-size: 22px; font-weight: 800;
-  color: #fff; line-height: 1.2; letter-spacing: .2px; margin-bottom: 3px;
-}
-.ix-muni-tipo {
-  font-size: 10px; color: rgba(255,255,255,.35);
-  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
-}
-.ix-divider {
-  width: 36px; height: 1.5px;
-  background: linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
-  margin: 0 auto 10px;
-}
-.ix-sistema-tag {
-  font-size: 10px; color: rgba(255,255,255,.22);
-  letter-spacing: .5px; font-weight: 500;
-}
+    :root {
+      /* ── Colores institucionales ── */
+      --vino:          #6B1A2A;
+      --vino-mid:      #8B2A3E;
+      --vino-light:    #B03A52;
+      --azul:          #1B3A6B;
+      --azul-mid:      #2456A0;
+      --azul-light:    #3B72C0;
+      --dorado:        #C4992A;
+      --dorado-bright: #E0B84A;
+      --dorado-pale:   #F0D080;
 
-/* ── ESTADO GENERAL MUNICIPIO ── */
-.ix-estado {
-  margin: 4px 16px 0;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 16px; padding: 16px;
-}
-.ix-estado__header {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-}
-.ix-semaforo {
-  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-}
-.ix-semaforo--critico { background: #E03030; animation: pulse 2s infinite; }
-.ix-semaforo--alerta  { background: #D4900A; animation: pulse 2.5s infinite; }
-.ix-semaforo--normal  { background: #2A9A55; }
-.ix-estado__ttl {
-  font-family: var(--f-cond); font-size: 15px; font-weight: 700;
-  color: rgba(255,255,255,.9); flex: 1;
-}
-.ix-estado__ts {
-  font-size: 10px; color: rgba(255,255,255,.3);
-}
-.ix-kpis {
-  display: grid; grid-template-columns: repeat(4,1fr); gap: 6px;
-}
-.ix-kpi {
-  background: rgba(255,255,255,.06); border-radius: 10px;
-  padding: 9px 6px; text-align: center;
-}
-.ix-kpi__v {
-  font-family: var(--f-cond); font-size: 22px; font-weight: 800; line-height: 1;
-}
-.ix-kpi__l {
-  font-size: 8px; color: rgba(255,255,255,.38);
-  text-transform: uppercase; letter-spacing: .3px;
-  margin-top: 3px; line-height: 1.3;
-}
-.ix-estado__sub {
-  margin-top: 11px; font-size: 11px; font-weight: 500;
-  color: rgba(255,255,255,.42); line-height: 1.6;
-  padding-top: 11px; border-top: 1px solid rgba(255,255,255,.07);
-}
+      /* ── Fondos (dark — Centro de Mando) ── */
+      --bg-base:       #0B1622;   /* fondo global */
+      --bg-2:          #112032;   /* header, navs */
+      --bg-3:          #1A2E42;   /* cards principales */
+      --bg-4:          #243A50;   /* cards secundarias */
+      --bg-5:          #2E4760;   /* hover states */
 
-/* ── ACCESO CONTEXTUAL ── */
-.ix-acceso {
-  margin: 12px 16px 0; padding: 16px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 16px;
-}
-.ix-acceso--autenticado {
-  border-color: rgba(255,255,255,.18);
-  background: rgba(255,255,255,.07);
-}
-.ix-acceso__hd {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-}
-.ix-acceso__av {
-  width: 36px; height: 36px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
-}
-.ix-acceso__nombre {
-  font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2;
-}
-.ix-acceso__rol {
-  font-size: 10px; color: rgba(255,255,255,.45); margin-top: 1px;
-}
-.ix-acceso__logout {
-  margin-left: auto; background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
-  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.45);
-  padding: 4px 10px; cursor: pointer; font-family: var(--f-sans);
-}
-.ix-acceso__logout:hover { background: rgba(255,255,255,.15); }
+      /* ── Bordes ── */
+      --border:        rgba(255,255,255,0.09);
+      --border-2:      rgba(255,255,255,0.14);
+      --border-vino:   rgba(107,26,42,0.55);
+      --border-azul:   rgba(27,58,107,0.55);
+      --border-dorado: rgba(196,153,42,0.35);
 
-.ix-btn-main {
-  width: 100%; padding: 14px; border-radius: 12px; border: none;
-  font-family: var(--f-sans); font-size: 14px; font-weight: 700;
-  cursor: pointer; transition: all .15s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.ix-btn-main--login {
-  background: #8B1A1A; color: #fff;
-}
-.ix-btn-main--login:hover { background: #6A1010; }
-.ix-btn-main--panel {
-  color: #fff;
-}
-.ix-btn-main--panel:hover { filter: brightness(.9); }
+      /* ── Texto (AAA sobre fondo carbón) ── */
+      --text-1:        #EBF0F8;   /* 15.4:1 — primario */
+      --text-2:        #9DAEC4;   /* 7.8:1  — secundario */
+      --text-3:        #5D7494;   /* 4.5:1  — terciario/placeholders */
+      --text-dorado:   #D4AF37;   /* 7.2:1  — etiquetas doradas */
+      --text-vino:     #F9A8B8;   /* 9.1:1  — etiquetas vino */
 
-/* ── ACCESOS SECUNDARIOS (otros roles) ── */
-.ix-accesos-sec {
-  margin-top: 10px; display: flex; gap: 7px; flex-wrap: wrap;
-}
-.ix-acc-btn {
-  flex: 1; min-width: 80px; padding: 9px 6px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.1); border-radius: 10px;
-  cursor: pointer; text-align: center; font-family: var(--f-sans);
-  transition: background .12s; text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.ix-acc-btn:hover { background: rgba(255,255,255,.12); }
-.ix-acc-btn:active { transform: scale(.96); }
-.ix-acc-btn__ico { font-size: 18px; display: block; margin-bottom: 3px; }
-.ix-acc-btn__lbl {
-  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.65); line-height: 1.3;
-}
-.ix-acc-btn__sub {
-  font-size: 9px; color: rgba(255,255,255,.3); margin-top: 1px;
-}
+      /* ── Semáforo ── */
+      --verde:         #22C55E;
+      --verde-bg:      rgba(34,197,94,0.12);
+      --ambar:         #F59E0B;
+      --ambar-bg:      rgba(245,158,11,0.12);
+      --rojo:          #EF4444;
+      --rojo-bg:       rgba(239,68,68,0.10);
 
-/* ── SEC HEADER ── */
-.ix-sec-hd {
-  padding: 16px 20px 8px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.ix-sec-ttl {
-  font-size: 10px; font-weight: 700; color: rgba(255,255,255,.3);
-  text-transform: uppercase; letter-spacing: 1.5px;
-}
+      /* ── Tipografías ── */
+      --font-cond:     'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+      --font-body:     'Barlow', Arial, sans-serif;
 
-/* ── SEMÁFORO DE GERENCIAS ── */
-.ix-gerencias {
-  padding: 0 16px; display: flex; flex-direction: column; gap: 8px;
-}
-.ix-ger-card {
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.09);
-  border-left: 4px solid var(--gc, rgba(255,255,255,.2));
-  border-radius: 14px; padding: 12px 14px;
-  display: flex; align-items: center; gap: 12px;
-  cursor: default; transition: background .12s;
-}
-.ix-ger-card:active { background: rgba(255,255,255,.09); }
-.ix-ger-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  flex-shrink: 0;
-}
-.ix-ger-body { flex: 1; min-width: 0; }
-.ix-ger-nombre {
-  font-size: 12px; font-weight: 700; color: rgba(255,255,255,.85);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  margin-bottom: 2px;
-}
-.ix-ger-jefe  { font-size: 10px; color: rgba(255,255,255,.32); }
-.ix-ger-right { text-align: right; flex-shrink: 0; }
-.ix-ger-pct   {
-  font-family: var(--f-cond); font-size: 24px; font-weight: 800; line-height: 1;
-}
-.ix-ger-pct-l { font-size: 9px; color: rgba(255,255,255,.3); }
-.ix-ger-badge {
-  font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 7px;
-  text-transform: uppercase; letter-spacing: .3px; margin-top: 3px;
-  display: inline-block;
-}
+      /* ── Radios ── */
+      --r-sm:    8px;
+      --r-md:   12px;
+      --r-lg:   16px;
+      --r-xl:   20px;
+      --r-card: 16px;
+    }
 
-/* ── OBRAS CRÍTICAS (mini) ── */
-.ix-obras { padding: 0 16px; display: flex; flex-direction: column; gap: 7px; }
-.ix-obra-mini {
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-left: 3px solid rgba(180,32,32,.7);
-  border-radius: 12px; padding: 10px 12px;
-  display: flex; align-items: center; gap: 10px;
-}
-.ix-obra-mini__body { flex: 1; min-width: 0; }
-.ix-obra-mini__nombre { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ix-obra-mini__meta  { font-size: 10px; color: rgba(255,255,255,.38); }
-.ix-obra-mini__pct   { font-family: var(--f-cond); font-size: 22px; font-weight: 800; color: #E05050; flex-shrink: 0; }
+    /* ── Reset y base ────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      min-height: 100dvh;
+      background: var(--bg-base);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.5;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-/* ── FOOTER ── */
-.ix-footer {
-  margin: 20px 16px 0; padding: 14px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.07); border-radius: 12px;
-  text-align: center;
-}
-.ix-footer__txt {
-  font-size: 10px; color: rgba(255,255,255,.2); line-height: 1.8;
-}
-.ix-footer__txt strong { color: rgba(255,255,255,.35); }
-.ix-powered {
-  margin-top: 16px; text-align: center;
-  font-size: 9px; color: rgba(255,255,255,.12); letter-spacing: .5px;
-}
+    /* ══ HEADER INSTITUCIONAL ══════════════════ */
+    .header {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border-2);
+      padding: env(safe-area-inset-top, 0px) 0 0;
+      position: sticky; top: 0; z-index: 90;
+    }
+    .header-inner {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px 12px;
+    }
 
-/* ── LOADER ── */
-.ix-loader {
-  position: fixed; inset: 0; z-index: 100; background: #0F1015;
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 14px; transition: opacity .4s;
-}
-.ix-loader.gone { opacity: 0; pointer-events: none; }
-.ix-loader__spin {
-  width: 24px; height: 24px;
-  border: 2px solid rgba(255,255,255,.1);
-  border-top-color: rgba(139,26,26,.8);
-  border-radius: 50%; animation: spin .7s linear infinite;
-}
-.ix-loader__txt { font-size: 11px; color: rgba(255,255,255,.25); letter-spacing: .5px; }
+    /* Escudo con efecto dorado */
+    .escudo-wrap {
+      position: relative; flex-shrink: 0;
+    }
+    .escudo {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--dorado-bright), var(--dorado));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; position: relative; z-index: 1;
+    }
+    .escudo-ring {
+      position: absolute; inset: -4px; border-radius: 50%;
+      border: 1.5px solid rgba(196,153,42,0.35);
+    }
+    .escudo-ring-2 {
+      position: absolute; inset: -8px; border-radius: 50%;
+      border: 1px solid rgba(196,153,42,0.15);
+    }
 
-/* ── ANIMACIONES ── */
-@keyframes fadeUp2 { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
-.anim-1 { animation: fadeUp2 .45s .05s ease both; opacity:0; }
-.anim-2 { animation: fadeUp2 .45s .15s ease both; opacity:0; }
-.anim-3 { animation: fadeUp2 .45s .25s ease both; opacity:0; }
-.anim-4 { animation: fadeUp2 .45s .35s ease both; opacity:0; }
-.anim-5 { animation: fadeUp2 .45s .45s ease both; opacity:0; }
+    .header-text { flex: 1; min-width: 0; }
+    .mpc-tag {
+      font-family: var(--font-cond);
+      font-size: 10px; font-weight: 600; letter-spacing: 2.5px;
+      color: var(--dorado); text-transform: uppercase;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mpc-nombre {
+      font-family: var(--font-cond);
+      font-size: 20px; font-weight: 800; line-height: 1.05;
+      color: var(--text-1); letter-spacing: 0.3px;
+    }
+    .mpc-sistema {
+      font-size: 10px; color: var(--text-3); letter-spacing: 1.2px;
+      text-transform: uppercase; margin-top: 2px;
+    }
 
-@media(min-width:480px){ .ix-page { padding-bottom: 60px; } }
-</style>
+    /* Barra de estado */
+    .status-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 18px 11px;
+      border-top: 1px solid var(--border);
+    }
+    .status-live {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(34,197,94,0.10);
+      border: 1px solid rgba(34,197,94,0.22);
+      border-radius: 20px; padding: 4px 11px 4px 9px;
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--verde);
+      box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 2px rgba(34,197,94,0.25); }
+      50%      { box-shadow: 0 0 0 5px rgba(34,197,94,0.08); }
+    }
+    .live-text {
+      font-family: var(--font-cond);
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      color: #4ADE80; text-transform: uppercase;
+    }
+    .clock-display {
+      font-family: var(--font-cond);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.8px;
+      color: var(--text-2);
+    }
+
+    /* ══ KPI STRIP ══════════════════════════════ */
+    .kpi-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      padding: 16px 14px 0;
+    }
+    .kpi-card {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 12px 8px 10px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .kpi-accent {
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      border-radius: 2px 2px 0 0;
+    }
+    .kpi-card.kpi-azul .kpi-accent  { background: var(--azul-mid); }
+    .kpi-card.kpi-dorado .kpi-accent { background: var(--dorado); }
+    .kpi-card.kpi-alerta .kpi-accent { background: var(--rojo); }
+    .kpi-valor {
+      font-family: var(--font-cond);
+      font-size: 24px; font-weight: 800; color: var(--text-1);
+      line-height: 1; margin-top: 2px;
+    }
+    .kpi-card.kpi-azul  .kpi-valor { color: #93C5FD; }
+    .kpi-card.kpi-dorado .kpi-valor { color: var(--dorado-pale); }
+    .kpi-card.kpi-alerta .kpi-valor { color: #F87171; }
+    .kpi-label {
+      font-size: 9px; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-top: 5px; line-height: 1.2;
+    }
+    .kpi-trend {
+      font-family: var(--font-cond);
+      font-size: 10px; font-weight: 700; margin-top: 4px; letter-spacing: 0.3px;
+    }
+    .kpi-trend.up    { color: #4ADE80; }
+    .kpi-trend.warn  { color: #FBBF24; }
+    .kpi-trend.alert { color: #F87171; }
+
+    /* ══ ALERTA CRÍTICA ════════════════════════ */
+    .alert-strip {
+      margin: 12px 14px 0;
+      background: rgba(239,68,68,0.09);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--r-md);
+      padding: 11px 14px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .alert-pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--rojo); flex-shrink: 0; margin-top: 3px;
+      animation: pulse-dot 1.5s infinite;
+    }
+    .alert-body { font-size: 12px; color: #FCA5A5; line-height: 1.45; }
+    .alert-bold { font-weight: 600; color: #FECACA; }
+
+    /* ══ SECTION HEADERS ════════════════════════ */
+    .section-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 14px 8px;
+    }
+    .section-title {
+      font-family: var(--font-cond);
+      font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--text-3);
+    }
+    .section-count {
+      font-family: var(--font-cond);
+      font-size: 10px; color: var(--text-3); letter-spacing: 0.5px;
+    }
+
+    /* ══ TARJETAS DE ROL ════════════════════════ */
+    .roles-stack { display: flex; flex-direction: column; gap: 9px; padding: 0 14px; }
+
+    .rol-card {
+      border-radius: var(--r-card);
+      border: 1px solid var(--border);
+      overflow: hidden; cursor: pointer; position: relative;
+      transition: transform 0.15s cubic-bezier(.2,.8,.4,1), opacity 0.15s;
+      -webkit-user-select: none; user-select: none;
+      min-height: 76px;
+    }
+    .rol-card:active { transform: scale(0.975); opacity: 0.92; }
+
+    /* Fondo gradiente por rol */
+    .rol-bg {
+      position: absolute; inset: 0;
+      background: var(--bg-3);
+    }
+    .rol-glow {
+      position: absolute; inset: 0;
+      opacity: 0.12;
+    }
+
+    /* Alcalde — Vino institucional */
+    .card-alcalde .rol-glow { background: radial-gradient(ellipse at 20% 50%, var(--vino-mid), transparent 70%); }
+    .card-alcalde { box-shadow: inset 0 0 0 1px var(--border-vino); }
+    .card-alcalde .rol-icon-wrap { background: linear-gradient(145deg, var(--vino), var(--vino-mid)); }
+    .card-alcalde .rol-badge { background: rgba(107,26,42,0.40); color: var(--text-vino); border-color: rgba(176,58,82,0.25); }
+    .card-alcalde .rol-nombre { color: #FECDD3; }
+
+    /* Secretaria — Azul medio */
+    .card-secretaria .rol-glow { background: radial-gradient(ellipse at 20% 50%, var(--azul-mid), transparent 70%); }
+    .card-secretaria { box-shadow: inset 0 0 0 1px var(--border-azul); }
+    .card-secretaria .rol-icon-wrap { background: linear-gradient(145deg, var(--azul), var(--azul-mid)); }
+    .card-secretaria .rol-badge { background: rgba(27,58,107,0.45); color: #93C5FD; border-color: rgba(59,114,192,0.25); }
+    .card-secretaria .rol-nombre { color: #BFDBFE; }
+
+    /* GM — Azul profundo */
+    .card-gm .rol-glow { background: radial-gradient(ellipse at 20% 50%, #0F2347, transparent 70%); }
+    .card-gm { box-shadow: inset 0 0 0 1px rgba(15,35,71,0.7); }
+    .card-gm .rol-icon-wrap { background: linear-gradient(145deg, #0A1B3A, var(--azul)); }
+    .card-gm .rol-badge { background: rgba(15,35,71,0.55); color: #A5B4FC; border-color: rgba(100,120,230,0.22); }
+    .card-gm .rol-nombre { color: #C7D2FE; }
+
+    .rol-inner {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 14px;
+    }
+    .rol-icon-wrap {
+      width: 50px; height: 50px; border-radius: 13px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+    }
+    .rol-info { flex: 1; min-width: 0; }
+    .rol-nombre {
+      font-family: var(--font-cond);
+      font-size: 18px; font-weight: 700; line-height: 1.1;
+    }
+    .rol-persona { font-size: 12px; color: var(--text-2); margin-top: 3px; }
+    .rol-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-family: var(--font-cond);
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; padding: 3px 9px;
+      border-radius: 6px; border: 1px solid; margin-top: 7px;
+    }
+    .rol-chevron {
+      font-size: 22px; color: var(--text-3); flex-shrink: 0;
+      line-height: 1;
+    }
+
+    /* ══ GERENCIAS SECTORIALES ══════════════════ */
+    .gerencias-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      padding: 0 14px 24px;
+    }
+    .gerencia-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 13px 12px;
+      cursor: pointer; position: relative; overflow: hidden;
+      display: flex; align-items: center; gap: 10px;
+      min-height: 64px;
+      transition: background 0.14s, transform 0.14s;
+      -webkit-user-select: none; user-select: none;
+    }
+    .gerencia-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    }
+    .gc-infra::before   { background: #3B72C0; }
+    .gc-social::before  { background: #22C55E; }
+    .gc-amb::before     { background: #16A34A; }
+    .gc-eco::before     { background: var(--dorado); }
+    .gc-rcivil::before  { background: var(--vino-mid); }
+    .gc-transito::before{ background: #F59E0B; }
+
+    .gerencia-card:active { background: var(--bg-3); transform: scale(0.97); }
+    .gerencia-icon { font-size: 22px; flex-shrink: 0; }
+    .gerencia-info { min-width: 0; }
+    .gerencia-nombre {
+      font-family: var(--font-cond);
+      font-size: 13px; font-weight: 700; color: var(--text-1); line-height: 1.2;
+    }
+    .gerencia-sub { font-size: 10px; color: var(--text-3); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ══ FOOTER ═════════════════════════════════ */
+    .footer {
+      text-align: center; padding: 12px 16px 28px;
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+    .footer-powered {
+      font-family: var(--font-cond);
+      font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+      color: var(--text-3); text-transform: uppercase;
+    }
+    .footer-powered strong { color: var(--dorado); font-weight: 700; }
+    .footer-version { font-size: 10px; color: var(--text-3); margin-top: 3px; }
+
+    /* ══ MODAL CONTRASEÑA (bottom sheet) ════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5, 10, 18, 0.82);
+      display: none; align-items: flex-end; justify-content: center;
+      z-index: 200;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-sheet {
+      background: var(--bg-2);
+      border: 1px solid var(--border-2);
+      border-radius: 26px 26px 0 0;
+      padding: 20px 22px calc(env(safe-area-inset-bottom,0px) + 32px);
+      width: 100%; max-width: 500px;
+      animation: sheet-up 0.28s cubic-bezier(.2,.8,.4,1);
+    }
+    @keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .sheet-handle {
+      width: 38px; height: 4px; border-radius: 2px;
+      background: var(--bg-4); margin: 0 auto 22px;
+    }
+    .sheet-icon { text-align: center; font-size: 36px; margin-bottom: 6px; }
+    .sheet-titulo {
+      font-family: var(--font-cond);
+      font-size: 24px; font-weight: 800; text-align: center; color: var(--text-1); letter-spacing: 0.3px;
+    }
+    .sheet-sub { font-size: 13px; color: var(--text-2); text-align: center; margin-top: 4px; }
+
+    .input-wrap { position: relative; margin-top: 22px; }
+    .pass-input {
+      width: 100%; background: var(--bg-4);
+      border: 1.5px solid var(--border-2);
+      border-radius: var(--r-md);
+      padding: 16px 48px 16px 18px;
+      font-size: 16px; color: var(--text-1);
+      font-family: var(--font-body); letter-spacing: 3px;
+      outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .pass-input::placeholder { color: var(--text-3); letter-spacing: 1px; }
+    .pass-input:focus { border-color: var(--azul-mid); }
+    .pass-input.err   { border-color: var(--rojo); }
+
+    .eye-btn {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      font-size: 20px; cursor: pointer; color: var(--text-3); line-height: 1;
+      background: none; border: none; padding: 4px;
+    }
+
+    .error-msg {
+      font-size: 12px; color: #F87171; margin-top: 7px;
+      display: none; padding-left: 2px;
+    }
+    .error-msg.show { display: block; }
+
+    .confirm-btn {
+      width: 100%; margin-top: 18px;
+      background: var(--azul-mid); border: none;
+      border-radius: var(--r-md); padding: 17px 16px;
+      font-family: var(--font-cond);
+      font-size: 18px; font-weight: 800; letter-spacing: 1.5px;
+      color: #fff; cursor: pointer; text-transform: uppercase;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .confirm-btn:active { background: var(--azul); transform: scale(0.99); }
+
+    .cancel-btn {
+      display: block; width: 100%; margin-top: 11px; padding: 10px;
+      text-align: center; font-size: 14px; color: var(--text-3);
+      cursor: pointer; background: none; border: none; font-family: var(--font-body);
+    }
+
+    /* ══ CARGA / TRANSICIÓN ═════════════════════ */
+    .loading-cover {
+      position: fixed; inset: 0; background: var(--bg-base);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; z-index: 300; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .loading-cover.show { opacity: 1; pointer-events: all; }
+    .spinner {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 3px solid var(--bg-4);
+      border-top-color: var(--dorado);
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-txt {
+      font-family: var(--font-cond);
+      font-size: 14px; color: var(--text-2); letter-spacing: 2px; text-transform: uppercase;
+    }
+
+    /* ══ ANIMACIONES DE ENTRADA ═════════════════ */
+    [data-anim] {
+      opacity: 0; transform: translateY(14px);
+      animation: fadeUp 0.38s ease-out both;
+    }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    [data-anim="1"] { animation-delay: 0.05s; }
+    [data-anim="2"] { animation-delay: 0.10s; }
+    [data-anim="3"] { animation-delay: 0.15s; }
+    [data-anim="4"] { animation-delay: 0.20s; }
+    [data-anim="5"] { animation-delay: 0.26s; }
+    [data-anim="6"] { animation-delay: 0.32s; }
+
+    /* ══ PWA INSTALL BANNER ═════════════════════ */
+    .install-banner {
+      margin: 0 14px 0; padding: 11px 14px;
+      background: rgba(196,153,42,0.09); border: 1px solid var(--border-dorado);
+      border-radius: var(--r-md); display: none; align-items: center; gap: 10px;
+    }
+    .install-banner.visible { display: flex; }
+    .install-icon { font-size: 20px; flex-shrink: 0; }
+    .install-text { flex: 1; font-size: 12px; color: var(--dorado-pale); line-height: 1.4; }
+    .install-btn {
+      background: var(--dorado); color: var(--bg-base);
+      border: none; border-radius: 8px; padding: 7px 12px;
+      font-family: var(--font-cond); font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
 
-<div class="ix-bg"></div>
-
-<!-- LOADER -->
-<div class="ix-loader" id="loader">
-  <div class="ix-loader__spin"></div>
-  <div class="ix-loader__txt">Cargando sistema municipal...</div>
+<!-- PANTALLA DE CARGA -->
+<div class="loading-cover" id="loadingCover">
+  <div class="spinner"></div>
+  <div class="loading-txt">Ingresando al sistema…</div>
 </div>
 
-<div class="ix-page" id="page" style="display:none">
-
-  <!-- ══ HEADER INSTITUCIONAL ══ -->
-  <header class="ix-header anim-1">
-    <img class="ix-escudo" id="ix-escudo" src="escudo.png"
-      alt="Escudo Municipal" onerror="this.style.display='none'">
-    <div class="ix-muni-nombre" id="ix-muni-nombre">Municipalidad Provincial de Cajamarca</div>
-    <div class="ix-muni-tipo"   id="ix-muni-tipo">Municipalidad Provincial · Región Cajamarca</div>
-    <div class="ix-divider"></div>
-    <div class="ix-sistema-tag">Sistema de gestión municipal integrado</div>
-  </header>
-
-  <!-- ══ ESTADO GENERAL ══ -->
-  <section class="ix-estado anim-2" id="ix-estado">
-    <div class="ix-estado__header">
-      <span class="ix-semaforo" id="ix-semaforo"></span>
-      <span class="ix-estado__ttl" id="ix-estado-ttl">Cargando estado...</span>
-      <span class="ix-estado__ts" id="ix-estado-ts"></span>
+<!-- ════ HEADER INSTITUCIONAL ════════════════════════ -->
+<header class="header" data-anim="0">
+  <div class="header-inner">
+    <div class="escudo-wrap">
+      <div class="escudo-ring-2"></div>
+      <div class="escudo-ring"></div>
+      <div class="escudo">🏛</div>
     </div>
-    <div class="ix-kpis" id="ix-kpis"></div>
-    <div class="ix-estado__sub" id="ix-estado-sub"></div>
-  </section>
-
-  <!-- ══ ACCESO CONTEXTUAL ══ -->
-  <section class="ix-acceso anim-3" id="ix-acceso">
-    <!-- Se construye dinámicamente según sesión -->
-  </section>
-
-  <!-- ══ GERENCIAS ══ -->
-  <div class="ix-sec-hd anim-4">
-    <span class="ix-sec-ttl">Estado por gerencia</span>
-    <span id="ix-ger-ts" style="font-size:10px;color:rgba(255,255,255,.2)"></span>
+    <div class="header-text">
+      <div class="mpc-tag">Municipalidad Provincial</div>
+      <div class="mpc-nombre">Cajamarca</div>
+      <div class="mpc-sistema">Centro de Mando Municipal</div>
+    </div>
   </div>
-  <div class="ix-gerencias anim-4" id="ix-gerencias"></div>
-
-  <!-- ══ OBRAS CRÍTICAS ══ -->
-  <div id="ix-obras-section" style="display:none">
-    <div class="ix-sec-hd anim-5">
-      <span class="ix-sec-ttl">Obras que requieren atención</span>
+  <div class="status-bar">
+    <div class="status-live">
+      <div class="live-dot"></div>
+      <span class="live-text">Sistema Operativo</span>
     </div>
-    <div class="ix-obras anim-5" id="ix-obras"></div>
+    <div class="clock-display" id="reloj"></div>
+  </div>
+</header>
+
+<!-- ════ KPI STRIP ════════════════════════════════════ -->
+<div class="kpi-strip" data-anim="1">
+  <div class="kpi-card kpi-azul">
+    <div class="kpi-accent"></div>
+    <div class="kpi-valor">68.4%</div>
+    <div class="kpi-label">Ejec. Presup.</div>
+    <div class="kpi-trend warn">▲ Meta 75%</div>
+  </div>
+  <div class="kpi-card kpi-dorado">
+    <div class="kpi-accent"></div>
+    <div class="kpi-valor">14</div>
+    <div class="kpi-label">Obras Activas</div>
+    <div class="kpi-trend up">✓ En plazo</div>
+  </div>
+  <div class="kpi-card kpi-alerta">
+    <div class="kpi-accent"></div>
+    <div class="kpi-valor">3</div>
+    <div class="kpi-label">Alertas hoy</div>
+    <div class="kpi-trend alert">⚠ Urgente</div>
+  </div>
+</div>
+
+<!-- ════ ALERTA CRÍTICA ══════════════════════════════ -->
+<div class="alert-strip" data-anim="2">
+  <div class="alert-pulse"></div>
+  <div class="alert-body">
+    <span class="alert-bold">Informe SEACE vence hoy 17:00.</span>
+    Gerencia de Infraestructura pendiente de firma del Alcalde.
+  </div>
+</div>
+
+<!-- ════ BANNER INSTALACIÓN PWA ══════════════════════ -->
+<div id="installBanner" class="install-banner" data-anim="2">
+  <div class="install-icon">📲</div>
+  <div class="install-text">Instala el sistema en tu celular para acceso rápido</div>
+  <button class="install-btn" onclick="instalarApp()">Instalar</button>
+</div>
+
+<!-- ════ ROLES DE AUTORIDADES ══════════════════════════ -->
+<div class="section-hdr" data-anim="3">
+  <div class="section-title">Acceso de Autoridades</div>
+  <div class="section-count">3 roles activos</div>
+</div>
+
+<div class="roles-stack" data-anim="3">
+
+  <!-- ALCALDE -->
+  <div class="rol-card card-alcalde" onclick="irA('alcalde.html','alcalde','Roberto Sánchez Q.')">
+    <div class="rol-bg"></div>
+    <div class="rol-glow"></div>
+    <div class="rol-inner">
+      <div class="rol-icon-wrap">⚖️</div>
+      <div class="rol-info">
+        <div class="rol-nombre">Alcalde</div>
+        <div class="rol-persona">Roberto Sánchez Quiroz</div>
+        <div class="rol-badge">🔴 Sala de Mando · 3 pendientes</div>
+      </div>
+      <div class="rol-chevron">›</div>
+    </div>
   </div>
 
-  <!-- ══ FOOTER INSTITUCIONAL ══ -->
-  <footer class="ix-footer anim-5">
-    <div class="ix-footer__txt">
-      <strong id="foot-muni">Municipalidad Provincial de Cajamarca</strong><br>
-      Sistema de gestión municipal · Acceso restringido al personal autorizado<br>
-      <span id="foot-ubigeo">Ubigeo 060101 · Cajamarca, Perú</span>
+  <!-- SECRETARIA -->
+  <div class="rol-card card-secretaria" onclick="irA('secretaria.html','secretaria','María L. Torres')">
+    <div class="rol-bg"></div>
+    <div class="rol-glow"></div>
+    <div class="rol-inner">
+      <div class="rol-icon-wrap">📋</div>
+      <div class="rol-info">
+        <div class="rol-nombre">Secretaría de Despacho</div>
+        <div class="rol-persona">María Luisa Torres R.</div>
+        <div class="rol-badge">📌 3 trámites en cola</div>
+      </div>
+      <div class="rol-chevron">›</div>
     </div>
-  </footer>
-  <div class="ix-powered">Powered by <strong style="color:rgba(255,255,255,.22)">Kausay Municipal</strong></div>
+  </div>
+
+  <!-- GM -->
+  <div class="rol-card card-gm" onclick="irA('gm.html','gm','Ing. Carlos Medina R.')">
+    <div class="rol-bg"></div>
+    <div class="rol-glow"></div>
+    <div class="rol-inner">
+      <div class="rol-icon-wrap">🏛</div>
+      <div class="rol-info">
+        <div class="rol-nombre">Gerente Municipal</div>
+        <div class="rol-persona">Ing. Carlos Medina Ríos</div>
+        <div class="rol-badge">📊 Panel ejecutivo</div>
+      </div>
+      <div class="rol-chevron">›</div>
+    </div>
+  </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="branding.js"></script>
-<script src="freshness.js"></script>
+<!-- ════ GERENCIAS SECTORIALES ══════════════════════════ -->
+<div class="section-hdr" data-anim="4">
+  <div class="section-title">Gerencias Sectoriales</div>
+  <div class="section-count">6 áreas</div>
+</div>
 
-<script src="auth.js"></script>
-<script src="shared.js"></script>
+<div class="gerencias-grid" data-anim="5">
+  <div class="gerencia-card gc-infra" onclick="abrirModal('infraestructura')">
+    <div class="gerencia-icon">🏗</div>
+    <div class="gerencia-info">
+      <div class="gerencia-nombre">Infraestructura</div>
+      <div class="gerencia-sub">14 obras activas</div>
+    </div>
+  </div>
+  <div class="gerencia-card gc-social" onclick="abrirModal('desarrollo')">
+    <div class="gerencia-icon">👥</div>
+    <div class="gerencia-info">
+      <div class="gerencia-nombre">Desarrollo Social</div>
+      <div class="gerencia-sub">Programas sociales</div>
+    </div>
+  </div>
+  <div class="gerencia-card gc-amb" onclick="abrirModal('ambiental')">
+    <div class="gerencia-icon">🌿</div>
+    <div class="gerencia-info">
+      <div class="gerencia-nombre">G. Ambiental</div>
+      <div class="gerencia-sub">Residuos · Áreas verdes</div>
+    </div>
+  </div>
+  <div class="gerencia-card gc-eco" onclick="abrirModal('economia')">
+    <div class="gerencia-icon">💰</div>
+    <div class="gerencia-info">
+      <div class="gerencia-nombre">Economía</div>
+      <div class="gerencia-sub">Presupuesto · SIAF</div>
+    </div>
+  </div>
+  <div class="gerencia-card gc-rcivil" onclick="abrirModal('registro')">
+    <div class="gerencia-icon">📜</div>
+    <div class="gerencia-info">
+      <div class="gerencia-nombre">Registro Civil</div>
+      <div class="gerencia-sub">RENIEC · Actas</div>
+    </div>
+  </div>
+  <div class="gerencia-card gc-transito" onclick="abrirModal('transito')">
+    <div class="gerencia-icon">🚦</div>
+    <div class="gerencia-info">
+      <div class="gerencia-nombre">Tránsito</div>
+      <div class="gerencia-sub">Vías · Licencias</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FOOTER ═══════════════════════════════════════ -->
+<footer class="footer" data-anim="6">
+  <div class="footer-powered">Powered by <strong>KAUSAY</strong> · Gestión Municipal con IA</div>
+  <div class="footer-version">v2.1 · ever123404.github.io/kausay-demo</div>
+</footer>
+
+<!-- ════ MODAL CONTRASEÑA GERENCIA ════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-icon" id="sheetIcon">🏗</div>
+    <div class="sheet-titulo" id="sheetTitulo">Infraestructura</div>
+    <div class="sheet-sub">Ingresa la contraseña de acceso a esta gerencia</div>
+    <div class="input-wrap">
+      <input
+        class="pass-input"
+        id="passInput"
+        type="password"
+        placeholder="••••••••"
+        autocomplete="current-password"
+        inputmode="text"
+        oninput="limpiarError()"
+        onkeydown="if(event.key==='Enter')verificar()"
+      >
+      <button class="eye-btn" onclick="toggleVer()" aria-label="Mostrar contraseña">👁</button>
+    </div>
+    <div class="error-msg" id="errorMsg">Contraseña incorrecta. Verifica e intenta de nuevo.</div>
+    <button class="confirm-btn" onclick="verificar()">Ingresar →</button>
+    <button class="cancel-btn" onclick="cerrarModal()">Cancelar</button>
+  </div>
+</div>
+
 <script>
-/* ══ CONSTANTES ══════════════════════════════════════ */
-const ROL_LABELS = {
-  alcalde:           'Alcalde',
-  secretaria:        'Secretaria del Despacho',
-  gerente_municipal: 'Gerente Municipal',
-  gerente_sectorial: 'Gerente Sectorial',
-  asesor_despacho:   'Asesor del Despacho',
-  oci_lectura:       'OCI — Lectura',
-  soporte_kausay:    'Soporte Técnico',
+/* ══ DATOS DEL SISTEMA ════════════════════════════════ */
+const CLAVES = {
+  infraestructura: 'infra2024',
+  desarrollo:      'social2024',
+  ambiental:       'amb2024',
+  economia:        'eco2024',
+  registro:        'rcivil2024',
+  transito:        'trans2024',
+};
+const ICONOS = {
+  infraestructura:'🏗', desarrollo:'👥', ambiental:'🌿',
+  economia:'💰', registro:'📜', transito:'🚦',
+};
+const NOMBRES = {
+  infraestructura:'Infraestructura', desarrollo:'Desarrollo Social',
+  ambiental:'G. Ambiental', economia:'Economía',
+  registro:'Registro Civil', transito:'Tránsito',
 };
 
-const ROL_DASHBOARD = {
-  alcalde:           'alcalde.html',
-  secretaria:        'secretaria.html',
-  gerente_municipal: 'gm.html',
-  gerente_sectorial: 'gerente.html',
-  asesor_despacho:   'alcalde.html',
-  oci_lectura:       'gm.html',
-};
+let gerenciaActual = null;
+let deferredInstall = null;
 
-const ROL_COLOR = {
-  alcalde:           '#8B1A1A',
-  secretaria:        '#9E6A06',
-  gerente_municipal: '#185FA5',
-  gerente_sectorial: '#0F6E56',
-  oci_lectura:       '#4A5060',
-};
-
-const ACCESOS_SEC = [
-  { ico:'👤', lbl:'Alcalde',       sub:'Sala de mando',     dest:'alcalde.html',     rol:'alcalde'           },
-  { ico:'📋', lbl:'Secretaria',    sub:'Despacho',           dest:'secretaria.html',  rol:'secretaria'        },
-  { ico:'🏛', lbl:'Gte. Municipal',sub:'Coordinación',       dest:'gm.html',          rol:'gerente_municipal'  },
-  { ico:'🏗', lbl:'Infraestructura',sub:'INFRA',             dest:'gerente.html?rol=gerente_sectorial&gerencia=INFRA', rol:'gerente_sectorial' },
-  { ico:'💰', lbl:'Rentas',        sub:'RENTAS',             dest:'gerente.html?rol=gerente_sectorial&gerencia=RENTAS', rol:'gerente_sectorial' },
-  { ico:'🌿', lbl:'Servicios',     sub:'SERVICIOS',          dest:'gerente.html?rol=gerente_sectorial&gerencia=SERVICIOS', rol:'gerente_sectorial' },
-  { ico:'❤', lbl:'Social',         sub:'SOCIAL',             dest:'gerente.html?rol=gerente_sectorial&gerencia=SOCIAL', rol:'gerente_sectorial' },
-  { ico:'📂', lbl:'Sec. General',  sub:'SECRETARIA',         dest:'gerente.html?rol=gerente_sectorial&gerencia=SECRETARIA', rol:'gerente_sectorial' },
-  { ico:'📊', lbl:'Planeamiento',  sub:'PLANIF',             dest:'gerente.html?rol=gerente_sectorial&gerencia=PLANIF', rol:'gerente_sectorial' },
-];
-
-/* ══ RELOJ ═══════════════════════════════════════════ */
+/* ══ RELOJ INSTITUCIONAL ══════════════════════════════ */
 function actualizarReloj() {
-  const n = new Date();
-  const el = document.getElementById('ix-estado-ts');
-  if (el) el.textContent = n.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+  const now = new Date();
+  const dias  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const el = document.getElementById('reloj');
+  if (el) el.textContent = `${dias[now.getDay()]} ${now.getDate()} ${meses[now.getMonth()]} · ${h}:${m}`;
 }
 actualizarReloj();
-setInterval(actualizarReloj, 30000);
+setInterval(actualizarReloj, 15000);
 
-/* ══ CONSTRUIR ESTADO EJECUTIVO ══════════════════════ */
-function buildEstado() {
-  const r = KausayDB.getResumenEjecutivo();
+/* ══ NAVEGACIÓN CON TRANSICIÓN ═══════════════════════ */
+function irA(pagina, rol, nombre) {
+  sessionStorage.setItem('kausay_demo_rol', rol);
+  sessionStorage.setItem('kausay_demo_nombre', nombre || '');
+  const c = document.getElementById('loadingCover');
+  c.classList.add('show');
+  setTimeout(() => { window.location.href = pagina; }, 550);
+}
 
-  // Semáforo
-  const sem = document.getElementById('ix-semaforo');
-  const ttl = document.getElementById('ix-estado-ttl');
-  const sub = document.getElementById('ix-estado-sub');
+/* ══ MODAL GERENCIAS ══════════════════════════════════ */
+function abrirModal(id) {
+  gerenciaActual = id;
+  document.getElementById('sheetIcon').textContent   = ICONOS[id];
+  document.getElementById('sheetTitulo').textContent = NOMBRES[id];
+  document.getElementById('passInput').value = '';
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('passInput').classList.remove('err');
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('passInput').focus(), 380);
+}
 
-  if (r.estado === 'critico') {
-    sem.className = 'ix-semaforo ix-semaforo--critico';
-    ttl.textContent = 'Municipio con alertas críticas activas';
-  } else if (r.estado === 'alerta') {
-    sem.className = 'ix-semaforo ix-semaforo--alerta';
-    ttl.textContent = `${r.alertas_criticas + r.alertas_alerta} situaciones de riesgo en seguimiento`;
+function cerrarModal(e) {
+  if (!e || e.target.id === 'modalOverlay') {
+    document.getElementById('modalOverlay').classList.remove('open');
+    gerenciaActual = null;
+  }
+}
+
+function verificar() {
+  const val = document.getElementById('passInput').value.trim();
+  if (!gerenciaActual) return;
+  if (val === CLAVES[gerenciaActual]) {
+    sessionStorage.setItem('kausay_demo_rol', 'gerente');
+    sessionStorage.setItem('kausay_gerencia', gerenciaActual);
+    sessionStorage.setItem('kausay_gerencia_nombre', NOMBRES[gerenciaActual]);
+    document.getElementById('modalOverlay').classList.remove('open');
+    irA('gerente.html', 'gerente', NOMBRES[gerenciaActual]);
   } else {
-    sem.className = 'ix-semaforo ix-semaforo--normal';
-    ttl.textContent = `Gestión municipal estable · ${r.ejec_global}% ejecutado`;
-  }
-
-  // KPIs
-  const kpiData = [
-    { v: r.alertas_criticas, l:'Alertas\ncríticas',   c: r.alertas_criticas > 0 ? '#E05050' : '#2A9A55' },
-    { v: r.obras_criticas,   l:'Obras\ncríticas',     c: r.obras_criticas > 0   ? '#E05050' : '#2A9A55' },
-    { v: r.compromisos_ven,  l:'Comp.\nvencidos',     c: r.compromisos_ven > 0  ? '#E05050' : '#2A9A55' },
-    { v: r.ejec_global+'%',  l:'Ejec.\nglobal',       c: r.ejec_global >= 70 ? '#2A9A55' : r.ejec_global >= 50 ? '#D4900A' : '#E05050' },
-  ];
-  const kpisEl = document.getElementById('ix-kpis');
-  kpisEl.innerHTML = kpiData.map(k => `
-    <div class="ix-kpi">
-      <div class="ix-kpi__v" style="color:${k.c}">${k.v}</div>
-      <div class="ix-kpi__l">${k.l}</div>
-    </div>`).join('');
-
-  // Sub-texto contextual
-  const msgs = [];
-  if (r.docs_pendientes > 0)   msgs.push(`${r.docs_pendientes} doc${r.docs_pendientes>1?'s':''} para firma`);
-  if (r.plazos_criticos > 0)   msgs.push(`${r.plazos_criticos} plazo${r.plazos_criticos>1?'s normativos críticos':' normativo crítico'}`);
-  if (r.instr_sin_leer > 0)    msgs.push(`${r.instr_sin_leer} instrucción${r.instr_sin_leer>1?'es':''}  sin acuse`);
-  if (r.dias_mef > 0)          msgs.push(`MEF cierra en ${r.dias_mef} días`);
-  sub.textContent = msgs.length ? msgs.join(' · ') : `${r.agenda_hoy} eventos en agenda hoy.`;
-}
-
-/* ══ CONSTRUIR ACCESO CONTEXTUAL ═════════════════════ */
-function buildAcceso(session) {
-  const el = document.getElementById('ix-acceso');
-  el.innerHTML = '';
-
-  if (session && KausayAuth.isSessionValid()) {
-    // ── AUTENTICADO ──
-    el.classList.add('ix-acceso--autenticado');
-    const rolColor = ROL_COLOR[session.rol] || '#185FA5';
-    const iniciales = session.nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
-    const rolLabel  = ROL_LABELS[session.rol] || session.rol;
-    const dest      = construirDestino(session);
-
-    el.innerHTML = `
-      <div class="ix-acceso__hd">
-        <div class="ix-acceso__av" style="background:${rolColor}">${iniciales}</div>
-        <div>
-          <div class="ix-acceso__nombre">${session.nombre}</div>
-          <div class="ix-acceso__rol">${rolLabel}${session.gerencia_cod?' · '+session.gerencia_cod:''}</div>
-        </div>
-        <button class="ix-acceso__logout" onclick="cerrarSesion()">Salir</button>
-      </div>
-      <button class="ix-btn-main ix-btn-main--panel"
-        style="background:${rolColor}"
-        onclick="window.location.href='${dest}'">
-        ⚡ Entrar a mi panel
-      </button>`;
-
-    // Accesos secundarios (otros dashboards según rol)
-    const secBtns = buildAccesosSec(session);
-    if (secBtns) el.appendChild(secBtns);
-
-  } else {
-    // ── SIN SESIÓN ──
-    el.classList.remove('ix-acceso--autenticado');
-    el.innerHTML = `
-      <div style="text-align:center;margin-bottom:12px">
-        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.65);margin-bottom:4px">
-          Sistema de acceso oficial
-        </div>
-        <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.5">
-          Ingresa con tus credenciales institucionales para acceder al centro de mando municipal.
-        </div>
-      </div>
-      <button class="ix-btn-main ix-btn-main--login"
-        onclick="window.location.href='login.html'">
-        🔐 Iniciar sesión
-      </button>`;
-
-    // Mostrar accesos demo solo en modo dev
-    const secBtns = buildAccesosSec(null);
-    if (secBtns) el.appendChild(secBtns);
+    const inp = document.getElementById('passInput');
+    inp.classList.add('err');
+    document.getElementById('errorMsg').classList.add('show');
+    inp.value = '';
+    inp.focus();
+    // vibración táctil de error
+    if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
   }
 }
 
-function construirDestino(session) {
-  const base = ROL_DASHBOARD[session.rol] || 'login.html';
-  const params = new URLSearchParams({
-    rol:    session.rol,
-    nombre: session.nombre,
-    ...(session.gerencia_cod ? { gerencia: session.gerencia_cod } : {}),
-  });
-  return `${base}?${params.toString()}`;
+function limpiarError() {
+  document.getElementById('passInput').classList.remove('err');
+  document.getElementById('errorMsg').classList.remove('show');
 }
 
-function buildAccesosSec(session) {
-  // Filtrar según sesión o mostrar todos en demo sin sesión
-  const mostrar = ACCESOS_SEC.filter(a => {
-    if (!session) return true;                            // sin sesión: mostrar todos (demo)
-    if (session.rol === 'alcalde') return true;           // alcalde: accede a todo
-    if (session.rol === 'gerente_municipal') return ['alcalde','secretaria','gerente_municipal','gerente_sectorial'].includes(a.rol);
-    return a.rol === session.rol;                         // solo su propio rol
-  });
-  if (!mostrar.length) return null;
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'ix-accesos-sec';
-  wrapper.style.marginTop = '10px';
-
-  // Etiqueta
-  const lbl = document.createElement('div');
-  lbl.style.cssText = 'width:100%;font-size:9px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px';
-  lbl.textContent = session ? 'También puedes acceder a' : 'Accesos rápidos de demostración';
-  wrapper.appendChild(lbl);
-
-  mostrar.forEach(a => {
-    const btn = document.createElement('button');
-    btn.className = 'ix-acc-btn';
-    btn.innerHTML = `<span class="ix-acc-btn__ico">${a.ico}</span><span class="ix-acc-btn__lbl">${a.lbl}</span><span class="ix-acc-btn__sub">${a.sub}</span>`;
-    btn.onclick = () => { window.location.href = a.dest; };
-    wrapper.appendChild(btn);
-  });
-  return wrapper;
+function toggleVer() {
+  const inp = document.getElementById('passInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 
-/* ══ GERENCIAS ═══════════════════════════════════════ */
-function buildGerencias() {
-  const gers = KausayDB.getGerencias();
-  const el   = document.getElementById('ix-gerencias');
-  el.innerHTML = '';
-
-  gers.forEach(g => {
-    const col   = g.ejec >= 70 ? '#2A9A55' : g.ejec >= 50 ? '#D4900A' : '#E05050';
-    const label = g.ejec >= 70 ? 'Al día' : g.ejec >= 50 ? 'En alerta' : 'Crítico';
-    const bgBadge = g.ejec >= 70 ? 'rgba(42,154,85,.25)' : g.ejec >= 50 ? 'rgba(212,144,10,.25)' : 'rgba(224,80,80,.25)';
-
-    const obras = KausayDB.getObras(g.cod);
-    const obrasCrit = obras.filter(o=>o.riesgo==='critico').length;
-    const kpis  = KausayDB.getIndicadores(g.cod);
-    const kpiPct= kpis.length ? Math.round(kpis[0].v/kpis[0].meta*100) : null;
-
-    const card = document.createElement('div');
-    card.className = 'ix-ger-card';
-    card.style.setProperty('--gc', g.color || col);
-    card.innerHTML = `
-      <span class="ix-ger-dot" style="background:${col}"></span>
-      <div class="ix-ger-body">
-        <div class="ix-ger-nombre">${g.nombre}</div>
-        <div class="ix-ger-jefe">${g.jefe}</div>
-        ${obrasCrit ? `<div style="font-size:10px;color:#E05050;margin-top:3px;font-weight:700">⚠ ${obrasCrit} obra${obrasCrit>1?'s':''}  crítica${obrasCrit>1?'s':''}</div>` : ''}
-      </div>
-      <div class="ix-ger-right">
-        <div class="ix-ger-pct" style="color:${col}">${g.ejec}%</div>
-        <div class="ix-ger-pct-l">ejecución</div>
-        <div class="ix-ger-badge" style="background:${bgBadge};color:${col}">${label}</div>
-        ${kpiPct !== null ? `<div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:2px">KPI ${kpiPct}%</div>` : ''}
-      </div>`;
-    el.appendChild(card);
-  });
-
-  // Timestamp
-  const ts = document.getElementById('ix-ger-ts');
-  if (ts) {
-    const sync = KausayDB.getIntegraciones().find(i=>i.sistema==='SIAF_GL');
-    ts.textContent = sync ? KausayDB.relativeTime(sync.ultima_sync) : '';
-  }
-}
-
-/* ══ OBRAS CRÍTICAS ══════════════════════════════════ */
-function buildObras() {
-  const criticas = KausayDB.getObras().filter(o=>o.riesgo==='critico');
-  const sec = document.getElementById('ix-obras-section');
-  const el  = document.getElementById('ix-obras');
-  if (!criticas.length) { sec.style.display='none'; return; }
-  sec.style.display = '';
-  el.innerHTML = '';
-  criticas.forEach(o => {
-    const card = document.createElement('div');
-    card.className = 'ix-obra-mini';
-    card.innerHTML = `
-      <div class="ix-obra-mini__body">
-        <div class="ix-obra-mini__nombre">${o.nombre}</div>
-        <div class="ix-obra-mini__meta">${o.estado==='paralizada'?'Paralizada '+o.dias_sin_av+'d':o.estado} · ${KausayDB.fmt(o.presup)}</div>
-      </div>
-      <div class="ix-obra-mini__pct">${o.pct}%</div>`;
-    el.appendChild(card);
-  });
-}
-
-/* ══ CERRAR SESIÓN ═══════════════════════════════════ */
-function cerrarSesion() {
-  KausayAuth.logout();
-}
-
-/* ══ FOOTER ══════════════════════════════════════════ */
-function buildFooter() {
-  const muni = KausayDB.getMuni();
-  const footMuni  = document.getElementById('foot-muni');
-  const footUbi   = document.getElementById('foot-ubigeo');
-  if (footMuni) footMuni.textContent = muni.nombre || 'Municipalidad';
-  if (footUbi)  footUbi.textContent  = `Ubigeo ${muni.ubigeo||'—'} · ${muni.departamento||''}, Perú`;
-}
-
-/* ══ APLICAR BRANDING INSTITUCIONAL ═════════════════ */
-function applyBranding() {
-  const muni = KausayDB.getMuni();
-  // Nombre y tipo
-  const elNombre = document.getElementById('ix-muni-nombre');
-  const elTipo   = document.getElementById('ix-muni-tipo');
-  if (elNombre) elNombre.textContent = muni.nombre || 'Municipalidad';
-  if (elTipo)   elTipo.textContent   = `Municipalidad ${muni.tipo||'provincial'} · Región ${muni.departamento||''}`;
-  // Título de pestaña
-  document.title = (muni.nombre_corto || muni.nombre || 'Municipalidad') + ' · Sistema Municipal';
-  // Color primario como acento del header
-  if (muni.color_primario) {
-    document.documentElement.style.setProperty('--ac', muni.color_primario);
-  }
-}
-
-/* ══ INTEGRACIONES / FRESHNESS ══════════════════════ */
-function buildIntegraciones() {
-  const integ = KausayDB.getIntegraciones();
-  const caidas = integ.filter(i=>i.estado==='desconectado').length;
-  const degrada = integ.filter(i=>i.estado==='degradado').length;
-  if (caidas > 0 || degrada > 0) {
-    const sub = document.getElementById('ix-estado-sub');
-    if (sub) {
-      const actual = sub.textContent;
-      const badge = caidas > 0 ? `⚡ ${caidas} integración${caidas>1?'es caídas':' caída'}` : `⚠ ${degrada} degradada${degrada>1?'s':''}`;
-      sub.textContent = actual ? actual + ' · ' + badge : badge;
-    }
-  }
-}
-
-/* ══ INIT ════════════════════════════════════════════ */
-window.addEventListener('load', () => {
-  // index.html no bloquea por rol — portada pública
-  const session = KausayAuth.getSession();
-
-  KausayBranding.applyPublic();
-  applyBranding();
-  buildEstado();
-  buildAcceso(session);
-  buildGerencias();
-  buildObras();
-  buildFooter();
-  buildIntegraciones();
-
-  // Telemetría de apertura de portada
-  KausayDB.Telemetry.track('index_viewed', {
-    autenticado: !!session,
-    rol: session?.rol || 'anonimo',
-  });
-
-  // Mostrar página
-  document.getElementById('loader').classList.add('gone');
-  document.getElementById('page').style.display = '';
-
-  // Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  }
-
-  KausayFreshness.autoMount();
-  setTimeout(() => document.getElementById('loader').remove(), 500);
+/* ══ PWA INSTALL ══════════════════════════════════════ */
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstall = e;
+  document.getElementById('installBanner').classList.add('visible');
 });
+
+function instalarApp() {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(() => {
+    document.getElementById('installBanner').classList.remove('visible');
+    deferredInstall = null;
+  });
+}
+
+/* ══ REDIRECCIÓN AUTOMÁTICA POR SESIÓN ════════════════ */
+// Si ya hay sesión activa, ofrecer retomar (no redirigir automáticamente
+// para que la demo pueda volver siempre al index)
+const ROL_PAGES = {
+  alcalde: 'alcalde.html', secretaria: 'secretaria.html',
+  gm: 'gm.html', gerente: 'gerente.html',
+};
+const rolActual = sessionStorage.getItem('kausay_demo_rol');
+// Desactivado para demo — el index siempre es el selector
+// if (rolActual && ROL_PAGES[rolActual]) window.location.href = ROL_PAGES[rolActual];
 </script>
 </body>
 </html>
