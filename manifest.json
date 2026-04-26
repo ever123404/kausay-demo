@@ -1,0 +1,38 @@
+{
+  "name": "MPC Centro de Mando Municipal",
+  "short_name": "MPC",
+  "description": "Municipalidad Provincial de Cajamarca — Centro de Mando",
+  "start_url": "/kausay-demo/index.html",
+  "scope": "/kausay-demo/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0B4F82",
+  "background_color": "#0B4F82",
+  "lang": "es-PE",
+  "icons": [
+    {
+      "src": "mpc-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "mpc-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "mpc-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "mpc-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
