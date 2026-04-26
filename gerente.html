@@ -70,16 +70,16 @@
 
     /* INSTRUCCION GM / ALCALDE */
     .inst-banner{border-radius:12px;padding:14px 16px;margin:14px 14px 0;
-      border:1px solid rgba(255,255,255,.20);
-      background:rgba(255,255,255,.10)}
+      border:1px solid rgba(0,0,0,.08);
+      background:var(--ger-color)}
     .ib-tag{font-size:9px;font-weight:800;letter-spacing:2px;
       text-transform:uppercase;color:rgba(255,255,255,.70);
       margin-bottom:5px;display:flex;align-items:center;gap:5px}
     .ib-pulse{width:6px;height:6px;border-radius:50%;background:#FCD34D;
       animation:blink 1.5s ease-in-out infinite}
     .ib-txt{font-size:13.5px;font-weight:600;color:#fff;line-height:1.5}
-    .ib-meta{font-size:11px;color:rgba(255,255,255,.55);margin-top:5px}
-    .ib-empty{font-size:13px;color:rgba(255,255,255,.45);font-style:italic}
+    .ib-meta{font-size:11px;color:rgba(255,255,255,.75);margin-top:5px}
+    .ib-empty{font-size:13px;color:rgba(255,255,255,.70);font-style:italic}
 
     /* TABS PRINCIPALES */
     .main-tabs{display:flex;background:var(--white);border-bottom:1px solid var(--brd);
@@ -326,7 +326,7 @@
   <div class="hero-kpis" id="hero-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
 </section>
 
-<div class="inst-banner" style="background:rgba(0,0,0,.18)">
+<div class="inst-banner">
   <div class="ib-tag"><div class="ib-pulse"></div>Instruccion del GM / Alcalde</div>
   <div id="ib-content"><div class="ib-empty">Sin instrucciones recientes.</div></div>
 </div>
